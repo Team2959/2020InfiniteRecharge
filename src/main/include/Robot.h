@@ -13,7 +13,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 
 class Robot : public frc::TimedRobot {
- public:
+public:
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;
@@ -22,5 +22,5 @@ class Robot : public frc::TimedRobot {
   void TeleopPeriodic() override;
   void TestPeriodic() override;
 
- private:
+private:
 };
