@@ -11,9 +11,22 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-void Robot::RobotInit() {}
+void Robot::RobotInit() 
+{
+    m_drivetrain.InitalShowToSmartDashboard();
+}
 
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() 
+{
+    if(m_skips % 50)
+    {
+        // update PID values from the SmartDashboard
+        m_drivetrain.UpdateFromSmartDashboard();
+    }
+
+// Increment the m_skips variable for counting
+    m_skips++;
+}
 
 void Robot::AutonomousInit() {}
 

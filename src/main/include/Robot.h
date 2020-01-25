@@ -12,6 +12,8 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <subsystems/Drivetrain.h>
+
 class Robot : public frc::TimedRobot {
 public:
   void RobotInit() override;
@@ -21,6 +23,10 @@ public:
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-
 private:
+// this variables is used to keep track of the times RobotPeriodic is called
+  int m_skips = 0;
+
+// Drivetrain controller object
+  Drivetrain m_drivetrain{};
 };
