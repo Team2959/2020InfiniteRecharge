@@ -24,6 +24,12 @@ void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds)
     m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
 }
 
+void Drivetrain::SetSpeeds(double left, double right)
+{
+    m_leftPID.SetReference(left, rev::ControlType::kVelocity);
+    m_rightPID.SetReference(right, rev::ControlType::kVelocity);
+}
+
 void Drivetrain::InitalShowToSmartDashboard()
 {
     frc::SmartDashboard::PutNumber(kName + ": P Gain", m_leftPID.GetP());

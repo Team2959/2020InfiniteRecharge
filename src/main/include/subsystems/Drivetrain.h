@@ -16,19 +16,21 @@
 
 #include <string>
 
+#include <RobotMap.h>
+
 class Drivetrain
 {
 private:
 
-  rev::CANSparkMax m_leftPrimary{1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollower1{2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax m_leftFollower2{3, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_leftPrimary{kDrivetrainLeftPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_leftFollower1{kDrivetrainLeftFollower1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_leftFollower2{kDrivetrainLeftFollower2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANPIDController m_leftPID{m_leftPrimary};
   rev::CANEncoder m_leftEncoder{m_leftPrimary};
 
-  rev::CANSparkMax m_rightPrimary{4, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollower1{5, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
-  rev::CANSparkMax m_rightFollower2{6, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_rightPrimary{kDrivetrainRightPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFollower1{kDrivetrainRightFollower1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
+  rev::CANSparkMax m_rightFollower2{kDrivetrainRightFollower2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANPIDController m_rightPID{m_rightPrimary};
   rev::CANEncoder m_rightEncoder{m_rightPrimary};
 public:
@@ -37,7 +39,10 @@ public:
   void SetSpeeds(double left, double right);
 
   // SmartDashboard
-  bool m_smartDashboardEnabled = true;
+
+  // bool m_smartDashboardEnabled = true;
+  // may not be used --^
+
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();
 
