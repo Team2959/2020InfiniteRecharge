@@ -14,6 +14,8 @@
 
 #include <subsystems/Drivetrain.h>
 
+#include <utility/Callable.h>
+
 class Robot : public frc::TimedRobot {
 public:
   void RobotInit() override;

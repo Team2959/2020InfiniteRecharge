@@ -13,10 +13,14 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/geometry/Pose2d.h>
+#include <frc/SPI.h>
+#include <frc/ADXRS450_Gyro.h>
 
 #include <string>
 
 #include <RobotMap.h>
+
+#include <utility/Conditioning.h>
 
 class Drivetrain
 {
@@ -33,10 +37,14 @@ private:
   rev::CANSparkMax m_rightFollower2{kDrivetrainRightFollower2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANPIDController m_rightPID{m_rightPrimary};
   rev::CANEncoder m_rightEncoder{m_rightPrimary};
+
+  cwtech::UniformConditioning conditioning{};
+  std::string kName = "Drivetrain";
 public:
   Drivetrain();
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
   void SetSpeeds(double left, double right);
+  void TankDrive(double left, double right, bool condition = false);
 
   // SmartDashboard
 
@@ -50,6 +58,4 @@ public:
   void UpdatePose();
   void ResetPose(const frc::Pose2d& pose);
   frc::Pose2d GetPose();
-private:
-  std::string kName = "Drivetrain";
 };

@@ -7,7 +7,7 @@
 
 #include <subsystems/Drivetrain.h>
 
-#include <utility/constants.h>
+#include <utility/Constants.h>
 
 Drivetrain::Drivetrain() 
 {
@@ -20,8 +20,10 @@ Drivetrain::Drivetrain()
 
 void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) 
 {
-    m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
-    m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
+    // Don't know what to do here
+
+    // m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
+    // m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
 }
 
 void Drivetrain::SetSpeeds(double left, double right)
@@ -70,4 +72,20 @@ void Drivetrain::UpdateFromSmartDashboard()
         m_rightPID.SetIZone(myIZone);
         m_leftPID.SetIZone(myIZone);
     }
+}
+
+void Drivetrain::TankDrive(double left, double right, bool condition) 
+{
+    double mleft = left, mright = right;
+    if(condition) 
+    {  
+        mleft = conditioning.Condition(mleft);
+        mright = conditioning.Condition(mright);
+    }
+    SetSpeeds(left, right);
+}
+
+void Drivetrain::UpdatePose()
+{
+
 }
