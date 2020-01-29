@@ -42,6 +42,8 @@ private:
   std::string kName = "Drivetrain";
 public:
   Drivetrain();
+
+  // Driving
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
   void SetSpeeds(double left, double right);
   void TankDrive(double left, double right, bool condition = false);
