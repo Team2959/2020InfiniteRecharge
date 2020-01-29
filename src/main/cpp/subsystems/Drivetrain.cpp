@@ -84,8 +84,3 @@ void Drivetrain::TankDrive(double left, double right, bool condition)
     }
     SetSpeeds(left, right);
 }
-
-void Drivetrain::UpdatePose()
-{
-
-}
