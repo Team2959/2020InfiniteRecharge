@@ -12,7 +12,6 @@ public:
     virtual void OnTeleopPeriodic() = 0;
     virtual void OnAutonomousInit() = 0;
     virtual void OnAutonomousPeriodic() = 0;
-    // TODO autonomous functions
 };
 
 }
