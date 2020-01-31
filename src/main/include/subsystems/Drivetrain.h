@@ -16,6 +16,9 @@
 #include <frc/SPI.h>
 #include <frc/ADXRS450_Gyro.h>
 
+// Using navX from Kauai Labs
+#include <AHRS.h>
+
 #include <string>
 
 #include <RobotMap.h>
@@ -37,6 +40,9 @@ private:
   rev::CANSparkMax m_rightFollower2{kDrivetrainRightFollower2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANPIDController m_rightPID{m_rightPrimary};
   rev::CANEncoder m_rightEncoder{m_rightPrimary};
+
+// constructing the navX device using the MXP port
+  AHRS m_navX{frc::SPI::kMXP};
 
   cwtech::UniformConditioning conditioning{};
   std::string kName = "Drivetrain";
