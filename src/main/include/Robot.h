@@ -11,10 +11,12 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc/Joystick.h>
 
 #include <subsystems/Drivetrain.h>
 
 #include <utility/Callable.h>
+#include <utility/Conditioning.h>
 
 class Robot : public frc::TimedRobot {
 public:
@@ -29,6 +31,12 @@ private:
 // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
 
-// Drivetrain controller object
+// Joysticks 
+  frc::Joystick m_left{0};
+  frc::Joystick m_right{1};
+
+  cwtech::UniformConditioning m_conditioning{};
+
+// Drivetrain controller
   Drivetrain m_drivetrain{};
 };
