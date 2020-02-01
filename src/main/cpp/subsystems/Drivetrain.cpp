@@ -54,22 +54,22 @@ void Drivetrain::UpdateFromSmartDashboard()
     auto myI = frc::SmartDashboard::GetNumber(kName + ": I Gain", currentI);
     auto myFF = frc::SmartDashboard::GetNumber(kName + ": Feed Forward", currentFF);
     auto myIZone = frc::SmartDashboard::GetNumber(kName + ": I Zone", currentIZone);
-    if(fabs(myP - currentP) > cwtech::kCloseToSameValue)
+    if(fabs(myP - currentP) > kCloseToSameValue)
     {
         m_rightPID.SetP(myP);
         m_leftPID.SetP(myP);
     }
-    if(fabs(myI - currentI) > cwtech::kCloseToSameValue)
+    if(fabs(myI - currentI) > kCloseToSameValue)
     {
         m_rightPID.SetI(myI);
         m_leftPID.SetI(myI);
     }
-    if(fabs(myFF - currentFF) > cwtech::kCloseToSameValue)
+    if(fabs(myFF - currentFF) > kCloseToSameValue)
     {
         m_rightPID.SetFF(myFF);
         m_leftPID.SetFF(myFF);
     }
-    if(fabs(myIZone - currentIZone) > cwtech::kCloseToSameValue)
+    if(fabs(myIZone - currentIZone) > kCloseToSameValue)
     {
         m_rightPID.SetIZone(myIZone);
         m_leftPID.SetIZone(myIZone);
