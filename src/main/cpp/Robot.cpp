@@ -14,6 +14,7 @@
 void Robot::RobotInit() 
 {
     m_drivetrain.InitalShowToSmartDashboard();
+    m_shooter.OnRobotInit();
 
     m_conditioningDriverJoysticks.SetDeadband(0.05);
     m_conditioningDriverJoysticks.SetExponent(5);
@@ -27,7 +28,7 @@ void Robot::RobotPeriodic()
         m_drivetrain.UpdateFromSmartDashboard();
     }
 
-    // Increment the m_skips variable for counting
+// Increment the m_skips variable for counting
     m_skips++;
 }
 
