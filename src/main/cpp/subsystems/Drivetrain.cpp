@@ -5,13 +5,15 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+#include <frc/smartdashboard/SmartDashboard.h>
+
 #include <subsystems/Drivetrain.h>
 
-#include <utility/Constants.h>
+// for kCloseValue
+#include <RobotMap.h>
 
 Drivetrain::Drivetrain() 
 {
-    // May move to a function that is called at RobotInit
     m_leftFollower1.Follow(m_leftPrimary);
     m_leftFollower2.Follow(m_leftPrimary);
     m_rightFollower1.Follow(m_rightPrimary);
@@ -72,15 +74,4 @@ void Drivetrain::UpdateFromSmartDashboard()
         m_rightPID.SetIZone(myIZone);
         m_leftPID.SetIZone(myIZone);
     }
-}
-
-void Drivetrain::TankDrive(double left, double right, bool condition) 
-{
-    double mleft = left, mright = right;
-    if(condition) 
-    {  
-        mleft = conditioning.Condition(mleft);
-        mright = conditioning.Condition(mright);
-    }
-    SetSpeeds(left, right);
 }

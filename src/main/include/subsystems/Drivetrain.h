@@ -8,8 +8,6 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/drive/DifferentialDrive.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/geometry/Pose2d.h>
@@ -52,7 +50,6 @@ public:
   // Driving
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
   void SetSpeeds(double left, double right);
-  void TankDrive(double left, double right, bool condition = false);
 
   // SmartDashboard
 

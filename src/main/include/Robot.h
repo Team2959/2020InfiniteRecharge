@@ -10,13 +10,12 @@
 #include <string>
 
 #include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
+
 #include <frc/Joystick.h>
+#include <utility/Conditioning.h>
 
 #include <subsystems/Drivetrain.h>
 
-#include <utility/Callable.h>
-#include <utility/Conditioning.h>
 
 class Robot : public frc::TimedRobot {
 public:
@@ -32,10 +31,10 @@ private:
   int m_skips = 0;
 
 // Joysticks 
-  frc::Joystick m_left{0};
-  frc::Joystick m_right{1};
+  frc::Joystick m_leftDriverJoystick{0};
+  frc::Joystick m_rightDriverJoystick{1};
 
-  cwtech::UniformConditioning m_conditioning{};
+  cwtech::UniformConditioning m_conditioningDriverJoysticks{};
 
 // Drivetrain controller
   Drivetrain m_drivetrain{};

@@ -15,8 +15,8 @@ void Robot::RobotInit()
 {
     m_drivetrain.InitalShowToSmartDashboard();
 
-    m_conditioning.SetDeadband(0.05);
-    m_conditioning.SetExponent(5);
+    m_conditioningDriverJoysticks.SetDeadband(0.05);
+    m_conditioningDriverJoysticks.SetExponent(5);
 }
 
 void Robot::RobotPeriodic() 
@@ -39,8 +39,8 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() 
 {
-    m_drivetrain.TankDrive(m_conditioning.Condition(m_left.GetY()),
-                           m_conditioning.Condition(m_right.GetY()));
+    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()),
+                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()));
 }
 
 void Robot::TestPeriodic() {}

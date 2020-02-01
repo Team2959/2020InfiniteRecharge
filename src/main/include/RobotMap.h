@@ -1,5 +1,11 @@
 #pragma once
 
+// Constants
+namespace cwtech
+{
+    const double kCloseToSameValue = 0.0000001;
+}
+
 // Drivetrain CAN IDs =================================
 
 // Left
