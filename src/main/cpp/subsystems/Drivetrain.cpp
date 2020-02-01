@@ -30,7 +30,7 @@ void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds)
 
 void Drivetrain::SetSpeeds(double left, double right)
 {
-    m_leftPID.SetReference(left, rev::ControlType::kVelocity);
+    m_leftPID.SetReference(-left, rev::ControlType::kVelocity);
     m_rightPID.SetReference(right, rev::ControlType::kVelocity);
 }
 
