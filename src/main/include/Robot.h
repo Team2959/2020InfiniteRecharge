@@ -10,10 +10,15 @@
 #include <string>
 
 #include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
+
+#include <frc/Joystick.h>
+#include <utility/Conditioning.h>
+
+#include <subsystems/Drivetrain.h>
+
 
 class Robot : public frc::TimedRobot {
- public:
+public:
   void RobotInit() override;
   void RobotPeriodic() override;
   void AutonomousInit() override;
@@ -21,10 +26,16 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+private:
+// this variables is used to keep track of the times RobotPeriodic is called
+  int m_skips = 0;
 
- private:
-  frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
-  std::string m_autoSelected;
+// Joysticks 
+  frc::Joystick m_leftDriverJoystick{0};
+  frc::Joystick m_rightDriverJoystick{1};
+
+  cwtech::UniformConditioning m_conditioningDriverJoysticks{};
+
+// Drivetrain controller
+  Drivetrain m_drivetrain{};
 };
