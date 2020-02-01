@@ -45,6 +45,8 @@ private:
   cwtech::UniformConditioning conditioning{};
   std::string kName = "Drivetrain";
 public:
+  static constexpr double kMaxVelocity = 5676.0;
+
   Drivetrain();
 
   // Driving

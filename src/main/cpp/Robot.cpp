@@ -39,8 +39,8 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() 
 {
-    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()),
-                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()));
+    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
+                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
 }
 
 void Robot::TestPeriodic() {}
