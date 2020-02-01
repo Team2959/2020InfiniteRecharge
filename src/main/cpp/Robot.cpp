@@ -28,7 +28,13 @@ void Robot::RobotPeriodic()
         m_drivetrain.UpdateFromSmartDashboard();
     }
 
-// Increment the m_skips variable for counting
+    if(m_skips % 51)
+    {
+        // update PID values from the SmartDashboard
+        m_shooter.OnRobotPeriodic();
+    }
+
+    // Increment the m_skips variable for counting
     m_skips++;
 }
 

@@ -21,8 +21,6 @@
 
 #include <RobotMap.h>
 
-#include <utility/Conditioning.h>
-
 class Drivetrain
 {
 private:
@@ -41,7 +39,6 @@ private:
   // constructing the navX device using the MXP port
   AHRS m_navX{frc::SPI::kMXP};
 
-  cwtech::UniformConditioning conditioning{};
   std::string kName = "Drivetrain";
   
 public:
@@ -54,7 +51,6 @@ public:
   void SetSpeeds(double left, double right);
 
   // SmartDashboard
-
   // bool m_smartDashboardEnabled = true;
   // may not be used --^
 
