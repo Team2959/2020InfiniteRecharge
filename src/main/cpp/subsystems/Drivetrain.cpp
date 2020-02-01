@@ -5,12 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include <frc/smartdashboard/SmartDashboard.h>
-
 #include <subsystems/Drivetrain.h>
-
-// for kCloseValue
-#include <RobotMap.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 
 Drivetrain::Drivetrain() 
 {

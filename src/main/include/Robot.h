@@ -16,8 +16,21 @@
 
 #include <subsystems/Drivetrain.h>
 
+class Robot : public frc::TimedRobot
+{
+private:
+  // this variables is used to keep track of the times RobotPeriodic is called
+  int m_skips = 0;
 
-class Robot : public frc::TimedRobot {
+  // Joysticks 
+  frc::Joystick m_leftDriverJoystick{0};
+  frc::Joystick m_rightDriverJoystick{1};
+
+  cwtech::UniformConditioning m_conditioningDriverJoysticks{};
+
+  // Drivetrain controller
+  Drivetrain m_drivetrain{};
+
 public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -26,16 +39,4 @@ public:
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-private:
-// this variables is used to keep track of the times RobotPeriodic is called
-  int m_skips = 0;
-
-// Joysticks 
-  frc::Joystick m_leftDriverJoystick{0};
-  frc::Joystick m_rightDriverJoystick{1};
-
-  cwtech::UniformConditioning m_conditioningDriverJoysticks{};
-
-// Drivetrain controller
-  Drivetrain m_drivetrain{};
 };

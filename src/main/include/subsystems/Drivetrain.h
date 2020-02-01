@@ -26,7 +26,6 @@
 class Drivetrain
 {
 private:
-
   rev::CANSparkMax m_leftPrimary{kDrivetrainLeftPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANSparkMax m_leftFollower1{kDrivetrainLeftFollower1, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
   rev::CANSparkMax m_leftFollower2{kDrivetrainLeftFollower2, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
@@ -39,11 +38,12 @@ private:
   rev::CANPIDController m_rightPID{m_rightPrimary};
   rev::CANEncoder m_rightEncoder{m_rightPrimary};
 
-// constructing the navX device using the MXP port
+  // constructing the navX device using the MXP port
   AHRS m_navX{frc::SPI::kMXP};
 
   cwtech::UniformConditioning conditioning{};
   std::string kName = "Drivetrain";
+  
 public:
   static constexpr double kMaxVelocity = 5676.0;
 

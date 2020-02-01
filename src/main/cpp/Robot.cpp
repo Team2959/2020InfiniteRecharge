@@ -27,7 +27,7 @@ void Robot::RobotPeriodic()
         m_drivetrain.UpdateFromSmartDashboard();
     }
 
-// Increment the m_skips variable for counting
+    // Increment the m_skips variable for counting
     m_skips++;
 }
 
