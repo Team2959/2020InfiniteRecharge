@@ -12,5 +12,6 @@ bool Intake::GetSensor(Intake::SensorLocation location)
     case Intake::SensorLocation::SecuredPowercell:
         return m_securedPowercellSensor.Get();
     }
+    return false;
 }
 
