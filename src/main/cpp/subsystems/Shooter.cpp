@@ -56,3 +56,18 @@ void Shooter::SetSpeed(double speed)
         m_PID.SetReference(speed, rev::ControlType::kVelocity);
     }
 }
+
+double Shooter::GetSpeed()
+{
+    return m_encoder.GetVelocity();
+}
+
+void Shooter::SetAngle(bool on)
+{
+    m_angleAdjuster.Set(on);
+}
+
+void Shooter::SetKickerSpeed(double speed)
+{
+    m_kickerMotor.Set(speed);
+}

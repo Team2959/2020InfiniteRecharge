@@ -17,3 +17,7 @@ const int kDrivetrainRightFollower2 = 6;
 const int kShooterPrimary = 7;
 const int kShooterFollower = 8;
 
+// Pnuematics port
+const int kShooterPnuematicsAngleAdjuster = 0;
+const int kShooterKicker = 14;
+
