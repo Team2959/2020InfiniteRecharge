@@ -62,9 +62,9 @@ double Shooter::GetSpeed()
     return m_encoder.GetVelocity();
 }
 
-void Shooter::SetAngle(bool on)
+void Shooter::SetAngle(bool closeShot)
 {
-    m_angleAdjuster.Set(on);
+    m_angleAdjuster.Set(closeShot);
 }
 
 void Shooter::SetKickerSpeed(double speed)
