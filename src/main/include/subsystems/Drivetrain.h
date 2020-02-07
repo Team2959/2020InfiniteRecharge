@@ -39,8 +39,16 @@ private:
   // constructing the navX device using the MXP port
   AHRS m_navX{frc::SPI::kMXP};
 
-  std::string kName = "Drivetrain";
-  
+  // Smart Dashboard
+  const std::string kName = "Drive: ";
+  const std::string kDebug = "Debug";
+  const std::string kPGain = kName + "P Gain";
+  const std::string kIGain = kName + "I Gain";
+  const std::string kFF = kName + "Feed Forward";
+  const std::string kIZone = kName + "I Zone";
+
+  bool m_debugEnable;
+
 public:
   static constexpr double kMaxVelocity = 5676.0;
 

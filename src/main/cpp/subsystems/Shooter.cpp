@@ -13,24 +13,42 @@ void Shooter::OnRobotInit()
     m_PID.SetP(0.0002);
     m_PID.SetFF(0.000193);
     
-    frc::SmartDashboard::PutNumber(kName + ": P Gain", m_PID.GetP());
-    frc::SmartDashboard::PutNumber(kName + ": I Gain", m_PID.GetI());
-    frc::SmartDashboard::PutNumber(kName + ": Feed Forward", m_PID.GetFF());
-    frc::SmartDashboard::PutNumber(kName + ": I Zone", m_PID.GetIZone());
+    SmartDashboardInit();
+}
+
+void Shooter::SmartDashboardInit()
+{
+    // Debug Enable
+    frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
+    // PID
+    frc::SmartDashboard::PutNumber(kPGain, m_PID.GetP());
+    frc::SmartDashboard::PutNumber(kIGain, m_PID.GetI());
+    frc::SmartDashboard::PutNumber(kFF, m_PID.GetFF());
+    frc::SmartDashboard::PutNumber(kIZone, m_PID.GetIZone());
+    // Shooter
+    frc::SmartDashboard::PutNumber(kSpeed, 0);
+    frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
+    // Kicker
+    frc::SmartDashboard::PutNumber(kKickerSpeed, 0);
+    // Angle
+    frc::SmartDashboard::PutBoolean(kAngle, false);
 }
 
 void Shooter::OnRobotPeriodic()
-{    
+{
+    m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+    if (m_debugEnable == false) return;
+
     // Get the values only once to optimize for speed
     auto currentP = m_PID.GetP();
     auto currentI = m_PID.GetI();
     auto currentFF = m_PID.GetFF();
     auto currentIZone = m_PID.GetIZone();
 
-    auto myP = frc::SmartDashboard::GetNumber(kName + ": P Gain", currentP);
-    auto myI = frc::SmartDashboard::GetNumber(kName + ": I Gain", currentI);
-    auto myFF = frc::SmartDashboard::GetNumber(kName + ": Feed Forward", currentFF);
-    auto myIZone = frc::SmartDashboard::GetNumber(kName + ": I Zone", currentIZone);
+    auto myP = frc::SmartDashboard::GetNumber(kPGain, currentP);
+    auto myI = frc::SmartDashboard::GetNumber(kIGain, currentI);
+    auto myFF = frc::SmartDashboard::GetNumber(kFF, currentFF);
+    auto myIZone = frc::SmartDashboard::GetNumber(kIZone, currentIZone);
     if(fabs(myP - currentP) > kCloseToSameValue)
     {
         m_PID.SetP(myP);
@@ -47,6 +65,25 @@ void Shooter::OnRobotPeriodic()
     {
         m_PID.SetIZone(myIZone);
     }
+
+    auto currentKickerSpeed = m_kickerMotor.Get();
+    auto myKickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, currentKickerSpeed);
+    if(fabs(myKickerSpeed - currentKickerSpeed) > kCloseToSameValue)
+    {
+        SetKickerSpeed(myKickerSpeed);
+    }
+
+    auto currentAngle = m_angleAdjuster.Get();
+    auto myAngle = frc::SmartDashboard::GetBoolean(kAngle, currentAngle);
+    if(currentAngle != myAngle)
+    {
+        SetAngle(myAngle);
+    }
+
+    frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
+
+    auto myTargetSpeed = frc::SmartDashboard::GetNumber(kTargetSpeed, 0);
+    SetSpeed(myTargetSpeed);
 }
 
 void Shooter::SetSpeed(double speed)

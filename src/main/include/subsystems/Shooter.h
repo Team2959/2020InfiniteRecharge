@@ -8,8 +8,7 @@
 class Shooter
 {
 private:
-    std::string kName = "Shooter";
-
+    // Hardware
     rev::CANSparkMax m_primary {kShooterPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANSparkMax m_follower {kShooterFollower, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANEncoder m_encoder {m_primary};
@@ -18,6 +17,22 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_kickerMotor {kShooterKicker};
 
     frc::Solenoid m_angleAdjuster {kShooterPnuematicsAngleAdjuster};
+
+    // Smart Dashboard
+    const std::string kName = "Shooter: ";
+    const std::string kDebug = "Debug";
+    const std::string kPGain = kName + "P Gain";
+    const std::string kIGain = kName + "I Gain";
+    const std::string kFF = kName + "Feed Forward";
+    const std::string kIZone = kName + "I Zone";
+    const std::string kSpeed = kName + "Speed";
+    const std::string kTargetSpeed = kName + "Target Speed";
+    const std::string kAngle = kName + "Angle";
+    const std::string kKickerSpeed = kName + "Kicker Speed";
+
+    bool m_debugEnable;
+
+    void SmartDashboardInit();
 
 public:
     Shooter();
