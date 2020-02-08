@@ -8,15 +8,27 @@
 class Intake
 {
 private:
-    frc::DigitalInput m_endSensor{kEndSensor};
-    frc::DigitalInput m_newPowercellSensor{kNewPowercellSensor};
-    frc::DigitalInput m_securedPowercellSensor{kSecuredPowercellSensor};
+    frc::DigitalInput m_endSensor {kEndSensor};
+    frc::DigitalInput m_newPowercellSensor {kNewPowercellSensor};
+    frc::DigitalInput m_securedPowercellSensor {kSecuredPowercellSensor};
 
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakeWheelMotor1{kIntakeMotor1};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakeWheelMotor2{kIntakeMotor2};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakeMotor1};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakeFollower {kIntakeMotor2};
 
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorMotor1{kConveyorMotor1};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorMotor2{kConveyorMotor2};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorMotor1};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorMotor2};
+
+    // Smart Dashboard
+    const std::string kDebug = "Intake/Conveyor: Debug";
+    const std::string kIntakeName = "Intake: ";
+    const std::string kIntakeSpeed = kIntakeName + "Speed";
+    const std::string kConveyorName = "Conveyor: ";
+    const std::string kConveyorSpeed = kConveyorName + "Speed";
+
+    bool m_debugEnable;
+
+    void SmartDashboardInit();
+
 public:
     enum class SensorLocation
     {
@@ -24,5 +36,10 @@ public:
         NewPowercell,
         SecuredPowercell
     };
+
+    void OnRobotInit();
+    void OnRobotPeriodic();
+    void OnTeleOpPeriodicDebug();
+
     bool GetSensor(SensorLocation location);
 };

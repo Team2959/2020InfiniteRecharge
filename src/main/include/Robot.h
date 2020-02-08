@@ -15,6 +15,7 @@
 #include <utility/Conditioning.h>
 
 #include <subsystems/Drivetrain.h>
+#include <subsystems/Intake.h>
 
 class Robot : public frc::TimedRobot
 {
@@ -29,7 +30,8 @@ private:
   cwtech::UniformConditioning m_conditioningDriverJoysticks{};
 
   // Drivetrain controller
-  Drivetrain m_drivetrain{};
+  Drivetrain m_drivetrain {};
+  Intake m_intake {};
 
 public:
   void RobotInit() override;
