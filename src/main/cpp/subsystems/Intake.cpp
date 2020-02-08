@@ -17,9 +17,12 @@ void Intake::SmartDashboardInit()
 {
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
-    // Intake/Conveyor
+    // Intake
     frc::SmartDashboard::PutNumber(kIntakeSpeed, 0);
+    // Conveyor
     frc::SmartDashboard::PutNumber(kConveyorSpeed, 0);
+    // Kicker
+    frc::SmartDashboard::PutNumber(kKickerSpeed, 0);
 }
 
 void Intake::OnRobotPeriodic()
@@ -31,8 +34,9 @@ void Intake::OnTeleOpPeriodicDebug()
 {
     if (m_debugEnable == false) return;
 
-    m_intakePrimary.Set(frc::SmartDashboard::GetNumber(kIntakeSpeed, 0));
-    m_conveyorPrimary.Set(frc::SmartDashboard::GetNumber(kConveyorSpeed, 0));
+    SetIntakeSpeed(frc::SmartDashboard::GetNumber(kIntakeSpeed, 0));
+    SetConveyorSpeed(frc::SmartDashboard::GetNumber(kConveyorSpeed, 0));
+    SetKickerSpeed(frc::SmartDashboard::GetNumber(kKickerSpeed, 0));
 }
 
 bool Intake::GetSensor(Intake::SensorLocation location)
@@ -47,4 +51,19 @@ bool Intake::GetSensor(Intake::SensorLocation location)
         return m_securedPowercellSensor.Get();
     }
     return false;
+}
+
+void Intake::SetIntakeSpeed(double speed)
+{
+    m_intakePrimary.Set(speed);
+}
+
+void Intake::SetConveyorSpeed(double speed)
+{
+    m_conveyorPrimary.Set(speed);
+}
+
+void Intake::SetKickerSpeed(double speed)
+{
+    m_kickerMotor.Set(speed);
 }

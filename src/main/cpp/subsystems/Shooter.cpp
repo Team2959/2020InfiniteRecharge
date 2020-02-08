@@ -28,8 +28,6 @@ void Shooter::SmartDashboardInit()
     // Shooter
     frc::SmartDashboard::PutNumber(kSpeed, 0);
     frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
-    // Kicker
-    frc::SmartDashboard::PutNumber(kKickerSpeed, 0);
     // Angle
     frc::SmartDashboard::PutBoolean(kAngle, false);
 }
@@ -73,7 +71,6 @@ void Shooter::OnTeleOpPeriodicDebug()
 {
     if (m_debugEnable == false) return;
 
-    SetKickerSpeed(frc::SmartDashboard::GetNumber(kKickerSpeed, 0));
     SetAngle(frc::SmartDashboard::GetBoolean(kAngle, false));
     SetSpeed(frc::SmartDashboard::GetNumber(kTargetSpeed, 0));
 }
@@ -94,9 +91,4 @@ double Shooter::GetSpeed()
 void Shooter::SetAngle(bool closeShot)
 {
     m_angleAdjuster.Set(closeShot);
-}
-
-void Shooter::SetKickerSpeed(double speed)
-{
-    m_kickerMotor.Set(speed);
 }

@@ -14,8 +14,6 @@ private:
     rev::CANEncoder m_encoder {m_primary};
     rev::CANPIDController m_PID {m_primary};
 
-    ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_kickerMotor {kShooterKicker};
-
     frc::Solenoid m_angleAdjuster {kShooterPnuematicsAngleAdjuster};
 
     // Smart Dashboard
@@ -28,7 +26,6 @@ private:
     const std::string kSpeed = kName + "Speed";
     const std::string kTargetSpeed = kName + "Target Speed";
     const std::string kAngle = kName + "Angle";
-    const std::string kKickerSpeed = kName + "Kicker Speed";
 
     bool m_debugEnable;
 
@@ -44,5 +41,4 @@ public:
     void SetSpeed(double speed);
     double GetSpeed();
     void SetAngle(bool closeShot);
-    void SetKickerSpeed(double speed);
 };

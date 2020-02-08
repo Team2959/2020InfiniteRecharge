@@ -16,6 +16,12 @@ const int kDrivetrainRightFollower2 = 6;
 // Shooter SparkMax CAN IDs ===================================
 const int kShooterPrimary = 7;
 const int kShooterFollower = 8;
+// Intake Picker-upper Victor SPX Motor's ports 
+const int kIntakePrimary = 10;
+const int kIntakeFollower = 11;
+// Conveyor Victor SPX Motor's ports 
+const int kConveyorPrimary = 12;
+const int kConveyorFollower = 13;
 // Shooter TalonSRX CAN IDs ===================================
 const int kShooterKicker = 14;
 
@@ -26,11 +32,3 @@ const int kShooterPnuematicsAngleAdjuster = 0;
 const int kEndSensor = 0;
 const int kNewPowercellSensor = 1;
 const int kSecuredPowercellSensor = 2;
-
-// Intake Picker-uper Motor's ports 
-const int kIntakeMotor1 = 10;
-const int kIntakeMotor2 = 11;
-
-const int kConveyorMotor1 = 12;
-const int kConveyorMotor2 = 13;
-
