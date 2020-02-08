@@ -50,7 +50,7 @@ private:
   bool m_debugEnable;
 
 public:
-  static constexpr double kMaxVelocity = 5676.0;
+  static constexpr double kMaxVelocity = 4500; // 5676.0;
 
   Drivetrain();
 

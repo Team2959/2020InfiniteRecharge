@@ -18,7 +18,7 @@ const int kShooterPrimary = 7;
 const int kShooterFollower = 8;
 // Intake Picker-upper Victor SPX Motor's ports 
 const int kIntakePrimary = 10;
-const int kIntakeFollower = 11;
+const int kIntakeKicker = 11;
 // Conveyor Victor SPX Motor's ports 
 const int kConveyorPrimary = 12;
 const int kConveyorFollower = 13;

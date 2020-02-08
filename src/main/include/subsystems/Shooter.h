@@ -32,6 +32,7 @@ private:
     void SmartDashboardInit();
 
 public:
+    static constexpr double kMaxVelocity = 4500.0;
     Shooter();
 
     void OnRobotInit();

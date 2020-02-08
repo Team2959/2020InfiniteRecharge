@@ -55,9 +55,9 @@ void Robot::TeleopPeriodic()
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
 
 // using the throttle for now
-    m_shooter.SetSpeed(m_leftDriverJoystick.GetThrottle());
+    m_shooter.SetSpeed((m_leftDriverJoystick.GetThrottle()+1)*(Shooter::kMaxVelocity/2.0));
 
-    if(m_copilotHoodAngleButton.Get())
+    if(m_leftDriverJoystick.GetRawButtonPressed(1))
     {
         m_shooter.SetAngle(!m_shooter.GetAngle());
     }
@@ -67,17 +67,16 @@ void Robot::TeleopPeriodic()
     //     m_intake.SetKickerSpeed(0);
     // }
 
-    if(m_driverFireTrigger.Get())
+    if(m_rightDriverJoystick.GetTriggerReleased())
+    {
+        m_intake.SetKickerSpeed(0);
+        m_intake.SetConveyorSpeed(0);
+    }
+    else if(m_rightDriverJoystick.GetTriggerPressed())
     {
         m_intake.SetIntakeSpeed(0);
         m_intake.SetKickerSpeed(1);
         m_intake.SetConveyorSpeed(1);
-        m_justWasShooting = true;
-    }
-    else if(m_justWasShooting)
-    {
-        m_intake.SetKickerSpeed(0);
-        m_justWasShooting = false;
     }
 
     if(m_skips % 51)
