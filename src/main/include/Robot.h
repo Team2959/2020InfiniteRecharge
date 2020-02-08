@@ -11,8 +11,6 @@
 
 #include <frc/TimedRobot.h>
 
-#include <frc/buttons/JoystickButton.h>
-
 #include <frc/Joystick.h>
 #include <utility/Conditioning.h>
 
@@ -30,9 +28,6 @@ private:
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};
   cwtech::UniformConditioning m_conditioningDriverJoysticks {};
-  frc::JoystickButton m_driverFireTrigger{&m_rightDriverJoystick, 0};
-
-  frc::JoystickButton m_copilotHoodAngleButton{&m_leftDriverJoystick, 0};
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};

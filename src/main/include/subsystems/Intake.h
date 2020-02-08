@@ -2,7 +2,6 @@
 
 #include <frc/DigitalInput.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
-#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
 
 #include <RobotMap.h>
 
