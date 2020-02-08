@@ -79,7 +79,7 @@ void Shooter::SetSpeed(double speed)
 {
     if (speed >= 0) 
     {
-        m_PID.SetReference(speed, rev::ControlType::kVelocity);
+        m_PID.SetReference(-speed, rev::ControlType::kVelocity);
     }
 }
 

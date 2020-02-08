@@ -55,7 +55,7 @@ void Robot::TeleopPeriodic()
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
 
     // using the throttle for now
-    m_shooter.SetSpeed((m_rightDriverJoystick.GetThrottle()+1)*(Shooter::kMaxVelocity/2.0));
+    //m_shooter.SetSpeed((m_rightDriverJoystick.GetThrottle()+1)*(Shooter::kMaxVelocity/2.0));
 
     if(m_leftDriverJoystick.GetRawButtonPressed(1))
     {
