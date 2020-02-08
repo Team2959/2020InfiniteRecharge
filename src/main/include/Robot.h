@@ -15,8 +15,8 @@
 #include <utility/Conditioning.h>
 
 #include <subsystems/Drivetrain.h>
+#include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
-
 
 class Robot : public frc::TimedRobot
 {
@@ -29,7 +29,9 @@ private:
   frc::Joystick m_rightDriverJoystick {1};
   cwtech::UniformConditioning m_conditioningDriverJoysticks {};
 
+  // Drivetrain controller
   Drivetrain m_drivetrain {};
+  Intake m_intake {};
   Shooter m_shooter {};
 
 public:

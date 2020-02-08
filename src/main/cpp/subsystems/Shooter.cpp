@@ -66,24 +66,16 @@ void Shooter::OnRobotPeriodic()
         m_PID.SetIZone(myIZone);
     }
 
-    auto currentKickerSpeed = m_kickerMotor.Get();
-    auto myKickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, currentKickerSpeed);
-    if(fabs(myKickerSpeed - currentKickerSpeed) > kCloseToSameValue)
-    {
-        SetKickerSpeed(myKickerSpeed);
-    }
-
-    auto currentAngle = m_angleAdjuster.Get();
-    auto myAngle = frc::SmartDashboard::GetBoolean(kAngle, currentAngle);
-    if(currentAngle != myAngle)
-    {
-        SetAngle(myAngle);
-    }
-
     frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
+}
 
-    auto myTargetSpeed = frc::SmartDashboard::GetNumber(kTargetSpeed, 0);
-    SetSpeed(myTargetSpeed);
+void Shooter::OnTeleOpPeriodicDebug()
+{
+    if (m_debugEnable == false) return;
+
+    SetKickerSpeed(frc::SmartDashboard::GetNumber(kKickerSpeed, 0));
+    SetAngle(frc::SmartDashboard::GetBoolean(kAngle, false));
+    SetSpeed(frc::SmartDashboard::GetNumber(kTargetSpeed, 0));
 }
 
 void Shooter::SetSpeed(double speed)

@@ -14,6 +14,7 @@
 void Robot::RobotInit() 
 {
     m_drivetrain.InitalShowToSmartDashboard();
+    m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
 
     m_conditioningDriverJoysticks.SetDeadband(0.05);
@@ -27,11 +28,15 @@ void Robot::RobotPeriodic()
         // update PID values from the SmartDashboard
         m_drivetrain.UpdateFromSmartDashboard();
     }
-
     if(m_skips % 51)
     {
         // update PID values from the SmartDashboard
         m_shooter.OnRobotPeriodic();
+    }
+    if(m_skips % 53)
+    {
+        // update PID values from the SmartDashboard
+        m_intake.OnRobotPeriodic();
     }
 
     // Increment the m_skips variable for counting
@@ -48,6 +53,15 @@ void Robot::TeleopPeriodic()
 {
     m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
+
+    if(m_skips % 51)
+    {
+        m_shooter.OnTeleOpPeriodicDebug();
+    }
+    if(m_skips % 53)
+    {
+        m_intake.OnTeleOpPeriodicDebug();
+    }
 }
 
 void Robot::TestPeriodic() {}

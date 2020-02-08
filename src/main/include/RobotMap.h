@@ -22,3 +22,15 @@ const int kShooterKicker = 14;
 // Pnuematics Control Module
 const int kShooterPnuematicsAngleAdjuster = 0;
 
+// Intake Sensor Digital IO ports
+const int kEndSensor = 0;
+const int kNewPowercellSensor = 1;
+const int kSecuredPowercellSensor = 2;
+
+// Intake Picker-uper Motor's ports 
+const int kIntakeMotor1 = 10;
+const int kIntakeMotor2 = 11;
+
+const int kConveyorMotor1 = 12;
+const int kConveyorMotor2 = 13;
+
