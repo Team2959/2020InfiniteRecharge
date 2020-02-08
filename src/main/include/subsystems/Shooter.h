@@ -20,7 +20,7 @@ private:
 
     // Smart Dashboard
     const std::string kName = "Shooter: ";
-    const std::string kDebug = "Debug";
+    const std::string kDebug = kName + "Debug";
     const std::string kPGain = kName + "P Gain";
     const std::string kIGain = kName + "I Gain";
     const std::string kFF = kName + "Feed Forward";
