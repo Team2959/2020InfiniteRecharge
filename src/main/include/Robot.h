@@ -34,6 +34,8 @@ private:
 
   frc::JoystickButton m_copilotHoodAngleButton{&m_leftDriverJoystick, 0};
 
+  bool m_justWasShooting = false;
+
   // Drivetrain controller
   Drivetrain m_drivetrain {};
   Intake m_intake {};
