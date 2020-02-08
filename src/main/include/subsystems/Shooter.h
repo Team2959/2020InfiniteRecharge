@@ -41,4 +41,5 @@ public:
     void SetSpeed(double speed);
     double GetSpeed();
     void SetAngle(bool closeShot);
+    bool GetAngle();
 };

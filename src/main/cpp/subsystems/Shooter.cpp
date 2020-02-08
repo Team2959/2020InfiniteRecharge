@@ -92,3 +92,8 @@ void Shooter::SetAngle(bool closeShot)
 {
     m_angleAdjuster.Set(closeShot);
 }
+
+bool Shooter::GetAngle()
+{
+    return m_angleAdjuster.Get();
+}

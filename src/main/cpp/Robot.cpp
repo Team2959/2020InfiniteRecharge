@@ -54,6 +54,27 @@ void Robot::TeleopPeriodic()
     m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
 
+    m_shooter.SetSpeed(m_leftDriverJoystick.GetThrottle());
+
+    if(m_copilotHoodAngleButton.Get())
+    {
+        m_shooter.SetAngle(!m_shooter.GetAngle());
+    }
+
+    if(m_intake.GetSensor(Intake::SensorLocation::End))
+    {
+        m_intake.SetIntakeSpeed(0);
+    }
+
+    if(m_driverFireTrigger.Get())
+    {
+        m_intake.SetIntakeSpeed(0);
+        m_shooter.SetKickerSpeed(1);
+    }
+    else
+    {
+    }
+
     if(m_skips % 51)
     {
         m_shooter.OnTeleOpPeriodicDebug();
