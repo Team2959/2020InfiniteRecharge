@@ -1,6 +1,10 @@
 #include <subsystems/Intake.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+Intake::Intake()
+{
+}
+
 void Intake::OnRobotInit()
 {
     m_intakeFollower.Follow(m_intakePrimary);
@@ -27,19 +31,8 @@ void Intake::OnTeleOpPeriodicDebug()
 {
     if (m_debugEnable == false) return;
 
-    auto currentIntakeSpeed = m_intakePrimary.Get();
-    auto myIntakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, currentIntakeSpeed);
-    if(fabs(myIntakeSpeed - currentIntakeSpeed) > kCloseToSameValue)
-    {
-        m_intakePrimary.Set(myIntakeSpeed);
-    }
-
-    auto currentConveyorSpeed = m_conveyorPrimary.Get();
-    auto myConveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, currentConveyorSpeed);
-    if(fabs(myConveyorSpeed - currentConveyorSpeed) > kCloseToSameValue)
-    {
-        m_conveyorPrimary.Set(myConveyorSpeed);
-    }
+    m_intakePrimary.Set(frc::SmartDashboard::GetNumber(kIntakeSpeed, 0));
+    m_conveyorPrimary.Set(frc::SmartDashboard::GetNumber(kConveyorSpeed, 0));
 }
 
 bool Intake::GetSensor(Intake::SensorLocation location)

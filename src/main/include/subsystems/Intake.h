@@ -37,6 +37,8 @@ public:
         SecuredPowercell
     };
 
+    Intake();
+
     void OnRobotInit();
     void OnRobotPeriodic();
     void OnTeleOpPeriodicDebug();
