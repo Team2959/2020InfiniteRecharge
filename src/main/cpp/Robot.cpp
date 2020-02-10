@@ -82,7 +82,7 @@ void Robot::TeleopPeriodic()
         m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
     }
-    else if(m_rightDriverJoystick.GetTriggerPressed())
+    else if(m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
         m_intake.SetIntakeSpeed(0);
         m_intake.SetKickerSpeed(1);

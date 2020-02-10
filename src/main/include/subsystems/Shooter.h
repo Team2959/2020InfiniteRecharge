@@ -26,6 +26,12 @@ private:
     const std::string kSpeed = kName + "Speed";
     const std::string kTargetSpeed = kName + "Target Speed";
     const std::string kAngle = kName + "Angle";
+    const std::string kCloseSpeed = kName + "Close Speed";
+
+    const double kCloseSpeedDefault = 200;
+
+    double m_closeSpeed;
+    double m_targetSpeed;
 
     bool m_debugEnable;
 
@@ -45,4 +51,6 @@ public:
     double GetSpeed();
     void SetAngle(bool closeShot);
     bool GetAngle();
+
+    bool CloseToSpeed();
 };

@@ -30,6 +30,8 @@ void Shooter::SmartDashboardInit()
     frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
     // Angle
     frc::SmartDashboard::PutBoolean(kAngle, false);
+    // Close Speed
+    frc::SmartDashboard::PutNumber(kCloseSpeed, kCloseSpeedDefault);
 }
 
 void Shooter::OnRobotPeriodic()
@@ -65,6 +67,9 @@ void Shooter::OnRobotPeriodic()
     {
         m_PID.SetIZone(myIZone);
     }
+
+    // Close Speed
+    m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 }
 
 void Shooter::OnTeleOpPeriodicDebug()
@@ -81,6 +86,7 @@ void Shooter::SetSpeed(double speed)
     speed = std::fmax(speed, 0);
     speed = std::fmin(speed, kMaxVelocity);
     m_PID.SetReference(-speed, rev::ControlType::kVelocity);
+    m_targetSpeed = -speed;
 }
 
 double Shooter::GetSpeed()
@@ -96,4 +102,9 @@ void Shooter::SetAngle(bool closeShot)
 bool Shooter::GetAngle()
 {
     return m_angleAdjuster.Get();
+}
+
+bool Shooter::CloseToSpeed()
+{
+    return std::fabs(GetSpeed() - m_targetSpeed) <= m_closeSpeed;
 }
