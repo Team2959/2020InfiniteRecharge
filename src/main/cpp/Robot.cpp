@@ -47,15 +47,25 @@ void Robot::AutonomousInit() {}
 
 void Robot::AutonomousPeriodic() {}
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit()
+{
+    // Remove for competition bot??, right now getting around trigger pressed and disabled mode
+    m_rightDriverJoystick.GetTriggerReleased();
+    m_rightDriverJoystick.GetTriggerPressed();
+    m_intake.SetIntakeSpeed(0);
+    m_intake.SetConveyorSpeed(0);
+    m_intake.SetKickerSpeed(0);
+}
 
 void Robot::TeleopPeriodic() 
 {
-    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
-                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
+    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()) * Drivetrain::kMaxVelocity,
+                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()) * Drivetrain::kMaxVelocity);
 
     // using the throttle for now
-    //m_shooter.SetSpeed((m_rightDriverJoystick.GetThrottle()+1)*(Shooter::kMaxVelocity/2.0));
+    auto targetSpeed = (m_rightDriverJoystick.GetThrottle() + 1) * Shooter::kHalfMaxVelocity;
+    frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
+    m_shooter.SetSpeed(targetSpeed);
 
     if(m_leftDriverJoystick.GetRawButtonPressed(1))
     {

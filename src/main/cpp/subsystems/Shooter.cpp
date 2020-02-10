@@ -34,6 +34,8 @@ void Shooter::SmartDashboardInit()
 
 void Shooter::OnRobotPeriodic()
 {
+    frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
+
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
 
@@ -63,8 +65,6 @@ void Shooter::OnRobotPeriodic()
     {
         m_PID.SetIZone(myIZone);
     }
-
-    frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
 }
 
 void Shooter::OnTeleOpPeriodicDebug()
@@ -72,15 +72,15 @@ void Shooter::OnTeleOpPeriodicDebug()
     if (m_debugEnable == false) return;
 
     SetAngle(frc::SmartDashboard::GetBoolean(kAngle, false));
-    SetSpeed(frc::SmartDashboard::GetNumber(kTargetSpeed, 0));
+    // don't fight the throttle in Robot.cpp!
+    // SetSpeed(frc::SmartDashboard::GetNumber(kTargetSpeed, 0));
 }
 
 void Shooter::SetSpeed(double speed)
 {
-    if (speed >= 0) 
-    {
-        m_PID.SetReference(-speed, rev::ControlType::kVelocity);
-    }
+    speed = std::fmax(speed, 0);
+    speed = std::fmin(speed, kMaxVelocity);
+    m_PID.SetReference(-speed, rev::ControlType::kVelocity);
 }
 
 double Shooter::GetSpeed()

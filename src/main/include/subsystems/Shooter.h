@@ -33,6 +33,8 @@ private:
 
 public:
     static constexpr double kMaxVelocity = 4500.0;
+    static constexpr double kHalfMaxVelocity = 4500.0 / 2.0;
+
     Shooter();
 
     void OnRobotInit();
