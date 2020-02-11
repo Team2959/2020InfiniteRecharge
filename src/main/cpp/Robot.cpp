@@ -23,17 +23,17 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic() 
 {
-    if(m_skips % 50)
+    if (m_skips % 50)
     {
         // update PID values from the SmartDashboard
         m_drivetrain.UpdateFromSmartDashboard();
     }
-    if(m_skips % 51)
+    if (m_skips % 51)
     {
         // update PID values from the SmartDashboard
         m_shooter.OnRobotPeriodic();
     }
-    if(m_skips % 53)
+    if (m_skips % 53)
     {
         // update PID values from the SmartDashboard
         m_intake.OnRobotPeriodic();
@@ -67,7 +67,7 @@ void Robot::TeleopPeriodic()
     frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
     m_shooter.SetSpeed(targetSpeed);
 
-    if(m_leftDriverJoystick.GetRawButtonPressed(1))
+    if (m_leftDriverJoystick.GetRawButtonPressed(1))
     {
         m_shooter.SetAngle(!m_shooter.GetAngle());
     }
@@ -77,23 +77,25 @@ void Robot::TeleopPeriodic()
     //     m_intake.SetKickerSpeed(0);
     // }
 
-    if(m_rightDriverJoystick.GetTriggerReleased())
+    if (m_rightDriverJoystick.GetTriggerReleased())
     {
         m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
     }
-    else if(m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
+    else if (m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
         m_intake.SetIntakeSpeed(0);
-        m_intake.SetKickerSpeed(1);
-        m_intake.SetConveyorSpeed(1);
+        m_intake.SetConveyorSpeed(frc::SmartDashboard::GetNumber("Conveyor: Speed", 0.9));
+        m_intake.SetKickerSpeed(frc::SmartDashboard::GetNumber("Conveyor: Kicker Speed", 0.9));
+        // m_intake.SetKickerSpeed(1);
+        // m_intake.SetConveyorSpeed(1);
     }
 
-    if(m_skips % 51)
+    if (m_skips % 51)
     {
         m_shooter.OnTeleOpPeriodicDebug();
     }
-    if(m_skips % 53)
+    if (m_skips % 53)
     {
         m_intake.OnTeleOpPeriodicDebug();
     }

@@ -27,11 +27,12 @@ private:
     const std::string kTargetSpeed = kName + "Target Speed";
     const std::string kAngle = kName + "Angle";
     const std::string kCloseSpeed = kName + "Close Speed";
+    const std::string kAppliedOutput = kName + "Applied Output";
 
     const double kCloseSpeedDefault = 200;
 
-    double m_closeSpeed;
-    double m_targetSpeed;
+    double m_closeSpeed = kCloseSpeedDefault;
+    double m_targetSpeed = 0;
 
     bool m_debugEnable;
 

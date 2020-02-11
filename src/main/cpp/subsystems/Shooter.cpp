@@ -32,11 +32,16 @@ void Shooter::SmartDashboardInit()
     frc::SmartDashboard::PutBoolean(kAngle, false);
     // Close Speed
     frc::SmartDashboard::PutNumber(kCloseSpeed, kCloseSpeedDefault);
+    // Applied Output
+    frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
 }
 
 void Shooter::OnRobotPeriodic()
 {
     frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
+    frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
+    // Close Speed
+    m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
@@ -67,9 +72,6 @@ void Shooter::OnRobotPeriodic()
     {
         m_PID.SetIZone(myIZone);
     }
-
-    // Close Speed
-    m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 }
 
 void Shooter::OnTeleOpPeriodicDebug()
@@ -84,9 +86,8 @@ void Shooter::OnTeleOpPeriodicDebug()
 void Shooter::SetSpeed(double speed)
 {
     speed = std::fmax(speed, 0);
-    speed = std::fmin(speed, kMaxVelocity);
-    m_PID.SetReference(-speed, rev::ControlType::kVelocity);
-    m_targetSpeed = -speed;
+    m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
+    m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
 }
 
 double Shooter::GetSpeed()
