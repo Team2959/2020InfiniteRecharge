@@ -14,8 +14,7 @@ private:
     frc::DigitalInput m_securedPowercellSensor {kSecuredPowercellSensor};
 
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kIntakeKicker};
-
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorPrimary};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorFollower};
     
