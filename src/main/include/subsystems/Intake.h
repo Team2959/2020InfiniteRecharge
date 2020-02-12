@@ -8,7 +8,8 @@
 class Intake
 {
 private:
-    frc::DigitalInput m_endSensor {kEndSensor};
+    frc::DigitalInput m_startKickerSensor {kStartKickerSensor}; 
+    frc::DigitalInput m_stopKickerSensor {kStopKickerSensor};
     frc::DigitalInput m_newPowercellSensor {kNewPowercellSensor};
     frc::DigitalInput m_securedPowercellSensor {kSecuredPowercellSensor};
 
@@ -33,7 +34,8 @@ private:
 public:
     enum class SensorLocation
     {
-        End,
+        StartKicker,
+        StopKicker,
         NewPowercell,
         SecuredPowercell
     };
@@ -47,5 +49,7 @@ public:
     void SetIntakeSpeed(double speed);
     void SetConveyorSpeed(double speed);
     void SetKickerSpeed(double speed);
+
     bool GetSensor(SensorLocation location);
+    bool GetSensorPressed(SensorLocation location);
 };

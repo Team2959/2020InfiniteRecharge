@@ -29,6 +29,7 @@ const int kShooterKicker = 14;
 const int kShooterPnuematicsAngleAdjuster = 0;
 
 // Intake Sensor Digital IO ports
-const int kEndSensor = 0;
-const int kNewPowercellSensor = 1;
-const int kSecuredPowercellSensor = 2;
+const int kStartKickerSensor = 0;
+const int kStopKickerSensor = 1;
+const int kNewPowercellSensor = 2;
+const int kSecuredPowercellSensor = 3;
