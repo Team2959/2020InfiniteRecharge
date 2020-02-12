@@ -47,7 +47,24 @@ void Robot::TeleopPeriodic()
 {
     m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
+    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell))
+    {
+        m_intake.SetConveyorSpeed(1);
+        if(m_intake.GetSensor(Intake::SensorLocation::StartKicker) && 
+           !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
+        {
+            m_intake.SetKickerSpeed(1);
+        }
+    }
 
+    // GetSensorPressed ins't completed
+    if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
+    {
+        m_intake.SetKickerSpeed(0);
+        m_intake.SetConveyorSpeed(0);
+        m_powercellsCounted++;
+        if(m_powercellsCounted >= 5) m_intake.SetIntakeSpeed(0);
+    }
     if(m_skips % 53)
     {
         m_intake.OnTeleOpPeriodicDebug();

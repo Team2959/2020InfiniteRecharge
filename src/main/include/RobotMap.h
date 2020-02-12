@@ -2,9 +2,9 @@
 
 // Constants
 const double kCloseToSameValue = 0.0000001;
+const double kBasicNEOMaxVelocity = 5676.0;
 
-// Drivetrain CAN IDs =================================
-
+// Drivetrain SparkMax CAN IDs =================================
 // Left
 const int kDrivetrainLeftPrimary = 1;
 const int kDrivetrainLeftFollower1 = 2;
@@ -13,16 +13,22 @@ const int kDrivetrainLeftFollower2 = 3;
 const int kDrivetrainRightPrimary = 4;
 const int kDrivetrainRightFollower1 = 5;
 const int kDrivetrainRightFollower2 = 6;
+// Shooter SparkMax CAN IDs ===================================
+const int kShooterPrimary = 7;
+const int kShooterFollower = 8;
+// Intake Picker-upper Victor SPX Motor's port
+const int kIntakePrimary = 10;
+// Kicker Victor SPX Motor's port
+const int kKicker = 11;
+// Conveyor Victor SPX Motor's ports
+const int kConveyorPrimary = 12;
+const int kConveyorFollower = 13;
+
+// Pnuematics Control Module
+const int kShooterPnuematicsAngleAdjuster = 0;
 
 // Intake Sensor Digital IO ports
-const int kEndSensor = 0;
-const int kNewPowercellSensor = 1;
-const int kSecuredPowercellSensor = 2;
-
-// Intake Picker-uper Motor's ports 
-const int kIntakeMotor1 = 10;
-const int kIntakeMotor2 = 11;
-
-const int kConveyorMotor1 = 12;
-const int kConveyorMotor2 = 13;
-
+const int kStartKickerSensor = 0;
+const int kStopKickerSensor = 1;
+const int kNewPowercellSensor = 2;
+const int kSecuredPowercellSensor = 3;

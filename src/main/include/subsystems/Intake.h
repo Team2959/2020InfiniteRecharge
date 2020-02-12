@@ -8,22 +8,23 @@
 class Intake
 {
 private:
-    frc::DigitalInput m_endSensor {kEndSensor};
+    frc::DigitalInput m_startKickerSensor {kStartKickerSensor}; 
+    frc::DigitalInput m_stopKickerSensor {kStopKickerSensor};
     frc::DigitalInput m_newPowercellSensor {kNewPowercellSensor};
     frc::DigitalInput m_securedPowercellSensor {kSecuredPowercellSensor};
 
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakeMotor1};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakeFollower {kIntakeMotor2};
-
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorMotor1};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorMotor2};
-
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorPrimary};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorFollower};
+    
     // Smart Dashboard
     const std::string kDebug = "Intake/Conveyor: Debug";
     const std::string kIntakeName = "Intake: ";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
     const std::string kConveyorName = "Conveyor: ";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
+    const std::string kKickerSpeed = kConveyorName + "Kicker Speed";
 
     bool m_debugEnable;
 
@@ -32,7 +33,8 @@ private:
 public:
     enum class SensorLocation
     {
-        End,
+        StartKicker,
+        StopKicker,
         NewPowercell,
         SecuredPowercell
     };
@@ -43,5 +45,10 @@ public:
     void OnRobotPeriodic();
     void OnTeleOpPeriodicDebug();
 
+    void SetIntakeSpeed(double speed);
+    void SetConveyorSpeed(double speed);
+    void SetKickerSpeed(double speed);
+
     bool GetSensor(SensorLocation location);
+    bool GetSensorPressed(SensorLocation location);
 };
