@@ -48,37 +48,20 @@ void Robot::TeleopPeriodic()
     m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY())*Drivetrain::kMaxVelocity,
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY())*Drivetrain::kMaxVelocity);
 
-    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell))
+    if (m_rightDriverJoystick.GetRawButtonPressed(2))
     {
-        m_intake.SetConveyorSpeed(1);
-        if(m_intake.GetSensor(Intake::SensorLocation::StartKicker) && 
-           !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
+        if (m_intake.IsIntakeRunning())
         {
-            m_intake.SetKickerSpeed(1);
+            m_intake.SetIntakeSpeed(0);
+            m_intake.SetConveyorSpeed(0);
+            m_intake.SetKickerSpeed(0);
         }
-    }
-
-    // GetSensorPressed ins't completed
-    if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
-    {
-        m_intake.SetKickerSpeed(0);
-        m_intake.SetConveyorSpeed(0);
-        m_powercellsCounted++;
-        if(m_powercellsCounted >= 5) m_intake.SetIntakeSpeed(0);
-    }
-
-    if(m_rightDriverJoystick.GetRawButtonPressed(2))
-    {
-        m_intake.SetIntakeSpeed(frc::SmartDashboard::GetNumber(m_intake.kIntakeSpeed, 0));
-    }
-    if(m_rightDriverJoystick.GetRawButtonReleased(2))
-    {
-        m_intake.SetIntakeSpeed(0);
-    }
-
-    if(m_skips % 53)
-    {
-        m_intake.OnTeleOpPeriodicDebug();
+        else
+        {
+            m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
+            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+        }
     }
 }
 
@@ -103,7 +86,7 @@ void Robot::DoCurrentState()
     else if(m_currentState == States::Climbing) ClimbingPeriodic();
 }
 
-void Robot::TravelingInit() 
+void Robot::TravelingInit()
 {
     m_intake.SetIntakeSpeed(0);
     m_intake.SetKickerSpeed(0);
@@ -115,7 +98,6 @@ void Robot::TravelingInit()
 // Driving is not included in this because that will be just inside TeleopPeriodic
 void Robot::TravelingPeriodic() 
 {
-
 }
 
 void Robot::FiringInit() 
@@ -124,27 +106,22 @@ void Robot::FiringInit()
 
 void Robot::FiringPeriodic() 
 {
-
 }
 
 void Robot::ClimbingInit() 
 {
-    
 }
 
 void Robot::ClimbingPeriodic()
 {
-
 }
 
 void Robot::ColorWheelInit()
 {
-
 }
 
 void Robot::ColorWheelPeriodic()
 {
-
 }
 
 void Robot::LoadingInit()
@@ -186,9 +163,6 @@ void Robot::LoadingPeriodic()
     {
         m_intake.SetIntakeSpeed(0);
     }
-    
-    
-    
 }
 
 #ifndef RUNNING_FRC_TESTS

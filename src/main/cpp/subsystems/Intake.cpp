@@ -1,41 +1,26 @@
 #include <subsystems/Intake.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-Intake::Intake()
-{
-}
-
 void Intake::OnRobotInit()
-{
-//    m_conveyorFollower.Follow(m_conveyorPrimary);
-
-    SmartDashboardInit();
-}
-
-void Intake::SmartDashboardInit()
 {
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
     // Intake
-    frc::SmartDashboard::PutNumber(kIntakeSpeed, 0);
+    frc::SmartDashboard::PutNumber(kIntakeSpeed, kFullIntakeSpeed);
     // Conveyor
-    frc::SmartDashboard::PutNumber(kConveyorSpeed, 0);
+    frc::SmartDashboard::PutNumber(kConveyorSpeed, kFullConveyorSpeed);
     // Kicker
-    frc::SmartDashboard::PutNumber(kKickerSpeed, 0);
+    frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
 }
 
 void Intake::OnRobotPeriodic()
 {
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
-}
 
-void Intake::OnTeleOpPeriodicDebug()
-{
     if (m_debugEnable == false) return;
-
-    SetIntakeSpeed(frc::SmartDashboard::GetNumber(kIntakeSpeed, 0));
-    SetConveyorSpeed(frc::SmartDashboard::GetNumber(kConveyorSpeed, 0));
-    SetKickerSpeed(frc::SmartDashboard::GetNumber(kKickerSpeed, 0));
+    m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
+    m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
+    m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
 }
 
 bool Intake::GetSensor(Intake::SensorLocation location)
@@ -74,4 +59,24 @@ void Intake::SetConveyorSpeed(double speed)
 void Intake::SetKickerSpeed(double speed)
 {
     m_kickerMotor.Set(speed);
+}
+
+double Intake::GetIntakeFullSpeed() const
+{
+    return m_intakeSpeed;
+}
+
+double Intake::GetConveyorFullSpeed() const
+{
+    return m_conveyorSpeed;
+}
+
+double Intake::GetKickerFullSpeed() const
+{
+    return m_kickerSpeed;
+}
+
+bool Intake::IsIntakeRunning() const
+{
+    return m_intakePrimary.Get() != 0.0;
 }

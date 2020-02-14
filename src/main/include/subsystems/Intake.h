@@ -16,7 +16,6 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorPrimary};
-    // ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorFollower};
     
     // Smart Dashboard
     const std::string kDebug = "Intake/Conveyor: Debug";
@@ -24,14 +23,18 @@ private:
     const std::string kConveyorName = "Conveyor: ";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
     const std::string kKickerSpeed = kConveyorName + "Kicker Speed";
+    const std::string kIntakeSpeed = kIntakeName + "Speed";
 
-    bool m_debugEnable;
+    bool m_debugEnable = false;
 
-    void SmartDashboardInit();
+    const double kFullIntakeSpeed = 0.5;
+    const double kFullConveyorSpeed = 0.9;
+    const double kFullKickerSpeed = 0.9;
+    double m_intakeSpeed = kFullIntakeSpeed;
+    double m_conveyorSpeed = kFullConveyorSpeed;
+    double m_kickerSpeed = kFullKickerSpeed;
 
 public:
-    // temporary  moving of this value to the public for debug
-    const std::string kIntakeSpeed = kIntakeName + "Speed";
     enum class SensorLocation
     {
         StartKicker,
@@ -40,11 +43,13 @@ public:
         SecuredPowercell
     };
 
-    Intake();
-
     void OnRobotInit();
     void OnRobotPeriodic();
-    void OnTeleOpPeriodicDebug();
+
+    double GetIntakeFullSpeed() const;
+    double GetConveyorFullSpeed() const;
+    double GetKickerFullSpeed() const;
+    bool IsIntakeRunning() const;
 
     void SetIntakeSpeed(double speed);
     void SetConveyorSpeed(double speed);
