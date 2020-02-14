@@ -16,7 +16,7 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorPrimary};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorFollower};
+    // ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorFollower {kConveyorFollower};
     
     // Smart Dashboard
     const std::string kDebug = "Intake/Conveyor: Debug";

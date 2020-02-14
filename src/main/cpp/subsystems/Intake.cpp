@@ -7,7 +7,7 @@ Intake::Intake()
 
 void Intake::OnRobotInit()
 {
-    m_conveyorFollower.Follow(m_conveyorPrimary);
+//    m_conveyorFollower.Follow(m_conveyorPrimary);
 
     SmartDashboardInit();
 }
