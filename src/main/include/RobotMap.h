@@ -21,8 +21,7 @@ const int kIntakePrimary = 10;
 // Kicker Victor SPX Motor's port
 const int kKicker = 11;
 // Conveyor Victor SPX Motor's ports
-const int kConveyorPrimary = 12;
-const int kConveyorFollower = 13;
+const int kConveyorPrimary = 13;
 
 // Pnuematics Control Module
 const int kShooterPnuematicsAngleAdjuster = 0;

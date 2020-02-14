@@ -66,6 +66,16 @@ void Robot::TeleopPeriodic()
         m_powercellsCounted++;
         if(m_powercellsCounted >= 5) m_intake.SetIntakeSpeed(0);
     }
+
+    if(m_rightDriverJoystick.GetRawButtonPressed(2))
+    {
+        m_intake.SetIntakeSpeed(frc::SmartDashboard::GetNumber(m_intake.kIntakeSpeed, 0));
+    }
+    if(m_rightDriverJoystick.GetRawButtonReleased(2))
+    {
+        m_intake.SetIntakeSpeed(0);
+    }
+
     if(m_skips % 53)
     {
         m_intake.OnTeleOpPeriodicDebug();

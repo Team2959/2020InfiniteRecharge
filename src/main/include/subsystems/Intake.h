@@ -21,7 +21,6 @@ private:
     // Smart Dashboard
     const std::string kDebug = "Intake/Conveyor: Debug";
     const std::string kIntakeName = "Intake: ";
-    const std::string kIntakeSpeed = kIntakeName + "Speed";
     const std::string kConveyorName = "Conveyor: ";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
     const std::string kKickerSpeed = kConveyorName + "Kicker Speed";
@@ -31,6 +30,8 @@ private:
     void SmartDashboardInit();
 
 public:
+    // temporary  moving of this value to the public for debug
+    const std::string kIntakeSpeed = kIntakeName + "Speed";
     enum class SensorLocation
     {
         StartKicker,
