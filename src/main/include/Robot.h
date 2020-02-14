@@ -34,6 +34,31 @@ private:
   Drivetrain m_drivetrain {};
   Intake m_intake {};
 
+  enum class States
+  {
+    Traveling,
+    Firing,
+    Climbing,
+    ColorWheel,
+    Loading,
+  };
+
+  States m_currentState;
+
+  void SwitchState(States state);
+  void DoCurrentState();
+
+  void TravelingInit();
+  void TravelingPeriodic();
+  void FiringInit();
+  void FiringPeriodic();
+  void ClimbingInit();
+  void ClimbingPeriodic();
+  void ColorWheelInit();
+  void ColorWheelPeriodic();
+  void LoadingInit();
+  void LoadingPeriodic();
+
 public:
   void RobotInit() override;
   void RobotPeriodic() override;
