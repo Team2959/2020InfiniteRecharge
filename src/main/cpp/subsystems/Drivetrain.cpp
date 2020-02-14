@@ -32,24 +32,31 @@ void Drivetrain::SetSpeeds(double left, double right)
 
 void Drivetrain::InitalShowToSmartDashboard()
 {
-    frc::SmartDashboard::PutNumber(kName + ": P Gain", m_leftPID.GetP());
-    frc::SmartDashboard::PutNumber(kName + ": I Gain", m_leftPID.GetI());
-    frc::SmartDashboard::PutNumber(kName + ": Feed Forward", m_leftPID.GetFF());
-    frc::SmartDashboard::PutNumber(kName + ": I Zone", m_leftPID.GetIZone());
+    m_leftPID.SetFF(0.0005);
+    // Debug Enable
+    frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
+    // PID
+    frc::SmartDashboard::PutNumber(kPGain, m_leftPID.GetP());
+    frc::SmartDashboard::PutNumber(kIGain, m_leftPID.GetI());
+    frc::SmartDashboard::PutNumber(kFF, m_leftPID.GetFF());
+    frc::SmartDashboard::PutNumber(kIZone, m_leftPID.GetIZone());
 }
 
 void Drivetrain::UpdateFromSmartDashboard()
 {    
+    m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+    if (m_debugEnable == false) return;
+
     // Get the values only once to optimize for speed
     auto currentP = m_leftPID.GetP();
     auto currentI = m_leftPID.GetI();
     auto currentFF = m_leftPID.GetFF();
     auto currentIZone = m_leftPID.GetIZone();
 
-    auto myP = frc::SmartDashboard::GetNumber(kName + ": P Gain", currentP);
-    auto myI = frc::SmartDashboard::GetNumber(kName + ": I Gain", currentI);
-    auto myFF = frc::SmartDashboard::GetNumber(kName + ": Feed Forward", currentFF);
-    auto myIZone = frc::SmartDashboard::GetNumber(kName + ": I Zone", currentIZone);
+    auto myP = frc::SmartDashboard::GetNumber(kPGain, currentP);
+    auto myI = frc::SmartDashboard::GetNumber(kIGain, currentI);
+    auto myFF = frc::SmartDashboard::GetNumber(kFF, currentFF);
+    auto myIZone = frc::SmartDashboard::GetNumber(kIZone, currentIZone);
     if(fabs(myP - currentP) > kCloseToSameValue)
     {
         m_rightPID.SetP(myP);
