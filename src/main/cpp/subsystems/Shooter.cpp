@@ -74,15 +74,6 @@ void Shooter::OnRobotPeriodic()
     }
 }
 
-void Shooter::OnTeleOpPeriodicDebug()
-{
-    if (m_debugEnable == false) return;
-
-    SetAngle(frc::SmartDashboard::GetBoolean(kAngle, false));
-    // don't fight the throttle in Robot.cpp!
-    // SetSpeed(frc::SmartDashboard::GetNumber(kTargetSpeed, 0));
-}
-
 void Shooter::SetSpeed(double speed)
 {
     speed = std::fmax(speed, 0);
