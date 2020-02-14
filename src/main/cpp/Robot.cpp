@@ -92,13 +92,122 @@ void Robot::TeleopPeriodic()
     {
         m_shooter.OnTeleOpPeriodicDebug();
     }
-    if (m_skips % 53)
+    if (m_rightDriverJoystick.GetRawButtonPressed(2))
     {
-        m_intake.OnTeleOpPeriodicDebug();
+        if (m_intake.IsIntakeRunning())
+        {
+            m_intake.SetIntakeSpeed(0);
+            m_intake.SetConveyorSpeed(0);
+            m_intake.SetKickerSpeed(0);
+        }
+        else
+        {
+            m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
+            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+        }
     }
 }
 
 void Robot::TestPeriodic() {}
+
+void Robot::SwitchState(Robot::States state)
+{
+    m_currentState = state;
+    if(m_currentState == States::Firing) FiringInit();
+    else if(m_currentState == States::ColorWheel) ColorWheelInit();
+    else if(m_currentState == States::Traveling) TravelingInit();
+    else if(m_currentState == States::Loading) LoadingInit();
+    else if(m_currentState == States::Climbing) ClimbingInit();
+}
+
+void Robot::DoCurrentState()
+{
+    if(m_currentState == States::Firing) FiringPeriodic();
+    else if(m_currentState == States::ColorWheel) ColorWheelPeriodic();
+    else if(m_currentState == States::Traveling) TravelingPeriodic();
+    else if(m_currentState == States::Loading) LoadingPeriodic();
+    else if(m_currentState == States::Climbing) ClimbingPeriodic();
+}
+
+void Robot::TravelingInit()
+{
+    m_intake.SetIntakeSpeed(0);
+    m_intake.SetKickerSpeed(0);
+    m_intake.SetConveyorSpeed(0);
+
+    // needs shooter still
+}
+
+// Driving is not included in this because that will be just inside TeleopPeriodic
+void Robot::TravelingPeriodic() 
+{
+}
+
+void Robot::FiringInit() 
+{
+}
+
+void Robot::FiringPeriodic() 
+{
+}
+
+void Robot::ClimbingInit() 
+{
+}
+
+void Robot::ClimbingPeriodic()
+{
+}
+
+void Robot::ColorWheelInit()
+{
+}
+
+void Robot::ColorWheelPeriodic()
+{
+}
+
+void Robot::LoadingInit()
+{
+    m_intake.SetConveyorSpeed(0);
+    m_intake.SetKickerSpeed(0);
+    m_intake.SetIntakeSpeed(1);
+}
+
+void Robot::LoadingPeriodic()
+{
+    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell) &&
+        !m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
+    {
+        m_intake.SetConveyorSpeed(1);
+    }
+    else
+    {
+        m_intake.SetConveyorSpeed(0);
+        m_powercellsCounted++;
+    }
+
+    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell) && 
+        m_intake.GetSensor(Intake::SensorLocation::StartKicker) &&
+        !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
+    {
+        m_intake.SetKickerSpeed(1);
+    }
+    else
+    {
+        m_intake.SetKickerSpeed(0);
+    }
+
+    if(m_powercellsCounted < 5)
+    {
+        m_intake.SetIntakeSpeed(1);
+    }
+    else
+    {
+        m_intake.SetIntakeSpeed(0);
+    }
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
