@@ -18,16 +18,12 @@
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
 
-#include <StateMachine.h>
-
 class Robot : public frc::TimedRobot
 {
 private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-
-  StateMachine m_stateMachine;
 
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
