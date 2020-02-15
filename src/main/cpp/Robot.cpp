@@ -52,6 +52,8 @@ void Robot::TeleopInit()
     // Remove for competition bot??, right now getting around trigger pressed and disabled mode
     m_rightDriverJoystick.GetTriggerReleased();
     m_rightDriverJoystick.GetTriggerPressed();
+    m_rightDriverJoystick.GetRawButtonPressed(2);
+    m_leftDriverJoystick.GetTriggerPressed();
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
@@ -67,7 +69,7 @@ void Robot::TeleopPeriodic()
     frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
     m_shooter.SetSpeed(targetSpeed);
 
-    if (m_leftDriverJoystick.GetRawButtonPressed(1))
+    if (m_leftDriverJoystick.GetTriggerPressed())
     {
         m_shooter.SetAngle(!m_shooter.GetAngle());
     }
@@ -75,23 +77,17 @@ void Robot::TeleopPeriodic()
     // When Firing Done
     if (m_rightDriverJoystick.GetTriggerReleased())
     {
-        m_intake.SetIntakeSpeed(1);
+        m_intake.SetIntakeSpeed(0);
         m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
     }
     else if (m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
         m_intake.SetIntakeSpeed(0);
-        m_intake.SetConveyorSpeed(frc::SmartDashboard::GetNumber("Conveyor: Speed", 0.9));
-        m_intake.SetKickerSpeed(frc::SmartDashboard::GetNumber("Conveyor: Kicker Speed", 0.9));
-        // m_intake.SetKickerSpeed(1);
-        // m_intake.SetConveyorSpeed(1);
+        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+        m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
     }
 
-    if(m_skips % 51)
-    {
-        m_shooter.OnTeleOpPeriodicDebug();
-    }
     if (m_rightDriverJoystick.GetRawButtonPressed(2))
     {
         if (m_intake.IsIntakeRunning())

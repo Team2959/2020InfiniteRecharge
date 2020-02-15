@@ -57,10 +57,6 @@ public:
     void SetConveyorSpeed(double speed);
     void SetKickerSpeed(double speed);
 
-    void SetIntakeSpeed(double speed);
-    void SetConveyorSpeed(double speed);
-    void SetKickerSpeed(double speed);
-
     bool GetSensor(SensorLocation location);
     bool GetSensorPressed(SensorLocation location);
 };

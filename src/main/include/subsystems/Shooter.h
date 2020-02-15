@@ -46,7 +46,6 @@ public:
 
     void OnRobotInit();
     void OnRobotPeriodic();
-    void OnTeleOpPeriodicDebug();
 
     void SetSpeed(double speed);
     double GetSpeed();
