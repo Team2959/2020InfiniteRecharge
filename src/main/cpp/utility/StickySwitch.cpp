@@ -1,15 +1,12 @@
 
 #include <utility/StickySwitch.h>
 
-namespace cwtech
-{
-
-StickySwitch::StickySwitch(int port)
+cwtech::StickySwitch::StickySwitch(int port)
     : DigitalInput(port), m_pressed(false)
 {
 }
 
-bool StickySwitch::GetPressed()
+bool cwtech::StickySwitch::GetPressed()
 {
     if(m_pressed)
     {
@@ -19,12 +16,10 @@ bool StickySwitch::GetPressed()
     return false;
 }
 
-void StickySwitch::ProcessForPressed()
+void cwtech::StickySwitch::ProcessForPressed()
 {
     if(m_pressed == false && Get())
     {
         m_pressed = true;
     }
-}
-
 }
