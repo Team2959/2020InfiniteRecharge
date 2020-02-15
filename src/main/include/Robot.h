@@ -25,6 +25,9 @@ private:
   int m_skips = 0;
   int m_powercellsCounted = 0;
 
+  int m_kickerRampIncrements = 0;
+  double m_kickerRampIncrement = 0.0;
+
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};

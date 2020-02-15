@@ -11,21 +11,36 @@ void Intake::OnRobotInit()
     frc::SmartDashboard::PutNumber(kConveyorSpeed, kFullConveyorSpeed);
     // Kicker
     frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
+    frc::SmartDashboard::PutNumber(kKickerRampCycles, kDefaultKickerRampCycles);
+    frc::SmartDashboard::PutNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
 }
 
 void Intake::OnRobotPeriodic()
 {
+    m_stopKickerSensor.ProcessForPressed();
+    m_startKickerSensor.ProcessForPressed();
+    m_newPowercellSensor.ProcessForPressed();
+    m_securedPowercellSensor.ProcessForPressed();
+
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
 
     if (m_debugEnable == false) return;
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
+    m_rampIncrements = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerRampCycles, kDefaultKickerRampCycles));
+    m_rampStartSpeed = frc::SmartDashboard::GetNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
     
-    m_stopKickerSensor.ProcessForPressed();
-    m_startKickerSensor.ProcessForPressed();
-    m_newPowercellSensor.ProcessForPressed();
-    m_securedPowercellSensor.ProcessForPressed();
+}
+
+double Intake::GetKickerSpeed() const
+{
+    return m_kickerMotor.Get();
+}
+
+double Intake::GetKickerRampIncrement() const
+{
+    return (m_kickerSpeed - m_rampStartSpeed) / 10.0;
 }
 
 bool Intake::GetSensor(Intake::SensorLocation location)

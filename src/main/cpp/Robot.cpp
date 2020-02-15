@@ -83,6 +83,8 @@ void Robot::TeleopPeriodic()
     }
     else if (m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
+        m_kickerRampIncrement = m_intake.GetKickerRampIncrement();
+        m_kickerRampIncrements = 1;
         m_intake.SetIntakeSpeed(0);
         m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
         m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
@@ -102,6 +104,16 @@ void Robot::TeleopPeriodic()
             m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
             m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
         }
+    }
+
+    if(m_kickerRampIncrements > 0 && m_kickerRampIncrements < 11)
+    {
+        m_intake.SetKickerSpeed(m_intake.GetKickerSpeed() + m_intake.GetKickerRampIncrement());
+        m_kickerRampIncrements++;
+    }
+    if(m_kickerRampIncrements > 10) 
+    {
+        m_kickerRampIncrements = 0;
     }
 }
 
