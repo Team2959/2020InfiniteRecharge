@@ -41,9 +41,18 @@ bool Intake::GetSensor(Intake::SensorLocation location)
 
 bool Intake::GetSensorPressed(Intake::SensorLocation location)
 {
-    // dummy function that shouldn't work
-    // need to figure out how to 
-    return GetSensor(location);
+    switch(location)
+    {
+    case Intake::SensorLocation::StartKicker:
+        return m_startKickerSensor.GetPressed();
+    case Intake::SensorLocation::StopKicker:
+        return m_stopKickerSensor.GetPressed();
+    case Intake::SensorLocation::NewPowercell:
+        return m_newPowercellSensor.GetPressed();
+    case Intake::SensorLocation::SecuredPowercell:
+        return m_securedPowercellSensor.GetPressed();
+    }
+    return false;
 }
 
 void Intake::SetIntakeSpeed(double speed)

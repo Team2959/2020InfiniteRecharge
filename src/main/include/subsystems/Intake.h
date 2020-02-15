@@ -5,13 +5,15 @@
 
 #include <RobotMap.h>
 
+#include <utility/StickySwitch.h>
+
 class Intake
 {
 private:
-    frc::DigitalInput m_startKickerSensor {kStartKickerSensor}; 
-    frc::DigitalInput m_stopKickerSensor {kStopKickerSensor};
-    frc::DigitalInput m_newPowercellSensor {kNewPowercellSensor};
-    frc::DigitalInput m_securedPowercellSensor {kSecuredPowercellSensor};
+    cwtech::StickySwitch m_startKickerSensor {kStartKickerSensor}; 
+    cwtech::StickySwitch m_stopKickerSensor {kStopKickerSensor};
+    cwtech::StickySwitch m_newPowercellSensor {kNewPowercellSensor};
+    cwtech::StickySwitch m_securedPowercellSensor {kSecuredPowercellSensor};
 
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
