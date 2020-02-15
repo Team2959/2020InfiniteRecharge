@@ -18,8 +18,10 @@ bool cwtech::StickySwitch::GetPressed()
 
 void cwtech::StickySwitch::ProcessForPressed()
 {
-    if(m_pressed == false && Get())
+    auto currentState = Get();
+    if(m_pressed == false && currentState == true && m_lastRead == false)
     {
         m_pressed = true;
     }
+    m_lastRead = currentState;
 }
