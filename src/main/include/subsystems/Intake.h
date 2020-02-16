@@ -47,6 +47,7 @@ public:
 
     void OnRobotInit();
     void OnRobotPeriodic();
+    void ProcessStickySwitches();
 
     double GetIntakeFullSpeed() const;
     double GetConveyorFullSpeed() const;

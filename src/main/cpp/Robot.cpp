@@ -45,7 +45,10 @@ void Robot::RobotPeriodic()
 
 void Robot::AutonomousInit() {}
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic()
+{
+    m_intake.ProcessStickySwitches();
+}
 
 void Robot::TeleopInit()
 {
@@ -61,6 +64,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
+    m_intake.ProcessStickySwitches();
+
     m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()) * Drivetrain::kMaxVelocity,
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()) * Drivetrain::kMaxVelocity);
 

@@ -21,7 +21,10 @@ void Intake::OnRobotPeriodic()
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
-    
+}
+
+void Intake::ProcessStickySwitches()
+{
     m_stopKickerSensor.ProcessForPressed();
     m_startKickerSensor.ProcessForPressed();
     m_newPowercellSensor.ProcessForPressed();
