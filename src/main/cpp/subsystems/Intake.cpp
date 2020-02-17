@@ -17,11 +17,6 @@ void Intake::OnRobotInit()
 
 void Intake::OnRobotPeriodic()
 {
-    m_stopKickerSensor.ProcessForPressed();
-    m_startKickerSensor.ProcessForPressed();
-    m_newPowercellSensor.ProcessForPressed();
-    m_securedPowercellSensor.ProcessForPressed();
-
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
 
     if (m_debugEnable == false) return;
@@ -32,7 +27,6 @@ void Intake::OnRobotPeriodic()
     // making sure that there is no 0 division
     if(m_rampIncrements == 0) m_rampIncrements = 1;
     m_rampStartSpeed = frc::SmartDashboard::GetNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
-    
 }
 
 double Intake::GetKickerSpeed() const
