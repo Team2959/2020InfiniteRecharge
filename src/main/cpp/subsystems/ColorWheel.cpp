@@ -172,3 +172,41 @@ frc::Color ColorWheel::GetColorFromName(std::string colorName)
 
     return kBlack;
 }
+
+void ColorWheel::SetSpinMotorSpeed(double speed)
+{
+    m_spinMotor.Set(speed);
+}
+
+void ColorWheel::EngageColorWheel(bool engage)
+{
+    m_engageColorWheel.Set(engage);
+}
+
+frc::Color ColorWheel::GetColorToSpinTo()
+{
+    return m_countedColor;
+}
+
+void ColorWheel::ResetCounter()
+{
+    m_colorCount = 0;
+}
+
+frc::Color ColorWheel::GetCurrentColor()
+{
+    frc::Color detectedColor = m_colorSensor.GetColor();
+    double confidence = 0.0;
+    frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
+    return matchedColor;
+}
+
+void ColorWheel::UpdateCount() 
+{
+    frc::Color matchedColor = GetCurrentColor();
+    if (m_lastColor == m_countedColor && !(m_lastColor == matchedColor))
+    {
+        m_colorCount++;
+    }
+    m_lastColor = matchedColor;
+}

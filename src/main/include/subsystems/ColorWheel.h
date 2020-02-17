@@ -5,6 +5,11 @@
 #include <frc/util/Color.h>
 #include <rev/ColorSensorV3.h>
 #include <rev/ColorMatch.h>
+#include <frc/Solenoid.h>
+
+#include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
+
+#include <RobotMap.h>
 
 class ColorWheel
 {
@@ -45,10 +50,18 @@ private:
     frc::Color GetColorFromName(std::string colorName);
     void SetTargetColorFromGameData();
 
-
-
+    frc::Solenoid m_engageColorWheel{kColorWheelEngageColorWheel};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
 public:
     void OnRobotInit();
     void UpdateColorSensorValues(int skips);
 
+    void SetSpinMotorSpeed(double speed);
+    void EngageColorWheel(bool engage);
+
+    void ResetCounter();
+    void UpdateCount();
+    int GetCount();
+    frc::Color GetColorToSpinTo();
+    frc::Color GetCurrentColor();
 };

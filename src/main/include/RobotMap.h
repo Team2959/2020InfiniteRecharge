@@ -31,3 +31,6 @@ const int kStartKickerSensor = 0;
 const int kStopKickerSensor = 1;
 const int kNewPowercellSensor = 2;
 const int kSecuredPowercellSensor = 3;
+
+const int kColorWheelEngageColorWheel = 1;
+const int kColorWheelSpinMotor = 12;

@@ -29,6 +29,8 @@ void Intake::OnRobotPeriodic()
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
     m_rampIncrements = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerRampCycles, kDefaultKickerRampCycles));
+    // making sure that there is no 0 division
+    if(m_rampIncrements == 0) m_rampIncrements = 1;
     m_rampStartSpeed = frc::SmartDashboard::GetNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
     
 }
@@ -40,7 +42,7 @@ double Intake::GetKickerSpeed() const
 
 double Intake::GetKickerRampIncrement() const
 {
-    return (m_kickerSpeed - m_rampStartSpeed) / 10.0;
+    return (m_kickerSpeed - m_rampStartSpeed) / m_rampIncrements;
 }
 
 void Intake::ProcessStickySwitches()
