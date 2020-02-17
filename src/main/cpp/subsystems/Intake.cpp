@@ -43,6 +43,14 @@ double Intake::GetKickerRampIncrement() const
     return (m_kickerSpeed - m_rampStartSpeed) / 10.0;
 }
 
+void Intake::ProcessStickySwitches()
+{
+    m_stopKickerSensor.ProcessForPressed();
+    m_startKickerSensor.ProcessForPressed();
+    m_newPowercellSensor.ProcessForPressed();
+    m_securedPowercellSensor.ProcessForPressed();
+}
+
 bool Intake::GetSensor(Intake::SensorLocation location)
 {
     switch(location)
