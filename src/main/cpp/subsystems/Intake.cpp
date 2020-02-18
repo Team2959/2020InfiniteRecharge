@@ -91,7 +91,7 @@ void Intake::SetConveyorSpeed(double speed)
 
 void Intake::SetKickerSpeed(double speed)
 {
-    m_kickerMotor.Set(speed);
+    m_kickerMotor.Set(-speed);
 }
 
 double Intake::GetIntakeFullSpeed() const
