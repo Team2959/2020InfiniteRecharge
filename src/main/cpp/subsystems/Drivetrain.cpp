@@ -33,6 +33,7 @@ void Drivetrain::SetSpeeds(double left, double right)
 void Drivetrain::InitalShowToSmartDashboard()
 {
     m_leftPID.SetFF(0.0005);
+    m_rightPID.SetFF(0.0005);
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
     // PID
