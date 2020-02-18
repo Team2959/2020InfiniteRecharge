@@ -18,6 +18,7 @@ void Intake::OnRobotInit()
 void Intake::OnRobotPeriodic()
 {
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+    frc::SmartDashboard::PutBoolean("Stop Kicker", GetSensor(Intake::SensorLocation::StartKicker));
 
     if (m_debugEnable == false) return;
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
