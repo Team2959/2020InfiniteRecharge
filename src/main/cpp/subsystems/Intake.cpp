@@ -113,3 +113,8 @@ bool Intake::IsIntakeRunning() const
 {
     return m_intakePrimary.Get() != 0.0;
 }
+
+int Intake::GetKickerRampCycles() const
+{
+    return m_rampIncrements;
+}

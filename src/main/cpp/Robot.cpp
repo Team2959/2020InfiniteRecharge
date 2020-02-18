@@ -82,43 +82,41 @@ void Robot::TeleopPeriodic()
     // When Firing Done
     if (m_rightDriverJoystick.GetTriggerReleased())
     {
-        m_intake.SetIntakeSpeed(0);
-        m_intake.SetKickerSpeed(0);
-        m_intake.SetConveyorSpeed(0);
+        SwitchState(Robot::States::Loading);
     }
     else if (m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
         m_kickerRampIncrements = 1;
         m_intake.SetIntakeSpeed(0);
         m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
-        m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+
+        SwitchState(Robot::States::Firing);
     }
 
     if (m_rightDriverJoystick.GetRawButtonPressed(2))
     {
         if (m_intake.IsIntakeRunning())
         {
-            m_intake.SetIntakeSpeed(0);
-            m_intake.SetConveyorSpeed(0);
-            m_intake.SetKickerSpeed(0);
+            SwitchState(Robot::States::Traveling);
         }
         else
         {
-            m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
-            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
-            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+            SwitchState(Robot::States::Loading);
         }
     }
 
-    if(m_kickerRampIncrements > 0 && m_kickerRampIncrements < 11)
+    if(m_kickerRampIncrements > 0)
     {
         m_intake.SetKickerSpeed(m_intake.GetKickerSpeed() + m_intake.GetKickerRampIncrement());
         m_kickerRampIncrements++;
+
+        if(m_kickerRampIncrements >= m_intake.GetKickerRampCycles()) 
+        {
+            m_kickerRampIncrements = 0;
+        }
     }
-    if(m_kickerRampIncrements > 10) 
-    {
-        m_kickerRampIncrements = 0;
-    }
+
+    DoCurrentState();
 }
 
 void Robot::TestPeriodic() {}
@@ -184,40 +182,34 @@ void Robot::LoadingInit()
 {
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
-    m_intake.SetIntakeSpeed(1);
+    m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
+    m_powercellsCounted = 0;
 }
 
 void Robot::LoadingPeriodic()
 {
-    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell) &&
-        !m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
+    if(m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell))
     {
-        m_intake.SetConveyorSpeed(1);
-    }
-    else
-    {
-        m_intake.SetConveyorSpeed(0);
-        m_powercellsCounted++;
+        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+
+        // if (m_intake.GetSensor(Intake::SensorLocation::StartKicker) &&
+        //     !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
+        // {
+        //     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.2);
+        // }
     }
 
-    if(m_intake.GetSensor(Intake::SensorLocation::NewPowercell) && 
-        m_intake.GetSensor(Intake::SensorLocation::StartKicker) &&
-        !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
-    {
-        m_intake.SetKickerSpeed(1);
-    }
-    else
+    if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
     {
         m_intake.SetKickerSpeed(0);
-    }
+        m_intake.SetConveyorSpeed(0);
+        m_powercellsCounted++;
 
-    if(m_powercellsCounted < 5)
-    {
-        m_intake.SetIntakeSpeed(1);
-    }
-    else
-    {
-        m_intake.SetIntakeSpeed(0);
+        if (m_powercellsCounted == 5)
+        {
+            SwitchState(Robot::States::Traveling);
+            return;
+        }
     }
 }
 

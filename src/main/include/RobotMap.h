@@ -27,10 +27,10 @@ const int kConveyorPrimary = 13;
 const int kShooterPnuematicsAngleAdjuster = 0;
 
 // Intake Sensor Digital IO ports
-const int kStartKickerSensor = 0;
-const int kStopKickerSensor = 1;
-const int kNewPowercellSensor = 2;
-const int kSecuredPowercellSensor = 3;
+const int kNewPowercellSensor = 0;
+const int kSecuredPowercellSensor = 1;
+const int kStartKickerSensor = 2;
+const int kStopKickerSensor = 3;
 
 const int kColorWheelEngageColorWheel = 1;
 const int kColorWheelSpinMotor = 12;

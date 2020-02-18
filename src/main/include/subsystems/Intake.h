@@ -61,6 +61,7 @@ public:
     double GetKickerFullSpeed() const;
     bool IsIntakeRunning() const;
     double GetKickerSpeed() const;
+    int GetKickerRampCycles() const;
 
     void SetIntakeSpeed(double speed);
     void SetConveyorSpeed(double speed);
