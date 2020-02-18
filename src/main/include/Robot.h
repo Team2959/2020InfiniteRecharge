@@ -24,7 +24,6 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-
   int m_kickerRampIncrements = 0;
 
   // Joysticks 
@@ -46,7 +45,7 @@ private:
     Loading,
   };
 
-  States m_currentState;
+  States m_currentState = States::Traveling;
 
   void SwitchState(States state);
   void DoCurrentState();
