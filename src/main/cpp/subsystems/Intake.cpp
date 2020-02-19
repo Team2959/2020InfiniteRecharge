@@ -11,39 +11,26 @@ void Intake::OnRobotInit()
     frc::SmartDashboard::PutNumber(kConveyorSpeed, kFullConveyorSpeed);
     // Kicker
     frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
-    frc::SmartDashboard::PutNumber(kKickerRampCycles, kDefaultKickerRampCycles);
-    frc::SmartDashboard::PutNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
+    frc::SmartDashboard::PutNumber(kKickerPulseCycles, kDefaultKickerPulseCycles);
+    frc::SmartDashboard::PutNumber(kKickerPauseCycles, kDefaultKickerPauseCycles);
 }
 
 void Intake::OnRobotPeriodic()
 {
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
-    frc::SmartDashboard::PutBoolean("Stop Kicker", GetSensor(Intake::SensorLocation::StartKicker));
+    frc::SmartDashboard::PutBoolean("Kicker Sensor", GetSensor(Intake::SensorLocation::Kicker));
 
     if (m_debugEnable == false) return;
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
-    m_rampIncrements = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerRampCycles, kDefaultKickerRampCycles));
-    // making sure that there is no 0 division
-    if(m_rampIncrements == 0) m_rampIncrements = 1;
-    m_rampStartSpeed = frc::SmartDashboard::GetNumber(kKickerRampStartSpeed, kDefaultKickerRampStartSpeed);
-}
-
-double Intake::GetKickerSpeed() const
-{
-    return m_kickerMotor.Get();
-}
-
-double Intake::GetKickerRampIncrement() const
-{
-    return (m_kickerSpeed - m_rampStartSpeed) / m_rampIncrements;
+    m_PulseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPulseCycles, kDefaultKickerPulseCycles));
+    m_PauseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPauseCycles, kDefaultKickerPauseCycles));
 }
 
 void Intake::ProcessStickySwitches()
 {
-    m_stopKickerSensor.ProcessForPressed();
-    m_startKickerSensor.ProcessForPressed();
+    m_kickerSensor.ProcessForPressed();
     m_newPowercellSensor.ProcessForPressed();
     m_securedPowercellSensor.ProcessForPressed();
 }
@@ -52,10 +39,8 @@ bool Intake::GetSensor(Intake::SensorLocation location)
 {
     switch(location)
     {
-    case Intake::SensorLocation::StartKicker:
-        return m_startKickerSensor.Get();
-    case Intake::SensorLocation::StopKicker:
-        return m_stopKickerSensor.Get();
+    case Intake::SensorLocation::Kicker:
+        return m_kickerSensor.Get();
     case Intake::SensorLocation::NewPowercell:
         return m_newPowercellSensor.Get();
     case Intake::SensorLocation::SecuredPowercell:
@@ -68,10 +53,8 @@ bool Intake::GetSensorPressed(Intake::SensorLocation location)
 {
     switch(location)
     {
-    case Intake::SensorLocation::StartKicker:
-        return m_startKickerSensor.GetPressed();
-    case Intake::SensorLocation::StopKicker:
-        return m_stopKickerSensor.GetPressed();
+    case Intake::SensorLocation::Kicker:
+        return m_kickerSensor.GetPressed();
     case Intake::SensorLocation::NewPowercell:
         return m_newPowercellSensor.GetPressed();
     case Intake::SensorLocation::SecuredPowercell:
@@ -115,7 +98,12 @@ bool Intake::IsIntakeRunning() const
     return m_intakePrimary.Get() != 0.0;
 }
 
-int Intake::GetKickerRampCycles() const
+int Intake::GetKickerPulseCycles() const
 {
-    return m_rampIncrements;
+    return m_PulseCycles;
+}
+
+int Intake::GetKickerPauseCycles() const
+{
+    return m_PauseCycles;
 }

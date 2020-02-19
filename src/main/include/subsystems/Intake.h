@@ -10,10 +10,9 @@
 class Intake
 {
 private:
-    cwtech::StickySwitch m_startKickerSensor {kStartKickerSensor}; 
-    cwtech::StickySwitch m_stopKickerSensor {kStopKickerSensor};
     cwtech::StickySwitch m_newPowercellSensor {kNewPowercellSensor};
     cwtech::StickySwitch m_securedPowercellSensor {kSecuredPowercellSensor};
+    cwtech::StickySwitch m_kickerSensor {kKickerSensor};
 
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
@@ -25,29 +24,28 @@ private:
     const std::string kConveyorName = "Conveyor: ";
     const std::string kKickerName = "Kicker: ";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
-    const std::string kKickerSpeed = kConveyorName + "Kicker Speed";
+    const std::string kKickerSpeed = kKickerName + "Speed";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
-    const std::string kKickerRampStartSpeed = kKickerName + "Starting Ramp Speed";
-    const std::string kKickerRampCycles = kKickerName + "Ramp Cycles";
+    const std::string kKickerPulseCycles = kKickerName + "Pulse Cycles";
+    const std::string kKickerPauseCycles = kKickerName + "Pause Cycles";
 
     bool m_debugEnable = false;
 
     const double kFullIntakeSpeed = 0.5;
-    const double kFullConveyorSpeed = 0.9;
-    const double kFullKickerSpeed = 0.9;
-    const double kDefaultKickerRampStartSpeed = 0.25;
-    const int kDefaultKickerRampCycles = 10;
+    const double kFullConveyorSpeed = 0.6;
+    const double kFullKickerSpeed = 0.3;
+    const int kDefaultKickerPulseCycles = 5;
+    const int kDefaultKickerPauseCycles = 5;
     double m_intakeSpeed = kFullIntakeSpeed;
     double m_conveyorSpeed = kFullConveyorSpeed;
     double m_kickerSpeed = kFullKickerSpeed;
-    double m_rampStartSpeed = kDefaultKickerRampStartSpeed;
-    int m_rampIncrements = kDefaultKickerRampCycles;
+    int m_PulseCycles = kDefaultKickerPulseCycles;
+    int m_PauseCycles = kDefaultKickerPauseCycles;
 
 public:
     enum class SensorLocation
     {
-        StartKicker,
-        StopKicker,
+        Kicker,
         NewPowercell,
         SecuredPowercell
     };
@@ -60,8 +58,8 @@ public:
     double GetConveyorFullSpeed() const;
     double GetKickerFullSpeed() const;
     bool IsIntakeRunning() const;
-    double GetKickerSpeed() const;
-    int GetKickerRampCycles() const;
+    int GetKickerPulseCycles() const;
+    int GetKickerPauseCycles() const;
 
     void SetIntakeSpeed(double speed);
     void SetConveyorSpeed(double speed);
@@ -69,6 +67,4 @@ public:
 
     bool GetSensor(SensorLocation location);
     bool GetSensorPressed(SensorLocation location);
-
-    double GetKickerRampIncrement() const;
 };

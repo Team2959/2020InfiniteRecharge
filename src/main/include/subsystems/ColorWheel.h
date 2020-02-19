@@ -6,6 +6,7 @@
 #include <rev/ColorSensorV3.h>
 #include <rev/ColorMatch.h>
 #include <frc/Solenoid.h>
+#include <frc/SerialPort.h>
 
 #include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
 
@@ -52,6 +53,9 @@ private:
 
     frc::Solenoid m_engageColorWheel{kColorWheelEngageColorWheel};
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
+
+    frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
+    
 public:
     void OnRobotInit();
     void UpdateColorSensorValues(int skips);

@@ -17,6 +17,7 @@
 #include <subsystems/Drivetrain.h>
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
+#include <subsystems/ColorWheel.h>
 
 class Robot : public frc::TimedRobot
 {
@@ -24,7 +25,7 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-  int m_kickerRampIncrements = 0;
+  int m_kickerPulseCounts = 0;
 
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
@@ -35,6 +36,7 @@ private:
   Drivetrain m_drivetrain {};
   Intake m_intake {};
   Shooter m_shooter {};
+  ColorWheel m_colorWheel {};
 
   enum class States
   {

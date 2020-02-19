@@ -16,6 +16,7 @@ void Robot::RobotInit()
     m_drivetrain.InitalShowToSmartDashboard();
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
+    m_colorWheel.OnRobotInit();
 
     m_conditioningDriverJoysticks.SetDeadband(0.05);
     m_conditioningDriverJoysticks.SetExponent(5);
@@ -86,11 +87,6 @@ void Robot::TeleopPeriodic()
     }
     else if (m_shooter.CloseToSpeed() && m_rightDriverJoystick.GetTriggerPressed())
     {
-        // m_kickerRampIncrements = 1;
-        m_intake.SetIntakeSpeed(0);
-        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
-        m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
-
         SwitchState(Robot::States::Firing);
     }
 
@@ -103,17 +99,6 @@ void Robot::TeleopPeriodic()
         else
         {
             SwitchState(Robot::States::Loading);
-        }
-    }
-
-    if(m_kickerRampIncrements > 0)
-    {
-        m_intake.SetKickerSpeed(m_intake.GetKickerSpeed() + m_intake.GetKickerRampIncrement());
-        m_kickerRampIncrements++;
-
-        if(m_kickerRampIncrements >= m_intake.GetKickerRampCycles()) 
-        {
-            m_kickerRampIncrements = 0;
         }
     }
 
@@ -157,10 +142,31 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
+    m_kickerPulseCounts = 1;
+    m_intake.SetIntakeSpeed(0);
+    m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+    m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
 }
 
 void Robot::FiringPeriodic() 
 {
+    if (m_kickerPulseCounts > 0)
+    {
+        auto currentCount = m_kickerPulseCounts;
+        m_kickerPulseCounts++;
+        if (currentCount > m_intake.GetKickerPulseCycles())
+        {
+            if (currentCount <= m_intake.GetKickerPulseCycles() + m_intake.GetKickerPauseCycles())
+            {
+                m_intake.SetKickerSpeed(0);
+            }
+            else
+            {
+                m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+                m_kickerPulseCounts = 0;
+            }
+        }
+    }
 }
 
 void Robot::ClimbingInit() 
@@ -194,23 +200,17 @@ void Robot::LoadingPeriodic()
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
         m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
 
-        if (m_intake.GetSensor(Intake::SensorLocation::StartKicker))
+        if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
         {
-            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.2);
+            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.5);
         }
         else
         {
             m_intake.SetKickerSpeed(0);
         }
-        
-        // if (m_intake.GetSensor(Intake::SensorLocation::StartKicker) &&
-        //     !m_intake.GetSensor(Intake::SensorLocation::StopKicker))
-        // {
-            // m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.2);
-        // }
     }
 
-    if (!m_intake.GetSensor(Intake::SensorLocation::StartKicker))
+    if (!m_intake.GetSensor(Intake::SensorLocation::Kicker))
     {
         m_intake.SetKickerSpeed(0);
     }
