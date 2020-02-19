@@ -28,16 +28,19 @@ private:
     const std::string kIntakeSpeed = kIntakeName + "Speed";
     const std::string kKickerPulseCycles = kKickerName + "Pulse Cycles";
     const std::string kKickerPauseCycles = kKickerName + "Pause Cycles";
+    const std::string kConveyorSpeedWhenLoading = kConveyorName + "Speed When Loading";
 
     bool m_debugEnable = false;
 
     const double kFullIntakeSpeed = 0.5;
     const double kFullConveyorSpeed = 0.6;
     const double kFullKickerSpeed = 0.3;
+    const double kFullConveyorSpeedWhenLoading = 0.9;
     const int kDefaultKickerPulseCycles = 5;
     const int kDefaultKickerPauseCycles = 5;
     double m_intakeSpeed = kFullIntakeSpeed;
     double m_conveyorSpeed = kFullConveyorSpeed;
+    double m_conveyorSpeedWhenLoading = kFullConveyorSpeedWhenLoading;
     double m_kickerSpeed = kFullKickerSpeed;
     int m_PulseCycles = kDefaultKickerPulseCycles;
     int m_PauseCycles = kDefaultKickerPauseCycles;
@@ -56,6 +59,7 @@ public:
 
     double GetIntakeFullSpeed() const;
     double GetConveyorFullSpeed() const;
+    double GetConveyorFullSpeedWhenLoading() const;
     double GetKickerFullSpeed() const;
     bool IsIntakeRunning() const;
     int GetKickerPulseCycles() const;

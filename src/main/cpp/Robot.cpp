@@ -198,7 +198,7 @@ void Robot::LoadingPeriodic()
     if(m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell))
     {
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
-        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
+        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
 
         if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
         {

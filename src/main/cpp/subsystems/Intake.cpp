@@ -9,6 +9,7 @@ void Intake::OnRobotInit()
     frc::SmartDashboard::PutNumber(kIntakeSpeed, kFullIntakeSpeed);
     // Conveyor
     frc::SmartDashboard::PutNumber(kConveyorSpeed, kFullConveyorSpeed);
+    frc::SmartDashboard::PutNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     // Kicker
     frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
     frc::SmartDashboard::PutNumber(kKickerPulseCycles, kDefaultKickerPulseCycles);
@@ -23,6 +24,7 @@ void Intake::OnRobotPeriodic()
     if (m_debugEnable == false) return;
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
+    m_conveyorSpeedWhenLoading = frc::SmartDashboard::GetNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
     m_PulseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPulseCycles, kDefaultKickerPulseCycles));
     m_PauseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPauseCycles, kDefaultKickerPauseCycles));
@@ -91,6 +93,11 @@ double Intake::GetConveyorFullSpeed() const
 double Intake::GetKickerFullSpeed() const
 {
     return m_kickerSpeed;
+}
+
+double Intake::GetConveyorFullSpeedWhenLoading() const
+{
+    return m_conveyorSpeedWhenLoading;
 }
 
 bool Intake::IsIntakeRunning() const
