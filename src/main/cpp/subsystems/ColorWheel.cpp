@@ -39,6 +39,8 @@ void ColorWheel::OnRobotInit()
     {
         remove("/home/lvuser/colors.csv");
     }
+
+    m_bling.DisableTermination();
 }
 
 void ColorWheel::UpdateColorSensorValues(int skips)
@@ -49,6 +51,13 @@ void ColorWheel::UpdateColorSensorValues(int skips)
 
     if (m_countColors)
     {
+        if(m_colorCount < 0)
+        {
+            m_colorCount = 0;
+        }
+
+        m_bling.Write(BlingColor(matchedColor));
+
         if (m_logColors)
         {
             // tracking colors
@@ -68,10 +77,12 @@ void ColorWheel::UpdateColorSensorValues(int skips)
     }
 
     // when counting is disabled reset counter
-    if (!m_countColors)
+    if (!m_countColors && m_colorCount >= 0)
     {
-        m_colorCount = 0;
+        m_colorCount = -1;
         m_lastColor = kBlack;
+        
+        m_bling.Write(kBlingAuto);
 
         if (m_colorTracking.size() > 0)
         {
@@ -151,6 +162,34 @@ std::string ColorWheel::ColorName(frc::Color matchedColor)
         return "Black";
 
     return "Unknown";
+}
+
+std::string ColorWheel::BlingColor(frc::Color matchedColor)
+{
+    if (matchedColor == kBlueTarget)
+        return "BLUE NUMS";
+    if (matchedColor == kGreenTarget)
+        return "GREEN NUMS";
+    if (matchedColor == kRedTarget)
+        return "RED NUMS";
+    if (matchedColor == kYellowTarget)
+        return "YELLOW NUMS";
+    if (matchedColor == kBlueGreenTarget)
+        // return "BLUE GREEN NUMS";
+        return "BLUE NUMS";
+    if (matchedColor == kBlueYellowTarget)
+        // return "BLUE YELLOW NUMS";
+        return "YELLOW NUMS";
+    if (matchedColor == kGreenRedTarget)
+        // return "GREEN RED NUMS";
+        return "GREEN NUMS";
+    if (matchedColor == kRedYellowTarget)
+        // return "RED YELLOW NUMS";
+        return "RED NUMS";
+    if (matchedColor == kBlack)
+        return "BLACK NUMS";
+
+    return "HAZARD";
 }
 
 frc::Color ColorWheel::GetColorFromName(std::string colorName)

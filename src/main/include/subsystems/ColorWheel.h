@@ -43,11 +43,12 @@ private:
     frc::Color m_lastColor = kBlack;
     bool m_countColors = false;
     bool m_logColors = false;
-    int m_colorCount = 0;
+    int m_colorCount = -1;
 
     std::vector<std::tuple< std::string/* Guessed Color */, double /* Red */, double /* Green */, double /* Blue */ > > m_colorTracking;
 
     std::string ColorName(frc::Color matchedColor);
+    std::string BlingColor(frc::Color matchedColor);
     frc::Color GetColorFromName(std::string colorName);
     void SetTargetColorFromGameData();
 
@@ -55,6 +56,9 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
 
     frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
+
+    // Bling Strings
+    const std::string kBlingAuto = "AUTO";
     
 public:
     void OnRobotInit();
