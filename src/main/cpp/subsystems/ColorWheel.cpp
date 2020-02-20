@@ -30,6 +30,8 @@ void ColorWheel::OnRobotInit()
     m_colorMatcher.AddColorMatch(kGreenRedTarget);
     m_colorMatcher.AddColorMatch(kRedYellowTarget);
 
+    m_bling.SetWriteBufferMode(frc::SerialPort::WriteBufferMode::kFlushOnAccess);
+
     frc::SmartDashboard::PutBoolean("Count Color", false);
     frc::SmartDashboard::PutNumber("Color Counted", 0);
     frc::SmartDashboard::PutBoolean("Log Color", false);
