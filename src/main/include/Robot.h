@@ -25,12 +25,14 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-    int m_kickerPulseCounts = 0;
+  int m_kickerPulseCounts = 0;
 
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};
   cwtech::UniformConditioning m_conditioningDriverJoysticks {};
+
+  bool m_passed2ndStage = false;
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};

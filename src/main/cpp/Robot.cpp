@@ -181,10 +181,43 @@ void Robot::ClimbingPeriodic()
 
 void Robot::ColorWheelInit()
 {
+    // 3rd Stage
+    if(m_passed2ndStage)
+    {
+        m_colorWheel.SetSpinMotorSpeed(0.5);
+    }
+    // 2nd Stage
+    else
+    {
+        m_colorWheel.SetSpinMotorSpeed(0.9);
+        m_colorWheel.ResetCounter();
+    }
+    
 }
 
 void Robot::ColorWheelPeriodic()
 {
+    // 3rd Stage
+    if(m_passed2ndStage)
+    {
+        if(m_colorWheel.GetColorToSpinTo() == m_colorWheel.GetCurrentColor())
+        {
+            m_colorWheel.SetSpinMotorSpeed(0);
+            SwitchState(Robot::States::Traveling);
+        }
+    }
+    // 2nd Stage
+    else
+    {
+        m_colorWheel.UpdateCount();
+        
+        if(m_colorWheel.GetCount() > 7)
+        {
+            m_passed2ndStage = true;
+            m_colorWheel.SetSpinMotorSpeed(0);
+            SwitchState(Robot::States::Traveling);
+        }
+    }
 }
 
 void Robot::LoadingInit()
