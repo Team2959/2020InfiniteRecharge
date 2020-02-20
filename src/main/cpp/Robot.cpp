@@ -40,6 +40,8 @@ void Robot::RobotPeriodic()
         m_intake.OnRobotPeriodic();
     }
 
+    m_colorWheel.UpdateColorSensorValues(m_skips);
+
     // Increment the m_skips variable for counting
     m_skips++;
 }

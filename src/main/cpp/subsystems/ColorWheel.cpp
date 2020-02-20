@@ -175,17 +175,13 @@ std::string ColorWheel::BlingColor(frc::Color matchedColor)
     if (matchedColor == kYellowTarget)
         return "YELLOW NUMS";
     if (matchedColor == kBlueGreenTarget)
-        // return "BLUE GREEN NUMS";
-        return "BLUE NUMS";
+        return "BLUE GREEN NUMS";
     if (matchedColor == kBlueYellowTarget)
-        // return "BLUE YELLOW NUMS";
-        return "YELLOW NUMS";
+        return "BLUE YELLOW NUMS";
     if (matchedColor == kGreenRedTarget)
-        // return "GREEN RED NUMS";
-        return "GREEN NUMS";
+        return "GREEN RED NUMS";
     if (matchedColor == kRedYellowTarget)
-        // return "RED YELLOW NUMS";
-        return "RED NUMS";
+        return "RED YELLOW NUMS";
     if (matchedColor == kBlack)
         return "BLACK NUMS";
 
