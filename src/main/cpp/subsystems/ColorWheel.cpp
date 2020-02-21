@@ -31,18 +31,19 @@ void ColorWheel::OnRobotInit()
     m_colorMatcher.AddColorMatch(kRedYellowTarget);
 
     m_bling.SetWriteBufferMode(frc::SerialPort::WriteBufferMode::kFlushOnAccess);
+    m_bling.DisableTermination();
 
+    frc::SmartDashboard::PutBoolean("CW: Debug", m_debugEnable);
     frc::SmartDashboard::PutBoolean("Count Color", false);
     frc::SmartDashboard::PutNumber("Color Counted", 0);
     frc::SmartDashboard::PutBoolean("Log Color", false);
     frc::SmartDashboard::PutString("Color to Count", ColorName(m_countedColor));
+    frc::SmartDashboard::PutNumber("CW: Spin Speed", kSpinSpeed);
 
     if (exists("/home/lvuser/colors.csv"))
     {
         remove("/home/lvuser/colors.csv");
     }
-
-    m_bling.DisableTermination();
 }
 
 void ColorWheel::UpdateColorSensorValues(int skips)
@@ -76,6 +77,27 @@ void ColorWheel::UpdateColorSensorValues(int skips)
             m_colorCount++;
         }
         m_lastColor = matchedColor;
+
+        // stop after about 3 1/2 revolution (2 color counts per revolution)
+        if (m_colorCount >= 7)
+        {
+            Spin(false);
+        }
+    }
+
+    if (!(m_spinToColor == kBlack))
+    {
+        // process spinning to specific color
+        if (m_spinToColor == matchedColor)
+        {
+            m_spinToColor = kBlack;
+            SetSpinMotorSpeed(0);
+        }
+        else
+        {
+            SetSpinMotorSpeed(m_spinSpeed * 0.5);
+        }
+        
     }
 
     // when counting is disabled reset counter
@@ -121,28 +143,29 @@ void ColorWheel::UpdateColorSensorValues(int skips)
 
     if (skips % 50 == 0)
     {
-        frc::SmartDashboard::PutNumber("Color Counted", m_colorCount);
-        m_countColors = frc::SmartDashboard::GetBoolean("Count Color", false);
-        m_logColors = frc::SmartDashboard::GetBoolean("Log Colors", false);
-        m_countedColor = GetColorFromName(
-            frc::SmartDashboard::GetString("Color to Count", ColorName(m_countedColor)));
-
-        frc::SmartDashboard::PutNumber("Red", detectedColor.red);
-        frc::SmartDashboard::PutNumber("Green", detectedColor.green);
-        frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
-        frc::SmartDashboard::PutNumber("Confidence", confidence);
         frc::SmartDashboard::PutString("Detected Color", ColorName(matchedColor));
-        // frc::SmartDashboard::PutNumber("Proximity", m_colorSensor.GetProximity());
+
+        m_debugEnable = frc::SmartDashboard::GetBoolean("CW: Debug", false);
+        if (m_debugEnable == true)
+        {
+            frc::SmartDashboard::PutNumber("Color Counted", m_colorCount);
+            m_countColors = frc::SmartDashboard::GetBoolean("Count Color", false);
+            m_logColors = frc::SmartDashboard::GetBoolean("Log Colors", false);
+            m_countedColor = GetColorFromName(
+                frc::SmartDashboard::GetString("Color to Count", ColorName(m_countedColor)));
+
+            frc::SmartDashboard::PutNumber("Red", detectedColor.red);
+            frc::SmartDashboard::PutNumber("Green", detectedColor.green);
+            frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
+            frc::SmartDashboard::PutNumber("Confidence", confidence);
+            // frc::SmartDashboard::PutNumber("Proximity", m_colorSensor.GetProximity());
+            SetTargetColorFromGameData();
+            m_spinSpeed = frc::SmartDashboard::GetNumber("CW: Spin Speed", kSpinSpeed);
+        }
     }
 }
 
-void ColorWheel::SetTargetColorFromGameData()
-{
-    m_gameDataTargetColor = GetColorFromName(frc::DriverStation::GetInstance().GetGameSpecificMessage());
-    frc::SmartDashboard::PutString("Game Data Color", ColorName(m_gameDataTargetColor));
-}
-
-std::string ColorWheel::ColorName(frc::Color matchedColor)
+std::string ColorWheel::ColorName(frc::Color matchedColor) const
 {
     if (matchedColor == kBlueTarget)
         return "Blue";
@@ -166,7 +189,7 @@ std::string ColorWheel::ColorName(frc::Color matchedColor)
     return "Unknown";
 }
 
-std::string ColorWheel::BlingColor(frc::Color matchedColor)
+std::string ColorWheel::BlingColor(frc::Color matchedColor) const
 {
     if (matchedColor == kBlueTarget)
         return "BLUE NUMS";
@@ -190,7 +213,7 @@ std::string ColorWheel::BlingColor(frc::Color matchedColor)
     return "HAZARD";
 }
 
-frc::Color ColorWheel::GetColorFromName(std::string colorName)
+frc::Color ColorWheel::GetColorFromName(std::string colorName) const
 {
     if(colorName.length() > 0)
     {
@@ -218,32 +241,65 @@ void ColorWheel::SetSpinMotorSpeed(double speed)
 void ColorWheel::EngageColorWheel(bool engage)
 {
     m_engageColorWheel.Set(engage);
-}
-
-frc::Color ColorWheel::GetColorToSpinTo()
-{
-    return m_countedColor;
-}
-
-void ColorWheel::ResetCounter()
-{
-    m_colorCount = 0;
-}
-
-frc::Color ColorWheel::GetCurrentColor()
-{
-    frc::Color detectedColor = m_colorSensor.GetColor();
-    double confidence = 0.0;
-    frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
-    return matchedColor;
-}
-
-void ColorWheel::UpdateCount() 
-{
-    frc::Color matchedColor = GetCurrentColor();
-    if (m_lastColor == m_countedColor && !(m_lastColor == matchedColor))
+    if (engage == false)
     {
-        m_colorCount++;
+        Spin(false);
+        m_spinToColor = kBlack;
     }
-    m_lastColor = matchedColor;
+}
+
+bool ColorWheel::IsColorWheelEngaged() const
+{
+    return m_engageColorWheel.Get();
+}
+
+bool ColorWheel::IsSpinning() const
+{
+    return m_colorCount >= 0 || !(m_spinToColor == kBlack);
+}
+
+void ColorWheel::Spin(bool start)
+{
+    m_countColors = start;
+    if (start)
+    {
+        SetSpinMotorSpeed(m_spinSpeed);
+    }
+    else
+    {
+        SetSpinMotorSpeed(0);
+    }
+}
+
+void ColorWheel::SetTargetColorFromGameData()
+{
+    m_gameDataTargetColor = GetColorFromName(frc::DriverStation::GetInstance().GetGameSpecificMessage());
+    frc::SmartDashboard::PutString("Game Data Color", ColorName(m_gameDataTargetColor));
+}
+
+void ColorWheel::SpinToColor()
+{
+    SetTargetColorFromGameData();
+
+    if (m_gameDataTargetColor == kBlack)
+    {
+        return;
+    }
+
+    if (m_gameDataTargetColor == kBlueTarget)
+    {
+        m_spinToColor = kRedTarget;
+    }
+    else if (m_gameDataTargetColor == kRedTarget)
+    {
+        m_spinToColor = kBlueTarget;
+    }
+    else if (m_gameDataTargetColor == kGreenTarget)
+    {
+        m_spinToColor = kYellowTarget;
+    }
+    else if (m_gameDataTargetColor == kYellowTarget)
+    {
+        m_spinToColor = kGreenTarget;
+    }
 }

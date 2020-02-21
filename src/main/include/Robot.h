@@ -8,12 +8,9 @@
 #pragma once
 
 #include <string>
-
 #include <frc/TimedRobot.h>
-
 #include <frc/Joystick.h>
 #include <utility/Conditioning.h>
-
 #include <subsystems/Drivetrain.h>
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
@@ -30,6 +27,7 @@ private:
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};
+  frc::Joystick m_coPilot {2};
   cwtech::UniformConditioning m_conditioningDriverJoysticks {};
 
   bool m_passed2ndStage = false;
@@ -38,7 +36,7 @@ private:
   Drivetrain m_drivetrain {};
   Intake m_intake {};
   Shooter m_shooter {};
-  ColorWheel m_colorWheel {};
+  // ColorWheel m_colorWheel {};
 
   enum class States
   {
@@ -53,6 +51,8 @@ private:
 
   void SwitchState(States state);
   void DoCurrentState();
+
+  void ClearPressedAndReleasedOperatorButtons();
 
   void TravelingInit();
   void TravelingPeriodic();
