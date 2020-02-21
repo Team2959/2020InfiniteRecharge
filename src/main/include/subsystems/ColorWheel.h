@@ -7,9 +7,7 @@
 #include <rev/ColorMatch.h>
 #include <frc/Solenoid.h>
 #include <frc/SerialPort.h>
-
 #include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
-
 #include <RobotMap.h>
 
 class ColorWheel
@@ -35,27 +33,33 @@ private:
     // static constexpr frc::Color kGreenRedTarget = frc::Color(0.307, 0.488, 0.203);
     // static constexpr frc::Color kRedYellowTarget = frc::Color(0.393, 0.468, 0.139);
 
+    // hardware components
     rev::ColorSensorV3 m_colorSensor {frc::I2C::Port::kOnboard};
     rev::ColorMatch m_colorMatcher;
+    frc::Solenoid m_engageColorWheel{kColorWheelEngageColorWheel};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
+    frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
+
+    bool m_debugEnable = false;
 
     frc::Color m_countedColor = kGreenTarget;
     frc::Color m_gameDataTargetColor = kBlack;
+    frc::Color m_spinToColor = kBlack;
     frc::Color m_lastColor = kBlack;
     bool m_countColors = false;
     bool m_logColors = false;
     int m_colorCount = -1;
+    const double kSpinSpeed = 0.5;
+    double m_spinSpeed = kSpinSpeed;
 
     std::vector<std::tuple< std::string/* Guessed Color */, double /* Red */, double /* Green */, double /* Blue */ > > m_colorTracking;
 
-    std::string ColorName(frc::Color matchedColor);
-    std::string BlingColor(frc::Color matchedColor);
-    frc::Color GetColorFromName(std::string colorName);
     void SetTargetColorFromGameData();
+    std::string ColorName(frc::Color matchedColor) const;
+    std::string BlingColor(frc::Color matchedColor) const;
+    frc::Color GetColorFromName(std::string colorName) const;
 
-    frc::Solenoid m_engageColorWheel{kColorWheelEngageColorWheel};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
-
-    frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
+    void SetSpinMotorSpeed(double speed);
 
     // Bling Strings
     const std::string kBlingAuto = "AUTO";
@@ -63,13 +67,13 @@ private:
 public:
     void OnRobotInit();
     void UpdateColorSensorValues(int skips);
-
-    void SetSpinMotorSpeed(double speed);
+    
     void EngageColorWheel(bool engage);
+    bool IsColorWheelEngaged() const;
 
-    void ResetCounter();
-    void UpdateCount();
-    int GetCount();
-    frc::Color GetColorToSpinTo();
-    frc::Color GetCurrentColor();
+    // Spin Rotations Controls
+    bool IsSpinning() const;
+    void Spin(bool start);
+
+    void SpinToColor();
 };

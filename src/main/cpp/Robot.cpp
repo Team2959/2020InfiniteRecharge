@@ -6,9 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-
 #include <iostream>
-
 #include <frc/smartdashboard/SmartDashboard.h>
 
 void Robot::RobotInit() 
@@ -46,7 +44,10 @@ void Robot::RobotPeriodic()
     m_skips++;
 }
 
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit()
+{
+    ClearPressedAndReleasedOperatorButtons();
+}
 
 void Robot::AutonomousPeriodic()
 {
@@ -56,10 +57,7 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
     // Remove for competition bot??, right now getting around trigger pressed and disabled mode
-    m_rightDriverJoystick.GetTriggerReleased();
-    m_rightDriverJoystick.GetTriggerPressed();
-    m_rightDriverJoystick.GetRawButtonPressed(2);
-    m_leftDriverJoystick.GetTriggerPressed();
+    ClearPressedAndReleasedOperatorButtons();
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
@@ -73,11 +71,11 @@ void Robot::TeleopPeriodic()
                            m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()) * Drivetrain::kMaxVelocity);
 
     // using the throttle for now
-    auto targetSpeed = (m_rightDriverJoystick.GetThrottle() + 1) * Shooter::kHalfMaxVelocity;
+    auto targetSpeed = (m_leftDriverJoystick.GetThrottle() + 1) * Shooter::kHalfMaxVelocity;
     frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
     m_shooter.SetSpeed(targetSpeed);
 
-    if (m_leftDriverJoystick.GetTriggerPressed())
+    if (m_coPilot.GetRawButtonPressed(6))
     {
         m_shooter.SetAngle(!m_shooter.GetAngle());
     }
@@ -102,6 +100,44 @@ void Robot::TeleopPeriodic()
         {
             SwitchState(Robot::States::Loading);
         }
+    }
+
+    if (m_coPilot.GetRawButtonPressed(2))
+    {
+        if (m_colorWheel.IsColorWheelEngaged())
+        {
+            SwitchState(Robot::States::Traveling);
+        }
+        else
+        {
+            ColorWheelInit();
+        }
+    }
+
+    if (m_coPilot.GetRawButtonPressed(5))
+    {
+        SwitchState(Robot::States::Climbing);
+    }
+
+    if (m_leftDriverJoystick.GetRawButtonReleased(9))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_leftDriverJoystick.GetRawButtonPressed(9))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
+    }
+
+    if (m_leftDriverJoystick.GetRawButtonReleased(11))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_leftDriverJoystick.GetRawButtonPressed(11))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
     }
 
     DoCurrentState();
@@ -133,8 +169,10 @@ void Robot::TravelingInit()
     m_intake.SetIntakeSpeed(0);
     m_intake.SetKickerSpeed(0);
     m_intake.SetConveyorSpeed(0);
+    m_colorWheel.EngageColorWheel(false);
+    m_shooter.SetAngle(false);
 
-    // needs shooter still
+    // needs shooter to idle speed
 }
 
 // Driving is not included in this because that will be just inside TeleopPeriodic
@@ -173,22 +211,54 @@ void Robot::FiringPeriodic()
 
 void Robot::ClimbingInit() 
 {
+    TravelingInit();
 }
 
 void Robot::ClimbingPeriodic()
 {
+    if (m_coPilot.GetRawButton(5))
+    {
+        // extend climb mechanism
+    }
+    else if (m_coPilot.GetRawButton(7))
+    {
+        // raise bot from floor
+    }
+    else
+    {
+        // motor off
+    }
+    
 }
 
 void Robot::ColorWheelInit()
 {
+    TravelingInit();
+    m_colorWheel.EngageColorWheel(true);
 }
 
 void Robot::ColorWheelPeriodic()
 {
+    if (m_colorWheel.IsSpinning())
+    {
+    }
+    else if (m_coPilot.GetRawButtonPressed(3))
+    {
+        m_colorWheel.Spin(true);
+    }
+    else if (m_coPilot.GetRawButtonPressed(1))
+    {
+        m_colorWheel.SpinToColor();
+    }
+    else
+    {
+        SwitchState(Robot::States::Traveling);
+    }
 }
 
 void Robot::LoadingInit()
 {
+    m_shooter.SetAngle(false);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
@@ -230,6 +300,22 @@ void Robot::LoadingPeriodic()
             return;
         }
     }
+}
+
+void Robot::ClearPressedAndReleasedOperatorButtons()
+{
+    m_rightDriverJoystick.GetTriggerReleased();
+    m_rightDriverJoystick.GetTriggerPressed();
+    m_rightDriverJoystick.GetRawButtonPressed(2);
+    m_leftDriverJoystick.GetRawButtonPressed(9);
+    m_leftDriverJoystick.GetRawButtonReleased(9);
+    m_leftDriverJoystick.GetRawButtonPressed(11);
+    m_leftDriverJoystick.GetRawButtonReleased(11);
+    m_coPilot.GetRawButtonPressed(1);
+    m_coPilot.GetRawButtonPressed(2);
+    m_coPilot.GetRawButtonPressed(3);
+    m_coPilot.GetRawButtonPressed(5);
+    m_coPilot.GetRawButtonPressed(6);
 }
 
 #ifndef RUNNING_FRC_TESTS

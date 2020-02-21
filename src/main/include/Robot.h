@@ -8,12 +8,9 @@
 #pragma once
 
 #include <string>
-
 #include <frc/TimedRobot.h>
-
 #include <frc/Joystick.h>
 #include <utility/Conditioning.h>
-
 #include <subsystems/Drivetrain.h>
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
@@ -25,11 +22,12 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-    int m_kickerPulseCounts = 0;
+  int m_kickerPulseCounts = 0;
 
   // Joysticks 
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};
+  frc::Joystick m_coPilot {2};
   cwtech::UniformConditioning m_conditioningDriverJoysticks {};
 
   // Drivetrain controller
@@ -51,6 +49,8 @@ private:
 
   void SwitchState(States state);
   void DoCurrentState();
+
+  void ClearPressedAndReleasedOperatorButtons();
 
   void TravelingInit();
   void TravelingPeriodic();
