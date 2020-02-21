@@ -14,7 +14,7 @@ void Robot::RobotInit()
     m_drivetrain.InitalShowToSmartDashboard();
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
-    m_colorWheel.OnRobotInit();
+    // m_colorWheel.OnRobotInit();
 
     m_conditioningDriverJoysticks.SetDeadband(0.05);
     m_conditioningDriverJoysticks.SetExponent(5);
@@ -38,7 +38,7 @@ void Robot::RobotPeriodic()
         m_intake.OnRobotPeriodic();
     }
 
-    m_colorWheel.UpdateColorSensorValues(m_skips);
+    // m_colorWheel.UpdateColorSensorValues(m_skips);
 
     // Increment the m_skips variable for counting
     m_skips++;
@@ -102,22 +102,22 @@ void Robot::TeleopPeriodic()
         }
     }
 
-    if (m_coPilot.GetRawButtonPressed(2))
-    {
-        if (m_colorWheel.IsColorWheelEngaged())
-        {
-            SwitchState(Robot::States::Traveling);
-        }
-        else
-        {
-            ColorWheelInit();
-        }
-    }
+    // if (m_coPilot.GetRawButtonPressed(2))
+    // {
+    //     if (m_colorWheel.IsColorWheelEngaged())
+    //     {
+    //         SwitchState(Robot::States::Traveling);
+    //     }
+    //     else
+    //     {
+    //         SwitchState(Robot::States::ColorWheel);
+    //     }
+    // }
 
-    if (m_coPilot.GetRawButtonPressed(5))
-    {
-        SwitchState(Robot::States::Climbing);
-    }
+    // if (m_coPilot.GetRawButtonPressed(5))
+    // {
+    //     SwitchState(Robot::States::Climbing);
+    // }
 
     if (m_leftDriverJoystick.GetRawButtonReleased(9))
     {
@@ -169,7 +169,7 @@ void Robot::TravelingInit()
     m_intake.SetIntakeSpeed(0);
     m_intake.SetKickerSpeed(0);
     m_intake.SetConveyorSpeed(0);
-    m_colorWheel.EngageColorWheel(false);
+    // m_colorWheel.EngageColorWheel(false);
     m_shooter.SetAngle(false);
 
     // needs shooter to idle speed
@@ -234,26 +234,26 @@ void Robot::ClimbingPeriodic()
 void Robot::ColorWheelInit()
 {
     TravelingInit();
-    m_colorWheel.EngageColorWheel(true);
+    // m_colorWheel.EngageColorWheel(true);
 }
 
 void Robot::ColorWheelPeriodic()
 {
-    if (m_colorWheel.IsSpinning())
-    {
-    }
-    else if (m_coPilot.GetRawButtonPressed(3))
-    {
-        m_colorWheel.Spin(true);
-    }
-    else if (m_coPilot.GetRawButtonPressed(1))
-    {
-        m_colorWheel.SpinToColor();
-    }
-    else
-    {
-        SwitchState(Robot::States::Traveling);
-    }
+    // if (m_colorWheel.IsSpinning())
+    // {
+    // }
+    // else if (m_coPilot.GetRawButtonPressed(3))
+    // {
+    //     m_colorWheel.Spin(true);
+    // }
+    // else if (m_coPilot.GetRawButtonPressed(1))
+    // {
+    //     m_colorWheel.SpinToColor();
+    // }
+    // else
+    // {
+    //     SwitchState(Robot::States::Traveling);
+    // }
 }
 
 void Robot::LoadingInit()

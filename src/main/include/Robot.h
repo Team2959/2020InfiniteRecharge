@@ -34,7 +34,7 @@ private:
   Drivetrain m_drivetrain {};
   Intake m_intake {};
   Shooter m_shooter {};
-  ColorWheel m_colorWheel {};
+  // ColorWheel m_colorWheel {};
 
   enum class States
   {
