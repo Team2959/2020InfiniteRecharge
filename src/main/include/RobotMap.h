@@ -33,3 +33,11 @@ const int kKickerSensor = 2;
 
 const int kColorWheelEngageColorWheel = 1;
 const int kColorWheelSpinMotor = 12;
+
+// Joystick Buttons
+const int kIntakeToggle = 9;
+const int kReverseConveyor = 9;
+const int kReverseIntake = 11;
+const int kFire = 1;
+const int kSetAngle = 6;
+const int kQuickTurn = 2;

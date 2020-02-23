@@ -10,6 +10,7 @@
 #include <string>
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
+#include <frc/buttons/JoystickButton.h>
 #include <utility/Conditioning.h>
 #include <subsystems/Drivetrain.h>
 #include <subsystems/Intake.h>
@@ -28,7 +29,15 @@ private:
   frc::Joystick m_leftDriverJoystick {0};
   frc::Joystick m_rightDriverJoystick {1};
   frc::Joystick m_coPilot {2};
-  cwtech::UniformConditioning m_conditioningDriverJoysticks {};
+
+  frc::JoystickButton m_quickTurn {&m_rightDriverJoystick, kQuickTurn};
+
+  cwtech::UniformConditioning m_driverLeftConditioning {}; // Left Joystick or Speed
+  cwtech::UniformConditioning m_driverRightConditioning {}; // Right Joystick or Rotation
+  
+  const double kDefaultDeadband = 0.05;
+  const double kDefaultOutputOffset = 0.025;
+  const double kDefaultExponent = 3.0;
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};

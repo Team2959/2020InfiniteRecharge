@@ -32,7 +32,7 @@ private:
 
     bool m_debugEnable = false;
 
-    const double kFullIntakeSpeed = 0.5;
+    const double kFullIntakeSpeed = 0.75;
     const double kFullConveyorSpeed = 0.6;
     const double kFullKickerSpeed = 0.3;
     const double kFullConveyorSpeedWhenLoading = 0.9;

@@ -16,8 +16,24 @@ void Robot::RobotInit()
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
 
-    m_conditioningDriverJoysticks.SetDeadband(0.05);
-    m_conditioningDriverJoysticks.SetExponent(5);
+    m_driverLeftConditioning.SetDeadband(kDefaultDeadband);
+    m_driverLeftConditioning.SetRange(kDefaultOutputOffset, 1.0);
+    m_driverLeftConditioning.SetExponent(kDefaultExponent);
+
+    m_driverRightConditioning.SetDeadband(kDefaultDeadband);
+    m_driverRightConditioning.SetRange(kDefaultOutputOffset, 1.0);
+    m_driverRightConditioning.SetExponent(kDefaultExponent);
+
+    frc::SmartDashboard::PutNumber("Left (Speed) Deadband", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Left (Speed) Output Offset", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Left (Speed) Exponent", kDefaultDeadband);
+
+    frc::SmartDashboard::PutNumber("Right (Speed) Deadband", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Right (Speed) Output Offset", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Right (Speed) Exponent", kDefaultDeadband);
+
+    frc::SmartDashboard::PutBoolean("Curvature Drive", true);
+    frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 }
 
 void Robot::RobotPeriodic() 
@@ -26,6 +42,23 @@ void Robot::RobotPeriodic()
     {
         // update PID values from the SmartDashboard
         m_drivetrain.UpdateFromSmartDashboard();
+        if (frc::SmartDashboard::GetBoolean("Update Conditioning", false)) {
+            double ldb = frc::SmartDashboard::GetNumber("Left (Speed) Deadband", kDefaultDeadband);
+            double loo = frc::SmartDashboard::GetNumber("Left (Speed) Output Offset", kDefaultDeadband);
+            double lex = frc::SmartDashboard::GetNumber("Left (Speed) Exponent", kDefaultDeadband);
+
+            double rdb = frc::SmartDashboard::GetNumber("Right (Speed) Deadband", kDefaultDeadband);
+            double roo = frc::SmartDashboard::GetNumber("Right (Speed) Output Offset", kDefaultDeadband);
+            double rex = frc::SmartDashboard::GetNumber("Right (Speed) Exponent", kDefaultDeadband);
+
+            m_driverLeftConditioning.SetDeadband(ldb);
+            m_driverLeftConditioning.SetRange(loo, 1.0);
+            m_driverLeftConditioning.SetExponent(lex);
+
+            m_driverRightConditioning.SetDeadband(rdb);
+            m_driverRightConditioning.SetRange(roo, 1.0);
+            m_driverRightConditioning.SetExponent(rex);
+        }
     }
     if (m_skips % 51)
     {
@@ -67,15 +100,28 @@ void Robot::TeleopPeriodic()
 {
     m_intake.ProcessStickySwitches();
 
-    m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()) * Drivetrain::kMaxVelocity,
-                           m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()) * Drivetrain::kMaxVelocity);
+    //m_drivetrain.SetSpeeds(m_conditioningDriverJoysticks.Condition(m_leftDriverJoystick.GetY()) * Drivetrain::kMaxVelocity,
+    //                       m_conditioningDriverJoysticks.Condition(m_rightDriverJoystick.GetY()) * Drivetrain::kMaxVelocity);
+    bool curvatureDrive = frc::SmartDashboard::GetBoolean("Curvature Drive", false);
+    if (curvatureDrive) {
+        m_drivetrain.CurvatureDrive(
+            m_driverLeftConditioning.Condition(-m_rightDriverJoystick.GetY()),
+            m_driverRightConditioning.Condition(m_rightDriverJoystick.GetTwist()),
+            m_quickTurn.Get()
+        );
+    } else {
+        m_drivetrain.TankDrive(
+            m_driverLeftConditioning.Condition(-m_leftDriverJoystick.GetY()),
+            m_driverRightConditioning.Condition(-m_rightDriverJoystick.GetY())
+        );
+    }
 
     // using the throttle for now
     auto targetSpeed = (m_leftDriverJoystick.GetThrottle() + 1) * Shooter::kHalfMaxVelocity;
     frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
     m_shooter.SetSpeed(targetSpeed);
 
-    if (m_coPilot.GetRawButtonPressed(6))
+    if (m_coPilot.GetRawButtonPressed(kSetAngle))
     {
         m_shooter.SetAngle(!m_shooter.GetAngle());
     }
@@ -90,7 +136,7 @@ void Robot::TeleopPeriodic()
         SwitchState(Robot::States::Firing);
     }
 
-    if (m_rightDriverJoystick.GetRawButtonPressed(2))
+    if (m_rightDriverJoystick.GetRawButtonPressed(kIntakeToggle))
     {
         if (m_intake.IsIntakeRunning())
         {
@@ -119,22 +165,22 @@ void Robot::TeleopPeriodic()
     //     SwitchState(Robot::States::Climbing);
     // }
 
-    if (m_leftDriverJoystick.GetRawButtonReleased(9))
+    if (m_leftDriverJoystick.GetRawButtonReleased(kReverseConveyor))
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_leftDriverJoystick.GetRawButtonPressed(9))
+    else if (m_leftDriverJoystick.GetRawButtonPressed(kReverseConveyor))
     {
         SwitchState(Robot::States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
         m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
     }
 
-    if (m_leftDriverJoystick.GetRawButtonReleased(11))
+    if (m_leftDriverJoystick.GetRawButtonReleased(kReverseIntake))
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_leftDriverJoystick.GetRawButtonPressed(11))
+    else if (m_leftDriverJoystick.GetRawButtonPressed(kReverseIntake))
     {
         SwitchState(Robot::States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
@@ -260,7 +306,7 @@ void Robot::LoadingInit()
 {
     m_shooter.SetAngle(false);
     m_intake.SetConveyorSpeed(0);
-    m_intake.SetKickerSpeed(0);
+    m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
     m_powercellsCounted = 0;
 }
@@ -272,14 +318,14 @@ void Robot::LoadingPeriodic()
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
         m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
 
-        if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
+        /*if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
         {
             m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.5);
         }
         else
         {
             m_intake.SetKickerSpeed(0);
-        }
+        }*/
     }
 
     if (!m_intake.GetSensor(Intake::SensorLocation::Kicker))
@@ -289,7 +335,7 @@ void Robot::LoadingPeriodic()
 
     if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
     {
-        m_intake.SetKickerSpeed(0);
+        //m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
         m_powercellsCounted++;
