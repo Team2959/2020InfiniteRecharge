@@ -8,6 +8,8 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
+#include <frc/Drive/DifferentialDrive.h>
+#include <frc/SpeedControllerGroup.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
 #include <frc/geometry/Pose2d.h>
@@ -36,6 +38,11 @@ private:
   rev::CANPIDController m_rightPID{m_rightPrimary};
   rev::CANEncoder m_rightEncoder{m_rightPrimary};
 
+  frc::SpeedControllerGroup m_leftGroup {m_leftPrimary};
+  frc::SpeedControllerGroup m_rightGroup {m_rightPrimary};
+
+  frc::DifferentialDrive m_differentialDrive {m_leftGroup, m_rightGroup};
+
   // constructing the navX device using the MXP port
   AHRS m_navX{frc::SPI::kMXP};
 
@@ -47,7 +54,12 @@ private:
   const std::string kFF = kName + "Feed Forward";
   const std::string kIZone = kName + "I Zone";
 
+  const double kOpenLoopRampRate = 0.25;
+  const double kCurrentLimit = 50;
+
   bool m_debugEnable;
+
+  void SetupSparkMax(rev::CANSparkMax* controller);
 
 public:
   static constexpr double kMaxVelocity = 4500; // 5676.0;
@@ -57,10 +69,7 @@ public:
   // Driving
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
   void SetSpeeds(double left, double right);
-
-  // SmartDashboard
-  // bool m_smartDashboardEnabled = true;
-  // may not be used --^
+  void CurvatureDrive(double speed, double rotation, bool quickTurn);
 
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();
