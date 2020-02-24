@@ -19,6 +19,8 @@ void Intake::OnRobotInit()
 void Intake::OnRobotPeriodic()
 {
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+    frc::SmartDashboard::PutBoolean("New Power Cell", GetSensor(Intake::SensorLocation::NewPowercell));
+    frc::SmartDashboard::PutBoolean("Secured Power Cell", GetSensor(Intake::SensorLocation::SecuredPowercell));
     frc::SmartDashboard::PutBoolean("Kicker Sensor", GetSensor(Intake::SensorLocation::Kicker));
 
     if (m_debugEnable == false) return;
