@@ -69,12 +69,7 @@ public:
   // Driving
   void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
   void SetSpeeds(double left, double right);
-  void TankDrive(double left, double right);
   void CurvatureDrive(double speed, double rotation, bool quickTurn);
-
-  // SmartDashboard
-  // bool m_smartDashboardEnabled = true;
-  // may not be used --^
 
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();

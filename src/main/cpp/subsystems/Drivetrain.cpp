@@ -27,7 +27,8 @@ Drivetrain::Drivetrain()
     SetupSparkMax(&m_rightFollower2);
 }
 
-void Drivetrain::SetupSparkMax(rev::CANSparkMax* controller) {
+void Drivetrain::SetupSparkMax(rev::CANSparkMax* controller)
+{
     controller->ClearFaults();
     controller->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
     controller->SetSmartCurrentLimit(kCurrentLimit);
@@ -48,11 +49,8 @@ void Drivetrain::SetSpeeds(double left, double right)
     m_rightPID.SetReference(right, rev::ControlType::kVelocity);
 }
 
-void Drivetrain::TankDrive(double left, double right) {
-    m_differentialDrive.TankDrive(left, right);
-}
-
-void Drivetrain::CurvatureDrive(double speed, double rotation, bool quickTurn) {
+void Drivetrain::CurvatureDrive(double speed, double rotation, bool quickTurn)
+{
     m_differentialDrive.CurvatureDrive(speed, rotation, quickTurn);
 }
 

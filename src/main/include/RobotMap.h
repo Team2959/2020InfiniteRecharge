@@ -35,9 +35,16 @@ const int kColorWheelEngageColorWheel = 1;
 const int kColorWheelSpinMotor = 12;
 
 // Joystick Buttons
-const int kIntakeToggle = 9;
-const int kReverseConveyor = 9;
-const int kReverseIntake = 11;
+// driver
 const int kFire = 1;
-const int kSetAngle = 6;
 const int kQuickTurn = 2;
+const int kIntakeToggle = 9;
+// co-pilot
+const int kGoToColor = 1;
+const int kEngageColorWheel = 2;
+const int kSpinColorWheel = 3;
+const int kClimbExtend = 5;
+const int kSetAngle = 6;
+const int kClimbRetract = 7;
+const int kReverseConveyor = 9;
+const int kReverseIntake = 10;
