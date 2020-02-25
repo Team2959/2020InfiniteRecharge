@@ -8,7 +8,7 @@
 #pragma once
 
 #include <rev/CANSparkMax.h>
-#include <frc/Drive/DifferentialDrive.h>
+#include <frc/drive/DifferentialDrive.h>
 #include <frc/SpeedControllerGroup.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>

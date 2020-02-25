@@ -101,14 +101,11 @@ void Robot::TeleopPeriodic()
     m_intake.ProcessStickySwitches();
 
     m_drivetrain.CurvatureDrive(
-        m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
-        m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
-        m_quickTurn.Get());
+    m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
+    m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
+    m_quickTurn.Get());
 
-    // using the throttle for now
-    auto targetSpeed = (m_driverJoystick.GetThrottle() + 1) * Shooter::kHalfMaxVelocity;
-    frc::SmartDashboard::PutNumber("Throttle Target Speed", targetSpeed);
-    m_shooter.SetSpeed(targetSpeed);
+    m_shooter.SetSpeedFromThrottle(m_driverJoystick.GetThrottle());
 
     if (m_coPilot.GetRawButtonPressed(kSetAngle))
     {

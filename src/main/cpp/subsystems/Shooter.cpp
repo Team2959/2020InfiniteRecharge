@@ -14,6 +14,8 @@ void Shooter::OnRobotInit()
     m_PID.SetFF(0.000193);
     
     SmartDashboardInit();
+
+    ComputeSlopeAndOffset();
 }
 
 void Shooter::SmartDashboardInit()
@@ -34,6 +36,9 @@ void Shooter::SmartDashboardInit()
     frc::SmartDashboard::PutNumber(kCloseSpeed, kCloseSpeedDefault);
     // Applied Output
     frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
+    // Min and Max Throttle Speeds
+    frc::SmartDashboard::PutNumber(kMaxThrottleSpeed, kMaxThrottleSpeedDefault);
+    frc::SmartDashboard::PutNumber(kMinThrottleSpeed, kMinThrottleSpeedDefault);
 }
 
 void Shooter::OnRobotPeriodic()
@@ -45,6 +50,10 @@ void Shooter::OnRobotPeriodic()
 
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
+
+    m_maxThrottleRange = frc::SmartDashboard::GetNumber(kMaxThrottleSpeed, kMaxThrottleSpeedDefault);
+    m_minThrottleRange = frc::SmartDashboard::GetNumber(kMinThrottleSpeed, kMinThrottleSpeedDefault);
+    ComputeSlopeAndOffset();
 
     // Get the values only once to optimize for speed
     auto currentP = m_PID.GetP();
@@ -77,8 +86,15 @@ void Shooter::OnRobotPeriodic()
 void Shooter::SetSpeed(double speed)
 {
     speed = std::fmax(speed, 0);
+    frc::SmartDashboard::PutNumber("Throttle Target Speed", speed);
     m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
     m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
+}
+
+void Shooter::SetSpeedFromThrottle(double throttlePosition)
+{
+    double targetSpeed = (m_slopeOfThrottleRange * throttlePosition) + m_offsetOfThrottleRange; 
+    SetSpeed(targetSpeed);
 }
 
 double Shooter::GetSpeed()
@@ -99,4 +115,10 @@ bool Shooter::GetAngle()
 bool Shooter::CloseToSpeed()
 {
     return std::fabs(GetSpeed() - m_targetSpeed) <= m_closeSpeed;
+}
+
+void Shooter::ComputeSlopeAndOffset()
+{
+    m_slopeOfThrottleRange = (m_maxThrottleRange - m_minThrottleRange) / (2 - 0.5);
+    m_offsetOfThrottleRange = m_minThrottleRange - (m_slopeOfThrottleRange * 0.5);
 }

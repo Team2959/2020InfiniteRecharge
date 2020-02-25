@@ -28,15 +28,25 @@ private:
     const std::string kAngle = kName + "Angle";
     const std::string kCloseSpeed = kName + "Close Speed";
     const std::string kAppliedOutput = kName + "Applied Output";
+    const std::string kMaxThrottleSpeed = kName + "Max Throttle Speed";
+    const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
     const double kCloseSpeedDefault = 200;
+    const double kMaxThrottleSpeedDefault = 2500;
+    const double kMinThrottleSpeedDefault = 1500;
 
     double m_closeSpeed = kCloseSpeedDefault;
     double m_targetSpeed = 0;
 
+    double m_maxThrottleRange = kMaxThrottleSpeedDefault;
+    double m_minThrottleRange = kMinThrottleSpeedDefault;
+    double m_slopeOfThrottleRange = 1;
+    double m_offsetOfThrottleRange = 0;
+
     bool m_debugEnable;
 
     void SmartDashboardInit();
+    void ComputeSlopeAndOffset();
 
 public:
     static constexpr double kMaxVelocity = 4500.0;
@@ -48,6 +58,7 @@ public:
     void OnRobotPeriodic();
 
     void SetSpeed(double speed);
+    void SetSpeedFromThrottle(double throttlePositon);
     double GetSpeed();
     void SetAngle(bool closeShot);
     bool GetAngle();
