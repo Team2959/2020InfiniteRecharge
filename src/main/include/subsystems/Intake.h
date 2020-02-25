@@ -2,10 +2,8 @@
 
 #include <frc/DigitalInput.h>
 #include <ctre/phoenix/motorcontrol/can/WPI_VictorSPX.h>
-
-#include <RobotMap.h>
-
 #include <utility/StickySwitch.h>
+#include <RobotMap.h>
 
 class Intake
 {
@@ -14,9 +12,9 @@ private:
     cwtech::StickySwitch m_securedPowercellSensor {kSecuredPowercellSensor};
     cwtech::StickySwitch m_kickerSensor {kKickerSensor};
 
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intakePrimary {kIntakePrimary};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kickerMotor {kKicker};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyorPrimary {kConveyorPrimary};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_intake {kIntakeVictorSpxCanId};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_kicker {kKickerVictorSpxCanId};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyor {kConveyorVictorSpxCanId};
     
     // Smart Dashboard
     const std::string kDebug = "Intake/Conveyor: Debug";

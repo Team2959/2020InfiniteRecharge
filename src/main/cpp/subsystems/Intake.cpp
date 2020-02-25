@@ -67,19 +67,9 @@ bool Intake::GetSensorPressed(Intake::SensorLocation location)
     return false;
 }
 
-void Intake::SetIntakeSpeed(double speed)
+bool Intake::IsIntakeRunning() const
 {
-    m_intakePrimary.Set(speed);
-}
-
-void Intake::SetConveyorSpeed(double speed)
-{
-    m_conveyorPrimary.Set(speed);
-}
-
-void Intake::SetKickerSpeed(double speed)
-{
-    m_kickerMotor.Set(-speed);
+    return m_intake.Get() != 0.0;
 }
 
 double Intake::GetIntakeFullSpeed() const
@@ -87,14 +77,14 @@ double Intake::GetIntakeFullSpeed() const
     return m_intakeSpeed;
 }
 
+void Intake::SetIntakeSpeed(double speed)
+{
+    m_intake.Set(speed);
+}
+
 double Intake::GetConveyorFullSpeed() const
 {
     return m_conveyorSpeed;
-}
-
-double Intake::GetKickerFullSpeed() const
-{
-    return m_kickerSpeed;
 }
 
 double Intake::GetConveyorFullSpeedWhenLoading() const
@@ -102,9 +92,19 @@ double Intake::GetConveyorFullSpeedWhenLoading() const
     return m_conveyorSpeedWhenLoading;
 }
 
-bool Intake::IsIntakeRunning() const
+void Intake::SetConveyorSpeed(double speed)
 {
-    return m_intakePrimary.Get() != 0.0;
+    m_conveyor.Set(speed);
+}
+
+double Intake::GetKickerFullSpeed() const
+{
+    return m_kickerSpeed;
+}
+
+void Intake::SetKickerSpeed(double speed)
+{
+    m_kicker.Set(-speed);
 }
 
 int Intake::GetKickerPulseCycles() const

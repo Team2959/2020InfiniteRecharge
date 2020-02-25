@@ -14,7 +14,7 @@ private:
     rev::CANEncoder m_encoder {m_primary};
     rev::CANPIDController m_PID {m_primary};
 
-    frc::Solenoid m_angleAdjuster {kShooterPnuematicsAngleAdjuster};
+    frc::Solenoid m_angleAdjuster {kShooterAngleAdjusterPcmId};
 
     // Smart Dashboard
     const std::string kName = "Shooter: ";
@@ -31,13 +31,13 @@ private:
     const std::string kMaxThrottleSpeed = kName + "Max Throttle Speed";
     const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
-    const double kCloseSpeedDefault = 200;
+    const double kMaxVelocity = 4500;
     const double kMaxThrottleSpeedDefault = 2500;
     const double kMinThrottleSpeedDefault = 1500;
+    const double kCloseSpeedDefault = 200;
 
     double m_closeSpeed = kCloseSpeedDefault;
     double m_targetSpeed = 0;
-
     double m_maxThrottleRange = kMaxThrottleSpeedDefault;
     double m_minThrottleRange = kMinThrottleSpeedDefault;
     double m_slopeOfThrottleRange = 1;
@@ -48,20 +48,18 @@ private:
     void SmartDashboardInit();
     void ComputeSlopeAndOffset();
 
-public:
-    static constexpr double kMaxVelocity = 4500.0;
-    static constexpr double kHalfMaxVelocity = 4500.0 / 2.0;
+    double GetSpeed();
+    void SetSpeed(double speed);
 
+public:
     Shooter();
 
     void OnRobotInit();
     void OnRobotPeriodic();
 
-    void SetSpeed(double speed);
+    bool CloseToSpeed();
     void SetSpeedFromThrottle(double throttlePositon);
-    double GetSpeed();
+
     void SetAngle(bool closeShot);
     bool GetAngle();
-
-    bool CloseToSpeed();
 };

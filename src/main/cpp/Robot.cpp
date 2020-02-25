@@ -37,7 +37,7 @@ void Robot::RobotInit()
 
 void Robot::RobotPeriodic() 
 {
-    if (m_skips % 50)
+    if (m_skips % 47)
     {
         // update PID values from the SmartDashboard
         m_drivetrain.UpdateFromSmartDashboard();
@@ -101,9 +101,9 @@ void Robot::TeleopPeriodic()
     m_intake.ProcessStickySwitches();
 
     m_drivetrain.CurvatureDrive(
-    m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
-    m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
-    m_quickTurn.Get());
+        m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
+        m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
+        m_quickTurn.Get());
 
     m_shooter.SetSpeedFromThrottle(m_driverJoystick.GetThrottle());
 
@@ -115,7 +115,7 @@ void Robot::TeleopPeriodic()
     // When Firing Done
     if (m_driverJoystick.GetTriggerReleased())
     {
-        SwitchState(Robot::States::Loading);
+        SwitchState(Robot::States::Traveling);
     }
     else if (m_shooter.CloseToSpeed() && m_driverJoystick.GetTriggerPressed())
     {
@@ -207,9 +207,9 @@ void Robot::TravelingInit()
     // needs shooter to idle speed
 }
 
-// Driving is not included in this because that will be just inside TeleopPeriodic
 void Robot::TravelingPeriodic() 
 {
+    // Driving is not included in this because that will be just inside TeleopPeriodic
 }
 
 void Robot::FiringInit() 

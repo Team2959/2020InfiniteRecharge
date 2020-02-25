@@ -16,23 +16,20 @@ const int kDrivetrainRightFollower2 = 6;
 // Shooter SparkMax CAN IDs ===================================
 const int kShooterPrimary = 7;
 const int kShooterFollower = 8;
-// Intake Picker-upper Victor SPX Motor's port
-const int kIntakePrimary = 10;
-// Kicker Victor SPX Motor's port
-const int kKicker = 11;
-// Conveyor Victor SPX Motor's ports
-const int kConveyorPrimary = 13;
+// Victor SPX CAN IDs
+const int kIntakeVictorSpxCanId = 10;
+const int kKickerVictorSpxCanId = 11;
+const int kColorWheelVictorSpxCanId = 12;
+const int kConveyorVictorSpxCanId = 13;
 
 // Pnuematics Control Module
-const int kShooterPnuematicsAngleAdjuster = 0;
+const int kShooterAngleAdjusterPcmId = 0;
+const int kColorWheelEngagePcmId = 1;
 
 // Intake Sensor Digital IO ports
 const int kNewPowercellSensor = 0;
 const int kSecuredPowercellSensor = 1;
 const int kKickerSensor = 2;
-
-const int kColorWheelEngageColorWheel = 1;
-const int kColorWheelSpinMotor = 12;
 
 // Joystick Buttons
 // driver

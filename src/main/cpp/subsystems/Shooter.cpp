@@ -6,6 +6,8 @@ Shooter::Shooter()
     // Have the follower follow the primary except invert 
     // because they are opposite of one another
     m_follower.Follow(m_primary, true);
+
+    ComputeSlopeAndOffset();
 }
 
 void Shooter::OnRobotInit()
@@ -14,8 +16,6 @@ void Shooter::OnRobotInit()
     m_PID.SetFF(0.000193);
     
     SmartDashboardInit();
-
-    ComputeSlopeAndOffset();
 }
 
 void Shooter::SmartDashboardInit()
@@ -45,8 +45,6 @@ void Shooter::OnRobotPeriodic()
 {
     frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
     frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
-    // Close Speed
-    m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
@@ -54,6 +52,9 @@ void Shooter::OnRobotPeriodic()
     m_maxThrottleRange = frc::SmartDashboard::GetNumber(kMaxThrottleSpeed, kMaxThrottleSpeedDefault);
     m_minThrottleRange = frc::SmartDashboard::GetNumber(kMinThrottleSpeed, kMinThrottleSpeedDefault);
     ComputeSlopeAndOffset();
+
+    // Close Speed
+    m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 
     // Get the values only once to optimize for speed
     auto currentP = m_PID.GetP();
@@ -83,33 +84,9 @@ void Shooter::OnRobotPeriodic()
     }
 }
 
-void Shooter::SetSpeed(double speed)
-{
-    speed = std::fmax(speed, 0);
-    frc::SmartDashboard::PutNumber("Throttle Target Speed", speed);
-    m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
-    m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
-}
-
-void Shooter::SetSpeedFromThrottle(double throttlePosition)
-{
-    double targetSpeed = (m_slopeOfThrottleRange * throttlePosition) + m_offsetOfThrottleRange; 
-    SetSpeed(targetSpeed);
-}
-
 double Shooter::GetSpeed()
 {
     return m_encoder.GetVelocity();
-}
-
-void Shooter::SetAngle(bool closeShot)
-{
-    m_angleAdjuster.Set(closeShot);
-}
-
-bool Shooter::GetAngle()
-{
-    return m_angleAdjuster.Get();
 }
 
 bool Shooter::CloseToSpeed()
@@ -121,4 +98,36 @@ void Shooter::ComputeSlopeAndOffset()
 {
     m_slopeOfThrottleRange = (m_maxThrottleRange - m_minThrottleRange) / (2 - 0.5);
     m_offsetOfThrottleRange = m_minThrottleRange - (m_slopeOfThrottleRange * 0.5);
+}
+
+void Shooter::SetSpeedFromThrottle(double throttlePosition)
+{
+    throttlePosition += 1;  // shift from -1..1 to 0..2 for range
+    // 0..0.5, set shooter speed to 0 
+    auto targetSpeed = 0.0;
+    if (throttlePosition >= 0.5)
+    {
+        // do linear interpolation between minimum and maximum throttle speeds
+        targetSpeed = (m_slopeOfThrottleRange * throttlePosition) + m_offsetOfThrottleRange; 
+    }
+    SetSpeed(targetSpeed);
+}
+
+void Shooter::SetSpeed(double speed)
+{
+    speed = std::fmax(speed, 0);
+    frc::SmartDashboard::PutNumber("Throttle Target Speed", speed);
+    // invert speed for primary motor direction
+    m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
+    m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
+}
+
+void Shooter::SetAngle(bool closeShot)
+{
+    m_angleAdjuster.Set(closeShot);
+}
+
+bool Shooter::GetAngle()
+{
+    return m_angleAdjuster.Get();
 }

@@ -36,8 +36,8 @@ private:
     // hardware components
     rev::ColorSensorV3 m_colorSensor {frc::I2C::Port::kOnboard};
     rev::ColorMatch m_colorMatcher;
-    frc::Solenoid m_engageColorWheel{kColorWheelEngageColorWheel};
-    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelSpinMotor};
+    frc::Solenoid m_engageColorWheel{kColorWheelEngagePcmId};
+    ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelVictorSpxCanId};
     frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
 
     bool m_debugEnable = false;

@@ -6,7 +6,6 @@
 #include <sys/stat.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/DriverStation.h>
-
 #include <subsystems/ColorWheel.h>
 
 inline bool exists (const std::string& filename)
@@ -59,7 +58,10 @@ void ColorWheel::UpdateColorSensorValues(int skips)
             m_colorCount = 0;
         }
 
-        m_bling.Write(BlingColor(matchedColor));
+        if (skips % 3 == 0)
+        {
+            m_bling.Write(BlingColor(matchedColor));
+        }
 
         if (m_logColors)
         {
@@ -141,7 +143,7 @@ void ColorWheel::UpdateColorSensorValues(int skips)
         }
     }
 
-    if (skips % 50 == 0)
+    if (skips % 49 == 0)
     {
         frc::SmartDashboard::PutString("Detected Color", ColorName(matchedColor));
 
