@@ -72,6 +72,9 @@ private:
   void LoadingInit();
   void LoadingPeriodic();
 
+  static double GetDistanceAngle(double distance);
+  static std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
+
 public:
   void RobotInit() override;
   void RobotPeriodic() override;

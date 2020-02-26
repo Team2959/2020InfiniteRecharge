@@ -9,6 +9,8 @@
 #include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+static const double PI{ 3.14159265359 };
+
 void Robot::RobotInit() 
 {
     m_drivetrain.InitalShowToSmartDashboard();
@@ -75,6 +77,43 @@ void Robot::RobotPeriodic()
 
     // Increment the m_skips variable for counting
     m_skips++;
+}
+
+// TO DO:  Implement code that calls GetDistanceAngle & GetMotorOutputForAimAndDrive and uses their results
+// TO DO:  Specify correct values for CameraAngle, CameraHeight, and TargetHeight
+// Adapted from http://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+double Robot::GetDistanceAngle(double distance)
+{
+    static const double CameraAngle{ 45.0 };    // Angle in degrees of the vertical elevation of the camera
+    static const double CameraHeight{ 1.0 };    // Height in meters of the camera above the floor.
+    static const double TargetHeight{ 3.0 };    // Height in meters of the target above the floor.
+    if(distance <= 0.0)                         // Protect against non-positive distances
+        return -90.0;
+    return std::atan((TargetHeight - CameraHeight) / distance) * 180.0 / PI - CameraAngle;  // Do some trigonometry to compute the angle that corresponds to the requested distance
+}
+
+// TO DO:  Specify correct KpAim, KpDistance, & MinAimCommand values
+// Adapted from https://docs.limelightvision.io/en/latest/cs_aimandrange.html
+std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
+{
+    static const double KpAim{ -0.1 };              // These are the coefficients for tuning the response to our target error
+    static const double KpDistance{ -0.1 };
+    static const double MinAimCommand{ 0.05 };      // The minimum amount of response if we are turning
+    std::shared_ptr<NetworkTable>   table{ NetworkTable::GetTable("limelight") };   // This is the table receiving targetting updates from the camera
+    auto                            tx{ table->GetNumber("tx", 0.0) };              // The horizontal offset in degrees of the target from our crosshairs
+    auto                            ty{ table->GetNumber("ty", 0.0) };              // The vertical offset in degrees of the target from our crosshairs
+    auto                            heading_error{ 0.0 - tx };                      // Aim for tx == 0.0f
+    auto                            distance_error{ targetY - ty };                 // Aim for ty == targetY
+    auto                            distance_adjust{ KpDistance * distance_error }; // Compute our distance adjustment, and
+    double                          steering_adjust;                                // Will hold our steering adjustment
+
+    if (tx > 1.0f)                                                                  // If the target is to the right, we need to turn to the left
+        steering_adjust = KpAim * heading_error - MinAimCommand;
+    else if (tx < 1.0f)                                                             // If the target is to the left, we need to turn to the right
+        steering_adjust = KpAim * heading_error + MinAimCommand;
+    else                                                                            // Don't turn if +/- 1.0 degrees from crosshairs
+        steering_adjust = 0.0f;
+    return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
 }
 
 void Robot::AutonomousInit()
