@@ -190,22 +190,22 @@ void Robot::TeleopPeriodic()
     //     SwitchState(Robot::States::Climbing);
     // }
 
-    if (m_driverJoystick.GetRawButtonReleased(kReverseConveyor))
+    if (m_coPilot.GetRawButtonReleased(kReverseConveyor))
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_driverJoystick.GetRawButtonPressed(kReverseConveyor))
+    else if (m_coPilot.GetRawButtonPressed(kReverseConveyor))
     {
         SwitchState(Robot::States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
         m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
     }
 
-    if (m_driverJoystick.GetRawButtonReleased(kReverseIntake))
+    if (m_coPilot.GetRawButtonReleased(kReverseIntake))
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_driverJoystick.GetRawButtonPressed(kReverseIntake))
+    else if (m_coPilot.GetRawButtonPressed(kReverseIntake))
     {
         SwitchState(Robot::States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
@@ -340,17 +340,17 @@ void Robot::LoadingPeriodic()
 {
     if(m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell))
     {
-        m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
-        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
-
-        /*if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
+        if(m_powercellsCounted == 4)
         {
-            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.5);
+            m_powercellsCounted++;
+            SwitchState(Robot::States::Traveling);
+            return;
         }
         else
         {
-            m_intake.SetKickerSpeed(0);
-        }*/
+            m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
+            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
+        }
     }
 
     if (!m_intake.GetSensor(Intake::SensorLocation::Kicker))
@@ -360,7 +360,6 @@ void Robot::LoadingPeriodic()
 
     if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
     {
-        //m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
         m_powercellsCounted++;
