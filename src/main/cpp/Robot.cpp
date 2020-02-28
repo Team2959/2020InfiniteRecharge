@@ -135,27 +135,8 @@ void Robot::TeleopInit()
     m_intake.SetKickerSpeed(0);
 }
 
-std::string Robot::GetIntakeStateText()
-{
-    if(m_intake.IsIntakeRunning())
-        return "On";
-    else
-        return "Off";
-}
-
-std::string Robot::GetHoodSwitchStateText()
-{
-    if(m_shooter.GetAngle())
-        return "Close";
-    else
-        return "Far";    
-}
-
 void Robot::TeleopPeriodic() 
 {
-    frc::SmartDashboard::PutString("Hood State", GetHoodSwitchStateText());
-    frc::SmartDashboard::PutString("Intake", GetIntakeStateText());
-
     m_intake.ProcessStickySwitches();
 
     m_drivetrain.CurvatureDrive(

@@ -24,6 +24,7 @@ private:
     const std::string kConveyorSpeed = kConveyorName + "Speed";
     const std::string kKickerSpeed = kKickerName + "Speed";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
+    const std::string kIntakeState = kIntakeName + "State";
     const std::string kKickerPulseCycles = kKickerName + "Pulse Cycles";
     const std::string kKickerPauseCycles = kKickerName + "Pause Cycles";
     const std::string kConveyorSpeedWhenLoading = kConveyorName + "Speed When Loading";
@@ -42,6 +43,8 @@ private:
     double m_kickerSpeed = kFullKickerSpeed;
     int m_PulseCycles = kDefaultKickerPulseCycles;
     int m_PauseCycles = kDefaultKickerPauseCycles;
+
+    std::string GetIntakeStateText();
 
 public:
     enum class SensorLocation

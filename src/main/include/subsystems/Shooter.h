@@ -25,7 +25,7 @@ private:
     const std::string kIZone = kName + "I Zone";
     const std::string kSpeed = kName + "Speed";
     const std::string kTargetSpeed = kName + "Target Speed";
-    const std::string kAngle = kName + "Angle";
+    const std::string kAngle = kName + "Hood Angle";
     const std::string kCloseSpeed = kName + "Close Speed";
     const std::string kAppliedOutput = kName + "Applied Output";
     const std::string kMaxThrottleSpeed = kName + "Max Throttle Speed";
@@ -47,6 +47,7 @@ private:
 
     void SmartDashboardInit();
     void ComputeSlopeAndOffset();
+    std::string GetHoodSwitchStateText();
 
     double GetSpeed();
     void SetSpeed(double speed);

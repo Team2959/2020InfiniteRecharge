@@ -30,8 +30,6 @@ void Shooter::SmartDashboardInit()
     // Shooter
     frc::SmartDashboard::PutNumber(kSpeed, 0);
     frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
-    // Angle
-    frc::SmartDashboard::PutBoolean(kAngle, false);
     // Close Speed
     frc::SmartDashboard::PutNumber(kCloseSpeed, kCloseSpeedDefault);
     // Applied Output
@@ -43,8 +41,9 @@ void Shooter::SmartDashboardInit()
 
 void Shooter::OnRobotPeriodic()
 {
-    frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
+    frc::SmartDashboard::PutNumber(kSpeed, -GetSpeed());
     frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
+    frc::SmartDashboard::PutString(kAngle, GetHoodSwitchStateText());
 
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
@@ -82,6 +81,14 @@ void Shooter::OnRobotPeriodic()
     {
         m_PID.SetIZone(myIZone);
     }
+}
+
+std::string Shooter::GetHoodSwitchStateText()
+{
+    if(GetAngle())
+        return "Close";
+    else
+        return "Far";    
 }
 
 double Shooter::GetSpeed()

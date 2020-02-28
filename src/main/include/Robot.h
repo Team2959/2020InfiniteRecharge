@@ -72,9 +72,6 @@ private:
   void LoadingInit();
   void LoadingPeriodic();
 
-  std::string GetHoodSwitchStateText();
-  std::string GetIntakeStateText();
-
   static double GetDistanceAngle(double distance);
   static std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
 
