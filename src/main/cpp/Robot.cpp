@@ -190,6 +190,18 @@ void Robot::TeleopPeriodic()
     //     SwitchState(Robot::States::Climbing);
     // }
 
+    if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());
+        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeed());
+    }
+
     if (m_coPilot.GetRawButtonReleased(kReverseConveyor))
     {
         SwitchState(Robot::States::Traveling);
@@ -210,7 +222,7 @@ void Robot::TeleopPeriodic()
         SwitchState(Robot::States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
     }
-
+    
     DoCurrentState();
 }
 
@@ -381,11 +393,13 @@ void Robot::ClearPressedAndReleasedOperatorButtons()
     m_coPilot.GetRawButtonPressed(kEngageColorWheel);
     m_coPilot.GetRawButtonPressed(kSpinColorWheel);
     m_coPilot.GetRawButtonPressed(kClimbExtend);
-    m_coPilot.GetRawButtonPressed(6);
+    m_coPilot.GetRawButtonPressed(kSetAngle);
     m_coPilot.GetRawButtonPressed(kReverseConveyor);
     m_coPilot.GetRawButtonReleased(kReverseConveyor);
     m_coPilot.GetRawButtonPressed(kReverseIntake);
     m_coPilot.GetRawButtonReleased(kReverseIntake);
+    m_coPilot.GetRawButtonPressed(kReverseKicker);
+    m_coPilot.GetRawButtonReleased(kReverseKicker);
 }
 
 #ifndef RUNNING_FRC_TESTS
