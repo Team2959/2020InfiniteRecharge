@@ -8,6 +8,7 @@
 #include "Robot.h"
 #include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTableInstance.h>
 
 static const double PI{ 3.14159265359 };
 
@@ -17,6 +18,11 @@ void Robot::RobotInit()
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
+
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    auto table = inst.GetTable("limelight");
+    m_txEntry = table->GetEntry("tx");
+    m_tyEntry = table->GetEntry("ty");
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -35,6 +41,8 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
 
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
+
+    frc::SmartDashboard::PutNumber("Power Cells", 0);
 }
 
 void Robot::RobotPeriodic() 
@@ -99,9 +107,11 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     static const double KpAim{ -0.1 };              // These are the coefficients for tuning the response to our target error
     static const double KpDistance{ -0.1 };
     static const double MinAimCommand{ 0.05 };      // The minimum amount of response if we are turning
-    std::shared_ptr<NetworkTable>   table{ NetworkTable::GetTable("limelight") };   // This is the table receiving targetting updates from the camera
-    auto                            tx{ table->GetNumber("tx", 0.0) };              // The horizontal offset in degrees of the target from our crosshairs
-    auto                            ty{ table->GetNumber("ty", 0.0) };              // The vertical offset in degrees of the target from our crosshairs
+    // std::shared_ptr<NetworkTable>   table{ NetworkTable::GetTable("limelight") };   // This is the table receiving targetting updates from the camera
+    // auto                            tx{ table->GetNumber("tx", 0.0) };              // The horizontal offset in degrees of the target from our crosshairs
+    // auto                            ty{ table->GetNumber("ty", 0.0) };              // The vertical offset in degrees of the target from our crosshairs
+    auto                            tx{ m_txEntry.GetDouble(0.0) };              // The horizontal offset in degrees of the target from our crosshairs
+    auto                            ty{ m_tyEntry.GetDouble(0.0) };              // The vertical offset in degrees of the target from our crosshairs
     auto                            heading_error{ 0.0 - tx };                      // Aim for tx == 0.0f
     auto                            distance_error{ targetY - ty };                 // Aim for ty == targetY
     auto                            distance_adjust{ KpDistance * distance_error }; // Compute our distance adjustment, and
@@ -265,7 +275,7 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
-    m_kickerPulseCounts = 1;
+    // m_kickerPulseCounts = 1;
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
@@ -273,23 +283,23 @@ void Robot::FiringInit()
 
 void Robot::FiringPeriodic() 
 {
-    if (m_kickerPulseCounts > 0)
-    {
-        auto currentCount = m_kickerPulseCounts;
-        m_kickerPulseCounts++;
-        if (currentCount > m_intake.GetKickerPulseCycles())
-        {
-            if (currentCount <= m_intake.GetKickerPulseCycles() + m_intake.GetKickerPauseCycles())
-            {
-                m_intake.SetKickerSpeed(0);
-            }
-            else
-            {
-                m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
-                m_kickerPulseCounts = 0;
-            }
-        }
-    }
+    // if (m_kickerPulseCounts > 0)
+    // {
+    //     auto currentCount = m_kickerPulseCounts;
+    //     m_kickerPulseCounts++;
+    //     if (currentCount > m_intake.GetKickerPulseCycles())
+    //     {
+    //         if (currentCount <= m_intake.GetKickerPulseCycles() + m_intake.GetKickerPauseCycles())
+    //         {
+    //             m_intake.SetKickerSpeed(0);
+    //         }
+    //         else
+    //         {
+    //             m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+    //             m_kickerPulseCounts = 0;
+    //         }
+    //     }
+    // }
 }
 
 void Robot::ClimbingInit() 
@@ -356,6 +366,7 @@ void Robot::LoadingPeriodic()
         {
             m_powercellsCounted++;
             SwitchState(Robot::States::Traveling);
+            frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
             return;
         }
         else
@@ -379,9 +390,10 @@ void Robot::LoadingPeriodic()
         if (m_powercellsCounted == 5)
         {
             SwitchState(Robot::States::Traveling);
-            return;
         }
     }
+
+    frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
 }
 
 void Robot::ClearPressedAndReleasedOperatorButtons()

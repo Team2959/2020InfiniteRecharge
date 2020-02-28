@@ -16,6 +16,7 @@
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
+#include <networktables/NetworkTableEntry.h>
 
 class Robot : public frc::TimedRobot
 {
@@ -23,7 +24,7 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-  int m_kickerPulseCounts = 0;
+  // int m_kickerPulseCounts = 0;
 
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
@@ -44,6 +45,9 @@ private:
   Intake m_intake {};
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
+
+  nt::NetworkTableEntry m_txEntry;
+  nt::NetworkTableEntry m_tyEntry;
 
   enum class States
   {
@@ -73,7 +77,7 @@ private:
   void LoadingPeriodic();
 
   static double GetDistanceAngle(double distance);
-  static std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
+  std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
 
 public:
   void RobotInit() override;
