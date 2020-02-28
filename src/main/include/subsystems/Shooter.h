@@ -32,7 +32,7 @@ private:
     const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
     const double kMaxVelocity = 4500;
-    const double kMaxThrottleSpeedDefault = 2500;
+    const double kMaxThrottleSpeedDefault = 4000;
     const double kMinThrottleSpeedDefault = 1500;
     const double kCloseSpeedDefault = 200;
 
