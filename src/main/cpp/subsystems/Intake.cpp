@@ -12,8 +12,8 @@ void Intake::OnRobotInit()
     frc::SmartDashboard::PutNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     // Kicker
     frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
-    frc::SmartDashboard::PutNumber(kKickerPulseCycles, kDefaultKickerPulseCycles);
-    frc::SmartDashboard::PutNumber(kKickerPauseCycles, kDefaultKickerPauseCycles);
+    // frc::SmartDashboard::PutNumber(kKickerPulseCycles, kDefaultKickerPulseCycles);
+    // frc::SmartDashboard::PutNumber(kKickerPauseCycles, kDefaultKickerPauseCycles);
 }
 
 void Intake::OnRobotPeriodic()
@@ -29,8 +29,8 @@ void Intake::OnRobotPeriodic()
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
     m_conveyorSpeedWhenLoading = frc::SmartDashboard::GetNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
-    m_PulseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPulseCycles, kDefaultKickerPulseCycles));
-    m_PauseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPauseCycles, kDefaultKickerPauseCycles));
+    // m_PulseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPulseCycles, kDefaultKickerPulseCycles));
+    // m_PauseCycles = static_cast<int>(frc::SmartDashboard::GetNumber(kKickerPauseCycles, kDefaultKickerPauseCycles));
 }
 
 std::string Intake::GetIntakeStateText()
@@ -116,12 +116,12 @@ void Intake::SetKickerSpeed(double speed)
     m_kicker.Set(-speed);
 }
 
-int Intake::GetKickerPulseCycles() const
-{
-    return m_PulseCycles;
-}
+// int Intake::GetKickerPulseCycles() const
+// {
+//     return m_PulseCycles;
+// }
 
-int Intake::GetKickerPauseCycles() const
-{
-    return m_PauseCycles;
-}
+// int Intake::GetKickerPauseCycles() const
+// {
+//     return m_PauseCycles;
+// }
