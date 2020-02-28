@@ -200,39 +200,8 @@ void Robot::TeleopPeriodic()
     //     SwitchState(Robot::States::Climbing);
     // }
 
-    if (m_coPilot.GetRawButtonPressed(kReverseKicker))
-    {
-        SwitchState(Robot::States::Traveling);
-    }
-    else if (m_coPilot.GetRawButtonPressed(kReverseKicker))
-    {
-        SwitchState(Robot::States::Traveling);
-        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());
-        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeed());
-    }
-
-    if (m_coPilot.GetRawButtonReleased(kReverseConveyor))
-    {
-        SwitchState(Robot::States::Traveling);
-    }
-    else if (m_coPilot.GetRawButtonPressed(kReverseConveyor))
-    {
-        SwitchState(Robot::States::Traveling);
-        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
-    }
-
-    if (m_coPilot.GetRawButtonReleased(kReverseIntake))
-    {
-        SwitchState(Robot::States::Traveling);
-    }
-    else if (m_coPilot.GetRawButtonPressed(kReverseIntake))
-    {
-        SwitchState(Robot::States::Traveling);
-        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-    }
-    
+    ProcessUnjammingButtonPresses();
+   
     DoCurrentState();
 }
 
@@ -394,6 +363,42 @@ void Robot::LoadingPeriodic()
     }
 
     frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
+}
+
+void Robot::ProcessUnjammingButtonPresses()
+{
+    if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());
+        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeed());
+    }
+
+    if (m_coPilot.GetRawButtonReleased(kReverseConveyor))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseConveyor))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
+    }
+
+    if (m_coPilot.GetRawButtonReleased(kReverseIntake))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseIntake))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+    }
 }
 
 void Robot::ClearPressedAndReleasedOperatorButtons()

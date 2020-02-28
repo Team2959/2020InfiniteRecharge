@@ -63,6 +63,7 @@ private:
   void SwitchState(States state);
   void DoCurrentState();
 
+  void ProcessUnjammingButtonPresses();
   void ClearPressedAndReleasedOperatorButtons();
 
   void TravelingInit();
