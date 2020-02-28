@@ -135,8 +135,18 @@ void Robot::TeleopInit()
     m_intake.SetKickerSpeed(0);
 }
 
+std::string Robot::GetHoodSwitchStateText()
+{
+    if(m_shooter.GetAngle())
+        return "Close";
+    else
+        return "Far";
+}
+
 void Robot::TeleopPeriodic() 
 {
+    frc::SmartDashboard::PutString("Hood State", GetHoodSwitchStateText());
+
     m_intake.ProcessStickySwitches();
 
     m_drivetrain.CurvatureDrive(
