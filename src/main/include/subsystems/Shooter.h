@@ -5,6 +5,8 @@
 #include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
 #include <frc/Solenoid.h>
 
+#include <thread>
+
 class Shooter
 {
 private:
@@ -12,7 +14,7 @@ private:
     rev::CANSparkMax m_primary {kShooterPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANSparkMax m_follower {kShooterFollower, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANEncoder m_encoder {m_primary};
-    rev::CANPIDController m_PID {m_primary};
+    //rev::CANPIDController m_PID {m_primary};
 
     frc::Solenoid m_angleAdjuster {kShooterAngleAdjusterPcmId};
 
@@ -36,6 +38,10 @@ private:
     const double kMinThrottleSpeedDefault = 1500;
     const double kCloseSpeedDefault = 200;
 
+    const double kForwardFullSpeed = -1.0;
+    const double kSpeedThreshold = 25;
+    double m_appliedOutput = 0.0;
+
     double m_closeSpeed = kCloseSpeedDefault;
     double m_targetSpeed = 0;
     double m_maxThrottleRange = kMaxThrottleSpeedDefault;
@@ -51,7 +57,6 @@ private:
 
     double GetSpeed();
     void SetSpeed(double speed);
-
 public:
     Shooter();
 
@@ -63,4 +68,6 @@ public:
 
     void SetAngle(bool closeShot);
     bool GetAngle();
+
+    void SpeedControlLoop();
 };

@@ -20,6 +20,7 @@ void Robot::RobotInit()
     m_drivetrain.InitalShowToSmartDashboard();
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
+    m_shooterControlThread = std::thread(&Shooter::SpeedControlLoop, &m_shooter);
     // m_colorWheel.OnRobotInit();
 
     auto inst = nt::NetworkTableInstance::GetDefault();
@@ -74,7 +75,7 @@ void Robot::RobotPeriodic()
             m_driverRotationConditioning.SetExponent(rex);
         }
     }
-    if (m_skips % 51)
+    if (true /*m_skips % 51*/)
     {
         // update PID values from the SmartDashboard
         m_shooter.OnRobotPeriodic();

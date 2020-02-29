@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <thread>
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/buttons/JoystickButton.h>
@@ -30,6 +31,8 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
+
+  std::thread m_shooterControlThread;
 
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
