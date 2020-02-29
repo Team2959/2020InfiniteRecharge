@@ -52,6 +52,7 @@ void Shooter::SpeedControlLoop()
             // Outside the threshold
             if (std::fabs(speed) > std::fabs(m_targetSpeed)) {
                 m_primary.Set(0.0);
+                m_appliedOutput = 0.0;
             } else {
                 m_primary.Set(kForwardFullSpeed);
             }
