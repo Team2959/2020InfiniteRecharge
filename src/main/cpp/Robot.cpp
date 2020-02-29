@@ -327,6 +327,7 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
+    m_intake.ProcessStickySwitches();
     m_intake.GetSensorReleased(Intake::SensorLocation::Kicker);
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
@@ -403,6 +404,7 @@ void Robot::ColorWheelPeriodic()
 
 void Robot::LoadingInit()
 {
+    m_intake.ProcessStickySwitches();
     m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell);
     m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_shooter.SetAngle(false);
