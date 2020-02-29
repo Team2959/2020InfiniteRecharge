@@ -134,8 +134,6 @@ void Robot::AutonomousInit()
 
 void Robot::AutonomousPeriodic()
 {
-    m_intake.ProcessStickySwitches();
-
     DoCurrentState();
 }
 
@@ -150,8 +148,6 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
-    m_intake.ProcessStickySwitches();
-
     m_drivetrain.CurvatureDrive(
         m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
         m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
@@ -326,6 +322,8 @@ void Robot::LoadingInit()
 
 void Robot::LoadingPeriodic()
 {
+    m_intake.ProcessStickySwitches();
+
     if(m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell))
     {
         if(m_powercellsCounted == 4)
