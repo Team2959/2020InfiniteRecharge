@@ -303,7 +303,7 @@ void Robot::ClimbingPeriodic()
 void Robot::ColorWheelInit()
 {
     TravelingInit();
-    // m_colorWheel.EngageColorWheel(true);
+    // m_coldorWheel.EngageColorWheel(true);
 
     frc::SmartDashboard::PutString("Robot State", "Color Wheel");
 }
@@ -414,6 +414,8 @@ void Robot::ProcessUnjammingButtonPresses()
 
 void Robot::ClearPressedAndReleasedOperatorButtons()
 {
+    m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell);
+    m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_driverJoystick.GetTriggerReleased();
     m_driverJoystick.GetTriggerPressed();
     m_driverJoystick.GetRawButtonPressed(kIntakeToggle);
