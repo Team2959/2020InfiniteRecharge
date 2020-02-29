@@ -89,7 +89,7 @@ private:
   static double GetTargetDistanceFromAngle(double angle);
   static double GetTargetAngleFromDistance(double distance);
   double IsTargetValid() const { return m_tvEntry.GetBoolean(false); }
-  double GetTargetDistance() const { GetTargetDistanceFromAngle(GetTargetYAngle()); }
+  double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
   std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
   double GetTargetXAngle() const;
   double GetTargetYAngle() const;
