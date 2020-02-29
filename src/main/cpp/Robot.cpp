@@ -247,7 +247,6 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
-    // m_kickerPulseCounts = 1;
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
@@ -257,23 +256,6 @@ void Robot::FiringInit()
 
 void Robot::FiringPeriodic() 
 {
-    // if (m_kickerPulseCounts > 0)
-    // {
-    //     auto currentCount = m_kickerPulseCounts;
-    //     m_kickerPulseCounts++;
-    //     if (currentCount > m_intake.GetKickerPulseCycles())
-    //     {
-    //         if (currentCount <= m_intake.GetKickerPulseCycles() + m_intake.GetKickerPauseCycles())
-    //         {
-    //             m_intake.SetKickerSpeed(0);
-    //         }
-    //         else
-    //         {
-    //             m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
-    //             m_kickerPulseCounts = 0;
-    //         }
-    //     }
-    // }
 }
 
 void Robot::ClimbingInit() 

@@ -24,7 +24,6 @@ private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
   int m_powercellsCounted = 0;
-  // int m_kickerPulseCounts = 0;
 
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
