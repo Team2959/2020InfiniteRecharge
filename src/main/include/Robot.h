@@ -51,6 +51,7 @@ private:
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
 
+  nt::NetworkTableEntry m_tvEntry;
   nt::NetworkTableEntry m_txEntry;
   nt::NetworkTableEntry m_tyEntry;
 
@@ -84,10 +85,11 @@ private:
 
   static double GetTargetDistanceFromAngle(double angle);
   static double GetTargetAngleFromDistance(double distance);
+  double IsTargetValid() const { return m_tvEntry.GetBoolean(false); }
+  double GetTargetDistance() const { GetTargetDistanceFromAngle(GetTargetYAngle()); }
   std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
-  double GetTargetYAngle() const { return DegreesToRadians(m_tyEntry.GetDouble(0.0)); }
-  double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
-  double GetTargetXAngle() const { return DegreesToRadians(m_txEntry.GetDouble(0.0)); }
+  double GetTargetXAngle() const;
+  double GetTargetYAngle() const;
 
 public:
   void RobotInit() override;

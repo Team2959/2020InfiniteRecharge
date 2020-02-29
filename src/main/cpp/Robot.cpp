@@ -90,10 +90,21 @@ void Robot::RobotPeriodic()
     // Increment the m_skips variable for counting
     m_skips++;
 
-   // TO DO:  Remove this code once vision testing is complete
-    frc::SmartDashboard::PutNumber("Vision TX Angle", RadiansToDegrees(GetTargetXAngle()));
-    frc::SmartDashboard::PutNumber("Vision TY Angle", RadiansToDegrees(GetTargetYAngle()));
-    frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
+    // TO DO:  Remove this code once vision testing is complete
+    auto    isTargetValid{ IsTargetValid() };
+    frc::SmartDashboard::PutString("Vision TV Present", isTargetValid ? "Yes" : "No");
+    if(isTargetValid)
+    {
+        frc::SmartDashboard::PutNumber("Vision TX Angle", RadiansToDegrees(GetTargetXAngle()));
+        frc::SmartDashboard::PutNumber("Vision TY Angle", RadiansToDegrees(GetTargetYAngle()));
+        frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
+    }
+    else
+    {
+        frc::SmartDashboard::PutString("Vision TX Angle", "");
+        frc::SmartDashboard::PutString("Vision TY Angle", "");
+        frc::SmartDashboard::PutString("Vision Distance", "");
+    }
 }
 
 // TO DO:  Implement code that calls GetDistanceAngle, GetAngleDistance & GetMotorOutputForAimAndDrive and uses their results
@@ -135,6 +146,20 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     else                                                                // Don't turn if +/- 1.0 degrees from crosshairs
         steering_adjust = 0.0f;
     return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
+}
+
+double Robot::GetTargetXAngle() const
+{
+    if(!IsTargetValid())
+        return std::nan("");
+    return DegreesToRadians(m_txEntry.GetDouble(0.0)); 
+}
+
+double Robot::GetTargetYAngle() const 
+{
+    if(!IsTargetValid())
+        return std::nan("");
+    return DegreesToRadians(m_tyEntry.GetDouble(0.0)); 
 }
 
 void Robot::AutonomousInit()
