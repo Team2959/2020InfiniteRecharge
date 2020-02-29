@@ -66,11 +66,10 @@ void Shooter::OnRobotPeriodic()
 {
     frc::SmartDashboard::PutNumber(kSpeed, -GetSpeed());
     frc::SmartDashboard::PutString(kAngle, GetHoodSwitchStateText());
+    frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
 
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
     if (m_debugEnable == false) return;
-
-    frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
 
     m_maxThrottleRange = frc::SmartDashboard::GetNumber(kMaxThrottleSpeed, kMaxThrottleSpeedDefault);
     m_minThrottleRange = frc::SmartDashboard::GetNumber(kMinThrottleSpeed, kMinThrottleSpeedDefault);
