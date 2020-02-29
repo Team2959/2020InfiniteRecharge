@@ -17,7 +17,7 @@ private:
     frc::Solenoid m_angleAdjuster {kShooterAngleAdjusterPcmId};
 
     // Smart Dashboard
-    const std::string kName = "Shooter: ";
+    const std::string kName = "Shooter/";
     const std::string kDebug = kName + "Debug";
     const std::string kPGain = kName + "P Gain";
     const std::string kIGain = kName + "I Gain";
@@ -25,14 +25,14 @@ private:
     const std::string kIZone = kName + "I Zone";
     const std::string kSpeed = kName + "Speed";
     const std::string kTargetSpeed = kName + "Target Speed";
-    const std::string kAngle = kName + "Angle";
+    const std::string kAngle = kName + "Hood Angle";
     const std::string kCloseSpeed = kName + "Close Speed";
     const std::string kAppliedOutput = kName + "Applied Output";
     const std::string kMaxThrottleSpeed = kName + "Max Throttle Speed";
     const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
     const double kMaxVelocity = 4500;
-    const double kMaxThrottleSpeedDefault = 2500;
+    const double kMaxThrottleSpeedDefault = 4000;
     const double kMinThrottleSpeedDefault = 1500;
     const double kCloseSpeedDefault = 200;
 
@@ -47,6 +47,7 @@ private:
 
     void SmartDashboardInit();
     void ComputeSlopeAndOffset();
+    std::string GetHoodSwitchStateText();
 
     double GetSpeed();
     void SetSpeed(double speed);

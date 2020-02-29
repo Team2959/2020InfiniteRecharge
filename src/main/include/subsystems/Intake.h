@@ -17,15 +17,14 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyor {kConveyorVictorSpxCanId};
     
     // Smart Dashboard
-    const std::string kDebug = "Intake/Conveyor: Debug";
-    const std::string kIntakeName = "Intake: ";
-    const std::string kConveyorName = "Conveyor: ";
-    const std::string kKickerName = "Kicker: ";
+    const std::string kIntakeName = "Intake/";
+    const std::string kConveyorName = "Conveyor/";
+    const std::string kKickerName = "Kicker/";
+    const std::string kDebug = kIntakeName + "Debug";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
     const std::string kKickerSpeed = kKickerName + "Speed";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
-    const std::string kKickerPulseCycles = kKickerName + "Pulse Cycles";
-    const std::string kKickerPauseCycles = kKickerName + "Pause Cycles";
+    const std::string kIntakeState = kIntakeName + "State";
     const std::string kConveyorSpeedWhenLoading = kConveyorName + "Speed When Loading";
 
     bool m_debugEnable = false;
@@ -33,15 +32,13 @@ private:
     const double kFullIntakeSpeed = 0.75;
     const double kFullConveyorSpeed = 0.6;
     const double kFullKickerSpeed = 0.3;
-    const double kFullConveyorSpeedWhenLoading = 0.9;
-    const int kDefaultKickerPulseCycles = 5;
-    const int kDefaultKickerPauseCycles = 5;
+    const double kFullConveyorSpeedWhenLoading = 1.0;
     double m_intakeSpeed = kFullIntakeSpeed;
     double m_conveyorSpeed = kFullConveyorSpeed;
     double m_conveyorSpeedWhenLoading = kFullConveyorSpeedWhenLoading;
     double m_kickerSpeed = kFullKickerSpeed;
-    int m_PulseCycles = kDefaultKickerPulseCycles;
-    int m_PauseCycles = kDefaultKickerPauseCycles;
+
+    std::string GetIntakeStateText();
 
 public:
     enum class SensorLocation
@@ -60,8 +57,6 @@ public:
     double GetConveyorFullSpeedWhenLoading() const;
     double GetKickerFullSpeed() const;
     bool IsIntakeRunning() const;
-    int GetKickerPulseCycles() const;
-    int GetKickerPauseCycles() const;
 
     void SetIntakeSpeed(double speed);
     void SetConveyorSpeed(double speed);

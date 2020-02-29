@@ -8,6 +8,7 @@
 #include "Robot.h"
 #include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <networktables/NetworkTableInstance.h>
 
 static const double PI{ 3.14159265359 };
 
@@ -17,6 +18,11 @@ void Robot::RobotInit()
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
+
+    auto inst = nt::NetworkTableInstance::GetDefault();
+    auto table = inst.GetTable("limelight");
+    m_txEntry = table->GetEntry("tx");
+    m_tyEntry = table->GetEntry("ty");
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -30,11 +36,14 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutNumber("Speed Output Offset", kDefaultOutputOffset);
     frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
 
-    frc::SmartDashboard::PutNumber("Speed Deadband", kDefaultDeadband);
-    frc::SmartDashboard::PutNumber("Speed Output Offset", kDefaultOutputOffset);
-    frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
+    frc::SmartDashboard::PutNumber("Rotation Deadband", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Rotation Output Offset", kDefaultOutputOffset);
+    frc::SmartDashboard::PutNumber("Rotation Exponent", kDefaultExponent);
 
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
+
+    frc::SmartDashboard::PutString("Robot State", "Traveling");
+    frc::SmartDashboard::PutNumber("Power Cells", 0);
 }
 
 void Robot::RobotPeriodic() 
@@ -49,9 +58,9 @@ void Robot::RobotPeriodic()
             double loo = frc::SmartDashboard::GetNumber("Speed Output Offset", kDefaultOutputOffset);
             double lex = frc::SmartDashboard::GetNumber("Speed Exponent", kDefaultExponent);
 
-            double rdb = frc::SmartDashboard::GetNumber("Speed Deadband", kDefaultDeadband);
-            double roo = frc::SmartDashboard::GetNumber("Speed Output Offset", kDefaultOutputOffset);
-            double rex = frc::SmartDashboard::GetNumber("Speed Exponent", kDefaultExponent);
+            double rdb = frc::SmartDashboard::GetNumber("Rotation Deadband", kDefaultDeadband);
+            double roo = frc::SmartDashboard::GetNumber("Rotation Output Offset", kDefaultOutputOffset);
+            double rex = frc::SmartDashboard::GetNumber("Rotation Exponent", kDefaultExponent);
 
             m_driverSpeedConditioning.SetDeadband(ldb);
             m_driverSpeedConditioning.SetRange(loo, 1.0);
@@ -99,9 +108,11 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     static const double KpAim{ -0.1 };              // These are the coefficients for tuning the response to our target error
     static const double KpDistance{ -0.1 };
     static const double MinAimCommand{ 0.05 };      // The minimum amount of response if we are turning
-    std::shared_ptr<NetworkTable>   table{ NetworkTable::GetTable("limelight") };   // This is the table receiving targetting updates from the camera
-    auto                            tx{ table->GetNumber("tx", 0.0) };              // The horizontal offset in degrees of the target from our crosshairs
-    auto                            ty{ table->GetNumber("ty", 0.0) };              // The vertical offset in degrees of the target from our crosshairs
+    // std::shared_ptr<NetworkTable>   table{ NetworkTable::GetTable("limelight") };   // This is the table receiving targetting updates from the camera
+    // auto                            tx{ table->GetNumber("tx", 0.0) };              // The horizontal offset in degrees of the target from our crosshairs
+    // auto                            ty{ table->GetNumber("ty", 0.0) };              // The vertical offset in degrees of the target from our crosshairs
+    auto                            tx{ m_txEntry.GetDouble(0.0) };              // The horizontal offset in degrees of the target from our crosshairs
+    auto                            ty{ m_tyEntry.GetDouble(0.0) };              // The vertical offset in degrees of the target from our crosshairs
     auto                            heading_error{ 0.0 - tx };                      // Aim for tx == 0.0f
     auto                            distance_error{ targetY - ty };                 // Aim for ty == targetY
     auto                            distance_adjust{ KpDistance * distance_error }; // Compute our distance adjustment, and
@@ -190,27 +201,8 @@ void Robot::TeleopPeriodic()
     //     SwitchState(Robot::States::Climbing);
     // }
 
-    if (m_driverJoystick.GetRawButtonReleased(kReverseConveyor))
-    {
-        SwitchState(Robot::States::Traveling);
-    }
-    else if (m_driverJoystick.GetRawButtonPressed(kReverseConveyor))
-    {
-        SwitchState(Robot::States::Traveling);
-        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
-    }
-
-    if (m_driverJoystick.GetRawButtonReleased(kReverseIntake))
-    {
-        SwitchState(Robot::States::Traveling);
-    }
-    else if (m_driverJoystick.GetRawButtonPressed(kReverseIntake))
-    {
-        SwitchState(Robot::States::Traveling);
-        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-    }
-
+    ProcessUnjammingButtonPresses();
+   
     DoCurrentState();
 }
 
@@ -244,6 +236,8 @@ void Robot::TravelingInit()
     m_shooter.SetAngle(false);
 
     // needs shooter to idle speed
+
+    frc::SmartDashboard::PutString("Robot State", "Traveling");
 }
 
 void Robot::TravelingPeriodic() 
@@ -253,36 +247,22 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
-    m_kickerPulseCounts = 1;
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+
+    frc::SmartDashboard::PutString("Robot State", "Firing");
 }
 
 void Robot::FiringPeriodic() 
 {
-    if (m_kickerPulseCounts > 0)
-    {
-        auto currentCount = m_kickerPulseCounts;
-        m_kickerPulseCounts++;
-        if (currentCount > m_intake.GetKickerPulseCycles())
-        {
-            if (currentCount <= m_intake.GetKickerPulseCycles() + m_intake.GetKickerPauseCycles())
-            {
-                m_intake.SetKickerSpeed(0);
-            }
-            else
-            {
-                m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
-                m_kickerPulseCounts = 0;
-            }
-        }
-    }
 }
 
 void Robot::ClimbingInit() 
 {
     TravelingInit();
+
+    frc::SmartDashboard::PutString("Robot State", "Climbing");
 }
 
 void Robot::ClimbingPeriodic()
@@ -305,7 +285,9 @@ void Robot::ClimbingPeriodic()
 void Robot::ColorWheelInit()
 {
     TravelingInit();
-    // m_colorWheel.EngageColorWheel(true);
+    // m_coldorWheel.EngageColorWheel(true);
+
+    frc::SmartDashboard::PutString("Robot State", "Color Wheel");
 }
 
 void Robot::ColorWheelPeriodic()
@@ -334,23 +316,26 @@ void Robot::LoadingInit()
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
     m_powercellsCounted = 0;
+
+    frc::SmartDashboard::PutString("Robot State", "Loading");
 }
 
 void Robot::LoadingPeriodic()
 {
     if(m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell))
     {
-        m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
-        m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
-
-        /*if (m_intake.GetSensor(Intake::SensorLocation::Kicker))
+        if(m_powercellsCounted == 4)
         {
-            m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed() * 0.5);
+            m_powercellsCounted++;
+            SwitchState(Robot::States::Traveling);
+            frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
+            return;
         }
         else
         {
-            m_intake.SetKickerSpeed(0);
-        }*/
+            m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
+            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
+        }
     }
 
     if (!m_intake.GetSensor(Intake::SensorLocation::Kicker))
@@ -360,7 +345,6 @@ void Robot::LoadingPeriodic()
 
     if(m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell))
     {
-        //m_intake.SetKickerSpeed(0);
         m_intake.SetConveyorSpeed(0);
         m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
         m_powercellsCounted++;
@@ -368,13 +352,52 @@ void Robot::LoadingPeriodic()
         if (m_powercellsCounted == 5)
         {
             SwitchState(Robot::States::Traveling);
-            return;
         }
+    }
+
+    frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
+}
+
+void Robot::ProcessUnjammingButtonPresses()
+{
+    if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());
+        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeed());
+    }
+
+    if (m_coPilot.GetRawButtonReleased(kReverseConveyor))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseConveyor))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
+    }
+
+    if (m_coPilot.GetRawButtonReleased(kReverseIntake))
+    {
+        SwitchState(Robot::States::Traveling);
+    }
+    else if (m_coPilot.GetRawButtonPressed(kReverseIntake))
+    {
+        SwitchState(Robot::States::Traveling);
+        m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
     }
 }
 
 void Robot::ClearPressedAndReleasedOperatorButtons()
 {
+    m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell);
+    m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_driverJoystick.GetTriggerReleased();
     m_driverJoystick.GetTriggerPressed();
     m_driverJoystick.GetRawButtonPressed(kIntakeToggle);
@@ -382,11 +405,13 @@ void Robot::ClearPressedAndReleasedOperatorButtons()
     m_coPilot.GetRawButtonPressed(kEngageColorWheel);
     m_coPilot.GetRawButtonPressed(kSpinColorWheel);
     m_coPilot.GetRawButtonPressed(kClimbExtend);
-    m_coPilot.GetRawButtonPressed(6);
+    m_coPilot.GetRawButtonPressed(kSetAngle);
     m_coPilot.GetRawButtonPressed(kReverseConveyor);
     m_coPilot.GetRawButtonReleased(kReverseConveyor);
     m_coPilot.GetRawButtonPressed(kReverseIntake);
     m_coPilot.GetRawButtonReleased(kReverseIntake);
+    m_coPilot.GetRawButtonPressed(kReverseKicker);
+    m_coPilot.GetRawButtonReleased(kReverseKicker);
 }
 
 #ifndef RUNNING_FRC_TESTS
