@@ -32,11 +32,10 @@ private:
   int m_skips = 0;
   int m_powercellsCounted = 0;
 
-  std::thread m_shooterControlThread;
-
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
   frc::Joystick m_coPilot {1};
+  frc::Joystick m_throttle {2};
   frc::JoystickButton m_quickTurn {&m_driverJoystick, kQuickTurn};
 
   cwtech::UniformConditioning m_driverSpeedConditioning {}; // Speed
@@ -45,9 +44,13 @@ private:
   const double kDefaultDeadband = 0.07;
   const double kDefaultOutputOffset = 0.0;
   const double kDefaultExponent = 3.0;
+  const double kDefaultAutoTurnMultiplier = 0.005;
+  const double kDefaultAutoTurnDegrees = 30.0;
 
   bool m_passed2ndStage = false;
-
+  double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
+  double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
+  
   // Drivetrain controller
   Drivetrain m_drivetrain {};
   Intake m_intake {};
@@ -88,11 +91,16 @@ private:
 
   static double GetTargetDistanceFromAngle(double angle);
   static double GetTargetAngleFromDistance(double distance);
-  double IsTargetValid() const { return m_tvEntry.GetBoolean(false); }
+  // bool IsTargetValid() const { return m_tvEntry.GetDouble(0.0) != 0.0; }
+  bool IsTargetValid() const { return true; }
   double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
   std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
   double GetTargetXAngle() const;
   double GetTargetYAngle() const;
+
+  void TurnToTarget();
+
+  void UpdateActivePowerCells();
 
 public:
   void RobotInit() override;

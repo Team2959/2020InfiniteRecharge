@@ -20,13 +20,14 @@ void Robot::RobotInit()
     m_drivetrain.InitalShowToSmartDashboard();
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
-    m_shooterControlThread = std::thread(&Shooter::SpeedControlLoop, &m_shooter);
     // m_colorWheel.OnRobotInit();
 
     auto inst = nt::NetworkTableInstance::GetDefault();
     auto table = inst.GetTable("limelight");
     m_txEntry = table->GetEntry("tx");
     m_tyEntry = table->GetEntry("ty");
+    frc::SmartDashboard::PutNumber("Auto Turn Multiplier", m_autoTurnMultiplier);
+    frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", m_autoTurnDegrees);
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -47,7 +48,17 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
     frc::SmartDashboard::PutString("Robot State", "Traveling");
-    frc::SmartDashboard::PutNumber("Power Cells", 0);
+
+    UpdateActivePowerCells();
+}
+
+void Robot::UpdateActivePowerCells()
+{
+    frc::SmartDashboard::PutBoolean("Power Cell 1", m_powercellsCounted >= 1);
+    frc::SmartDashboard::PutBoolean("Power Cell 2", m_powercellsCounted >= 2);
+    frc::SmartDashboard::PutBoolean("Power Cell 3", m_powercellsCounted >= 3);
+    frc::SmartDashboard::PutBoolean("Power Cell 4", m_powercellsCounted >= 4);
+    frc::SmartDashboard::PutBoolean("Power Cell 5", m_powercellsCounted >= 5);
 }
 
 void Robot::RobotPeriodic() 
@@ -91,20 +102,27 @@ void Robot::RobotPeriodic()
     // Increment the m_skips variable for counting
     m_skips++;
 
-    // TO DO:  Remove this code once vision testing is complete
-    auto    isTargetValid{ IsTargetValid() };
-    frc::SmartDashboard::PutString("Vision TV Present", isTargetValid ? "Yes" : "No");
-    if(isTargetValid)
+
+    if (m_skips % 33)
     {
-        frc::SmartDashboard::PutNumber("Vision TX Angle", RadiansToDegrees(GetTargetXAngle()));
-        frc::SmartDashboard::PutNumber("Vision TY Angle", RadiansToDegrees(GetTargetYAngle()));
-        frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
-    }
-    else
-    {
-        frc::SmartDashboard::PutString("Vision TX Angle", "");
-        frc::SmartDashboard::PutString("Vision TY Angle", "");
-        frc::SmartDashboard::PutString("Vision Distance", "");
+        // TO DO:  Remove this code once vision testing is complete
+        auto    isTargetValid{ IsTargetValid() };
+        frc::SmartDashboard::PutString("Vision TV Present", isTargetValid ? "Yes" : "No");
+        if(isTargetValid)
+        {
+            frc::SmartDashboard::PutNumber("Vision TX Angle", RadiansToDegrees(GetTargetXAngle()));
+            frc::SmartDashboard::PutNumber("Vision TY Angle", RadiansToDegrees(GetTargetYAngle()));
+            frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
+        }
+        else
+        {
+            frc::SmartDashboard::PutString("Vision TX Angle", "");
+            frc::SmartDashboard::PutString("Vision TY Angle", "");
+            frc::SmartDashboard::PutString("Vision Distance", "");
+        }
+
+        m_autoTurnMultiplier = frc::SmartDashboard::GetNumber("Auto Turn Multiplier", kDefaultAutoTurnMultiplier);
+        m_autoTurnDegrees = frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
     }
 }
 
@@ -136,7 +154,7 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     static const double LimitAngle{ DegreesToRadians(1.0) };            // If our angles are within this difference of zero, then we are on target
     auto                targetXAngle{ GetTargetXAngle() };
     auto                heading_error{ 0.0 - targetXAngle };            // Aim for tx == 0.0f
-    auto                distance_error{ targetY - GetTargetYAngle() };  // Aim for ty == targetY
+    auto                distance_error{ 0.0};//targetY - GetTargetYAngle() };  // Aim for ty == targetY
     auto                distance_adjust{ KpDistance * distance_error }; // Compute our distance adjustment, and
     double              steering_adjust;                                // Will hold our steering adjustment
 
@@ -147,6 +165,24 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     else                                                                // Don't turn if +/- 1.0 degrees from crosshairs
         steering_adjust = 0.0f;
     return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
+}
+
+void Robot::TurnToTarget()
+{
+    static const double LimitAngle{ DegreesToRadians(3.0) };            // If our angles are within this difference of zero, then we are on target
+    auto tx = GetTargetXAngle();
+    if (std::fabs(tx) > LimitAngle)
+    {
+        auto txDegrees = RadiansToDegrees(tx);
+        auto turnSpeed = m_autoTurnMultiplier * txDegrees / m_autoTurnDegrees;
+        m_drivetrain.CurvatureDrive(0.0, turnSpeed, true);
+        frc::SmartDashboard::PutNumber("Turn To Target Angle", txDegrees);
+        frc::SmartDashboard::PutNumber("Turn To Target Speed", turnSpeed);
+    }
+    else
+    {
+        m_drivetrain.CurvatureDrive(0, 0, false);
+    }
 }
 
 double Robot::GetTargetXAngle() const
@@ -184,12 +220,19 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
+    if (m_coPilot.GetRawButton(kTurnToTarget))
+    {
+        TurnToTarget();
+    }
+    else
+    {
     m_drivetrain.CurvatureDrive(
         m_driverSpeedConditioning.Condition(-m_driverJoystick.GetY()),
         m_driverRotationConditioning.Condition(m_driverJoystick.GetTwist()),
         m_quickTurn.Get());
-
-    m_shooter.SetSpeedFromThrottle(m_driverJoystick.GetThrottle());
+    }
+    
+    m_shooter.SetSpeedFromThrottle(m_throttle.GetThrottle());
 
     if (m_coPilot.GetRawButtonPressed(kSetAngle))
     {
@@ -366,7 +409,7 @@ void Robot::LoadingPeriodic()
         {
             m_powercellsCounted++;
             SwitchState(Robot::States::Traveling);
-            frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
+            UpdateActivePowerCells();
             return;
         }
         else
@@ -393,12 +436,12 @@ void Robot::LoadingPeriodic()
         }
     }
 
-    frc::SmartDashboard::PutNumber("Power Cells", m_powercellsCounted);
+    UpdateActivePowerCells();
 }
 
 void Robot::ProcessUnjammingButtonPresses()
 {
-    if (m_coPilot.GetRawButtonPressed(kReverseKicker))
+    if (m_coPilot.GetRawButtonReleased(kReverseKicker))
     {
         SwitchState(Robot::States::Traveling);
     }

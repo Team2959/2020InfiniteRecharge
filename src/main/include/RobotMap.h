@@ -46,3 +46,4 @@ const int kClimbRetract = 1;
 const int kReverseConveyor = 11;
 const int kReverseIntake = 3;
 const int kReverseKicker = 9;
+const int kTurnToTarget = 7;
