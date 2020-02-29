@@ -135,6 +135,8 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
     m_intake.ProcessStickySwitches();
+
+    DoCurrentState();
 }
 
 void Robot::TeleopInit()
@@ -311,6 +313,8 @@ void Robot::ColorWheelPeriodic()
 
 void Robot::LoadingInit()
 {
+    m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell);
+    m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_shooter.SetAngle(false);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
@@ -396,8 +400,6 @@ void Robot::ProcessUnjammingButtonPresses()
 
 void Robot::ClearPressedAndReleasedOperatorButtons()
 {
-    m_intake.GetSensorPressed(Intake::SensorLocation::NewPowercell);
-    m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_driverJoystick.GetTriggerReleased();
     m_driverJoystick.GetTriggerPressed();
     m_driverJoystick.GetRawButtonPressed(kIntakeToggle);
