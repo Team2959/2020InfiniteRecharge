@@ -12,8 +12,8 @@ Shooter::Shooter()
 
 void Shooter::OnRobotInit()
 {
-    //m_PID.SetP(0.0002);
-    //m_PID.SetFF(0.000193);
+    m_PID.SetP(0.0002);
+    m_PID.SetFF(0.000193);
     
     SmartDashboardInit();
 }
@@ -23,10 +23,10 @@ void Shooter::SmartDashboardInit()
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
     // PID
-    //frc::SmartDashboard::PutNumber(kPGain, m_PID.GetP());
-    //frc::SmartDashboard::PutNumber(kIGain, m_PID.GetI());
-    //frc::SmartDashboard::PutNumber(kFF, m_PID.GetFF());
-    //frc::SmartDashboard::PutNumber(kIZone, m_PID.GetIZone());
+    frc::SmartDashboard::PutNumber(kPGain, m_PID.GetP());
+    frc::SmartDashboard::PutNumber(kIGain, m_PID.GetI());
+    frc::SmartDashboard::PutNumber(kFF, m_PID.GetFF());
+    frc::SmartDashboard::PutNumber(kIZone, m_PID.GetIZone());
     // Shooter
     frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
     // Close Speed
@@ -36,30 +36,6 @@ void Shooter::SmartDashboardInit()
     // Min and Max Throttle Speeds
     frc::SmartDashboard::PutNumber(kMaxThrottleSpeed, kMaxThrottleSpeedDefault);
     frc::SmartDashboard::PutNumber(kMinThrottleSpeed, kMinThrottleSpeedDefault);
-}
-
-void Shooter::SpeedControlLoop() 
-{
-    while (true) {
-        // Shooter will always spin in the direction of kForwardFullSpeed
-        // If the current speed is within the deadband apply the same output currently being applied
-        double speed = m_encoder.GetVelocity();
-
-        if (std::fabs(speed - m_targetSpeed) <= kSpeedThreshold) {
-            // Within the RPM threshold
-            m_primary.Set(m_appliedOutput);
-        } else {
-            // Outside the threshold
-            if (std::fabs(speed) > std::fabs(m_targetSpeed)) {
-                m_primary.Set(0.0);
-                m_appliedOutput = 0.0;
-            } else {
-                m_primary.Set(kForwardFullSpeed);
-            }
-        }
-
-        std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(10));
-    }
 }
 
 void Shooter::OnRobotPeriodic()
@@ -79,7 +55,7 @@ void Shooter::OnRobotPeriodic()
     m_closeSpeed = frc::SmartDashboard::GetNumber(kCloseSpeed, kCloseSpeedDefault);
 
     // Get the values only once to optimize for speed
-    /*auto currentP = m_PID.GetP();
+    auto currentP = m_PID.GetP();
     auto currentI = m_PID.GetI();
     auto currentFF = m_PID.GetFF();
     auto currentIZone = m_PID.GetIZone();
@@ -103,7 +79,7 @@ void Shooter::OnRobotPeriodic()
     if(fabs(myIZone - currentIZone) > kCloseToSameValue)
     {
         m_PID.SetIZone(myIZone);
-    }*/
+    }
 }
 
 std::string Shooter::GetHoodSwitchStateText()
@@ -149,7 +125,7 @@ void Shooter::SetSpeed(double speed)
     frc::SmartDashboard::PutNumber("Throttle Target Speed", speed);
     // invert speed for primary motor direction
     m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
-    //m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
+    m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
 }
 
 void Shooter::SetAngle(bool closeShot)

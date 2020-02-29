@@ -14,7 +14,7 @@ private:
     rev::CANSparkMax m_primary {kShooterPrimary, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANSparkMax m_follower {kShooterFollower, rev::CANSparkMaxLowLevel::MotorType::kBrushless};
     rev::CANEncoder m_encoder {m_primary};
-    //rev::CANPIDController m_PID {m_primary};
+    rev::CANPIDController m_PID {m_primary};
 
     frc::Solenoid m_angleAdjuster {kShooterAngleAdjusterPcmId};
 
@@ -68,6 +68,4 @@ public:
 
     void SetAngle(bool closeShot);
     bool GetAngle();
-
-    void SpeedControlLoop();
 };
