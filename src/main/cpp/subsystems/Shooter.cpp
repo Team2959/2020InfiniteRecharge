@@ -45,18 +45,18 @@ void Shooter::SpeedControlLoop()
         // If the current speed is within the deadband apply the same output currently being applied
         double speed = m_encoder.GetVelocity();
 
-        if (std::fabs(speed - m_targetSpeed) > kSpeedThreshold) {
+        if (std::fabs(speed - m_targetSpeed) <= kSpeedThreshold) {
+            // Within the RPM threshold
             m_primary.Set(m_appliedOutput);
         } else {
             // Outside the threshold
-            // Todo implement code change here
+            if (std::fabs(speed) > std::fabs(m_targetSpeed)) {
+                m_primary.Set(0.0);
+            } else {
+                m_primary.Set(kForwardFullSpeed);
+            }
         }
 
-        if (speed > m_targetSpeed && m_targetSpeed != 0.0) {
-            m_primary.Set(kForwardFullSpeed);
-        } else {
-            m_primary.Set(0.0);
-        }
         std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(10));
     }
 }
