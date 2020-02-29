@@ -64,4 +64,5 @@ public:
 
     bool GetSensor(SensorLocation location);
     bool GetSensorPressed(SensorLocation location);
+    bool GetSensorReleased(SensorLocation location);
 };

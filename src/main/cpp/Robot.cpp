@@ -122,7 +122,7 @@ void Robot::RobotPeriodic()
         }
 
         m_autoTurnMultiplier = frc::SmartDashboard::GetNumber("Auto Turn Multiplier", kDefaultAutoTurnMultiplier);
-        m_autoTurnDegrees = frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
+        m_autoTurnDegrees = frc::SmartDashboard::GetNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
     }
 }
 
@@ -310,7 +310,10 @@ void Robot::TravelingInit()
     m_intake.SetKickerSpeed(0);
     m_intake.SetConveyorSpeed(0);
     // m_colorWheel.EngageColorWheel(false);
-    m_shooter.SetAngle(false);
+    if (m_powercellsCounted <= 1)
+    {
+        m_shooter.SetAngle(false);
+    }
 
     // needs shooter to idle speed
 
@@ -324,6 +327,7 @@ void Robot::TravelingPeriodic()
 
 void Robot::FiringInit() 
 {
+    m_intake.GetSensorReleased(Intake::SensorLocation::Kicker);
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
@@ -333,6 +337,17 @@ void Robot::FiringInit()
 
 void Robot::FiringPeriodic() 
 {
+    m_intake.ProcessStickySwitches();
+    if (m_intake.GetSensorReleased(Intake::SensorLocation::Kicker))
+    {
+        m_powercellsCounted--;
+        UpdateActivePowerCells();
+
+        if (m_powercellsCounted == 0)
+        {
+            m_shooter.SetAngle(false);
+        }
+    }
 }
 
 void Robot::ClimbingInit() 

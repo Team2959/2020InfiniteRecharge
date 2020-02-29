@@ -72,6 +72,20 @@ bool Intake::GetSensorPressed(Intake::SensorLocation location)
     return false;
 }
 
+bool Intake::GetSensorReleased(Intake::SensorLocation location)
+{
+    switch(location)
+    {
+    case Intake::SensorLocation::Kicker:
+        return m_kickerSensor.GetReleased();
+    case Intake::SensorLocation::NewPowercell:
+        return m_newPowercellSensor.GetReleased();
+    case Intake::SensorLocation::SecuredPowercell:
+        return m_securedPowercellSensor.GetReleased();
+    }
+    return false;
+}
+
 bool Intake::IsIntakeRunning() const
 {
     return m_intake.Get() != 0.0;
