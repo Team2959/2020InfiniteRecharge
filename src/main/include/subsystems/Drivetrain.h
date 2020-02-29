@@ -47,7 +47,7 @@ private:
   AHRS m_navX{frc::SPI::kMXP};
 
   // Smart Dashboard
-  const std::string kName = "Drive: ";
+  const std::string kName = "Drive/";
   const std::string kDebug = kName + "Debug";
   const std::string kPGain = kName + "P Gain";
   const std::string kIGain = kName + "I Gain";

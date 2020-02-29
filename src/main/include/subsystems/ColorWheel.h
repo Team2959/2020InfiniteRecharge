@@ -40,6 +40,21 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_spinMotor{kColorWheelVictorSpxCanId};
     frc::SerialPort m_bling {115200, frc::SerialPort::kUSB1};
 
+    // Smart Dashboard
+    const std::string kCW = "CW/";
+    const std::string kDebug = kCW + "Debug";
+    const std::string kCountColors = kCW + "Count Colors";
+    const std::string kColorToCount = kCW + "Color To Count";
+    const std::string kColorsCounted = kCW + "Colors Counted";
+    const std::string kLogColors = kCW + "Log Colors";
+    const std::string kDetectedColor = kCW + "Detected Color";
+    const std::string kGameDataColor = kCW + "Game Data Color";
+    const std::string kRedColor = kCW + "Red Color";
+    const std::string kGreenColor = kCW + "Green Color";
+    const std::string kBlueColor = kCW + "Blue Color";
+    const std::string kColorConfidence = kCW + "Color Confidence";
+    const std::string kSpinSpeed = kCW + "Spin Speed";
+
     bool m_debugEnable = false;
 
     frc::Color m_countedColor = kGreenTarget;
@@ -49,8 +64,8 @@ private:
     bool m_countColors = false;
     bool m_logColors = false;
     int m_colorCount = -1;
-    const double kSpinSpeed = 0.5;
-    double m_spinSpeed = kSpinSpeed;
+    const double kSpinSpeedDefault = 0.5;
+    double m_spinSpeed = kSpinSpeedDefault;
 
     std::vector<std::tuple< std::string/* Guessed Color */, double /* Red */, double /* Green */, double /* Blue */ > > m_colorTracking;
 

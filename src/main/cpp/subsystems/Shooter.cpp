@@ -86,9 +86,9 @@ void Shooter::OnRobotPeriodic()
 std::string Shooter::GetHoodSwitchStateText()
 {
     if(GetAngle())
-        return "Close";
+        return "Far";
     else
-        return "Far";    
+        return "Close";    
 }
 
 double Shooter::GetSpeed()

@@ -32,12 +32,18 @@ void ColorWheel::OnRobotInit()
     m_bling.SetWriteBufferMode(frc::SerialPort::WriteBufferMode::kFlushOnAccess);
     m_bling.DisableTermination();
 
-    frc::SmartDashboard::PutBoolean("CW: Debug", m_debugEnable);
-    frc::SmartDashboard::PutBoolean("Count Color", false);
-    frc::SmartDashboard::PutNumber("Color Counted", 0);
-    frc::SmartDashboard::PutBoolean("Log Color", false);
-    frc::SmartDashboard::PutString("Color to Count", ColorName(m_countedColor));
-    frc::SmartDashboard::PutNumber("CW: Spin Speed", kSpinSpeed);
+    frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
+    frc::SmartDashboard::PutBoolean(kCountColors, false);
+    frc::SmartDashboard::PutNumber(kColorsCounted, 0);
+    frc::SmartDashboard::PutBoolean(kLogColors, false);
+    frc::SmartDashboard::PutString(kColorToCount, ColorName(m_countedColor));
+    frc::SmartDashboard::PutNumber(kSpinSpeed, kSpinSpeedDefault);
+    frc::SmartDashboard::PutString(kDetectedColor, "");
+    frc::SmartDashboard::PutString(kGameDataColor, ColorName(m_gameDataTargetColor));
+    frc::SmartDashboard::PutNumber(kRedColor, 0);
+    frc::SmartDashboard::PutNumber(kGreenColor, 0);
+    frc::SmartDashboard::PutNumber(kBlueColor, 0);
+    frc::SmartDashboard::PutNumber(kColorConfidence, 0);
 
     if (exists("/home/lvuser/colors.csv"))
     {
@@ -145,24 +151,24 @@ void ColorWheel::UpdateColorSensorValues(int skips)
 
     if (skips % 49 == 0)
     {
-        frc::SmartDashboard::PutString("Detected Color", ColorName(matchedColor));
+        frc::SmartDashboard::PutString(kDetectedColor, ColorName(matchedColor));
 
-        m_debugEnable = frc::SmartDashboard::GetBoolean("CW: Debug", false);
+        m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
         if (m_debugEnable == true)
         {
-            frc::SmartDashboard::PutNumber("Color Counted", m_colorCount);
-            m_countColors = frc::SmartDashboard::GetBoolean("Count Color", false);
-            m_logColors = frc::SmartDashboard::GetBoolean("Log Colors", false);
+            frc::SmartDashboard::PutNumber(kColorsCounted, m_colorCount);
+            m_countColors = frc::SmartDashboard::GetBoolean(kCountColors, false);
+            m_logColors = frc::SmartDashboard::GetBoolean(kLogColors, false);
             m_countedColor = GetColorFromName(
-                frc::SmartDashboard::GetString("Color to Count", ColorName(m_countedColor)));
+                frc::SmartDashboard::GetString(kColorToCount, ColorName(m_countedColor)));
 
-            frc::SmartDashboard::PutNumber("Red", detectedColor.red);
-            frc::SmartDashboard::PutNumber("Green", detectedColor.green);
-            frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
-            frc::SmartDashboard::PutNumber("Confidence", confidence);
+            frc::SmartDashboard::PutNumber(kRedColor, detectedColor.red);
+            frc::SmartDashboard::PutNumber(kGreenColor, detectedColor.green);
+            frc::SmartDashboard::PutNumber(kBlueColor, detectedColor.blue);
+            frc::SmartDashboard::PutNumber(kColorConfidence, confidence);
             // frc::SmartDashboard::PutNumber("Proximity", m_colorSensor.GetProximity());
             SetTargetColorFromGameData();
-            m_spinSpeed = frc::SmartDashboard::GetNumber("CW: Spin Speed", kSpinSpeed);
+            m_spinSpeed = frc::SmartDashboard::GetNumber(kSpinSpeed, kSpinSpeedDefault);
         }
     }
 }
@@ -276,7 +282,7 @@ void ColorWheel::Spin(bool start)
 void ColorWheel::SetTargetColorFromGameData()
 {
     m_gameDataTargetColor = GetColorFromName(frc::DriverStation::GetInstance().GetGameSpecificMessage());
-    frc::SmartDashboard::PutString("Game Data Color", ColorName(m_gameDataTargetColor));
+    frc::SmartDashboard::PutString(kGameDataColor, ColorName(m_gameDataTargetColor));
 }
 
 void ColorWheel::SpinToColor()

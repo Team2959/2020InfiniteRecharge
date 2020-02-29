@@ -36,12 +36,13 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutNumber("Speed Output Offset", kDefaultOutputOffset);
     frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
 
-    frc::SmartDashboard::PutNumber("Speed Deadband", kDefaultDeadband);
-    frc::SmartDashboard::PutNumber("Speed Output Offset", kDefaultOutputOffset);
-    frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
+    frc::SmartDashboard::PutNumber("Rotation Deadband", kDefaultDeadband);
+    frc::SmartDashboard::PutNumber("Rotation Output Offset", kDefaultOutputOffset);
+    frc::SmartDashboard::PutNumber("Rotation Exponent", kDefaultExponent);
 
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
+    frc::SmartDashboard::PutString("Robot State", "Traveling");
     frc::SmartDashboard::PutNumber("Power Cells", 0);
 }
 
@@ -57,9 +58,9 @@ void Robot::RobotPeriodic()
             double loo = frc::SmartDashboard::GetNumber("Speed Output Offset", kDefaultOutputOffset);
             double lex = frc::SmartDashboard::GetNumber("Speed Exponent", kDefaultExponent);
 
-            double rdb = frc::SmartDashboard::GetNumber("Speed Deadband", kDefaultDeadband);
-            double roo = frc::SmartDashboard::GetNumber("Speed Output Offset", kDefaultOutputOffset);
-            double rex = frc::SmartDashboard::GetNumber("Speed Exponent", kDefaultExponent);
+            double rdb = frc::SmartDashboard::GetNumber("Rotation Deadband", kDefaultDeadband);
+            double roo = frc::SmartDashboard::GetNumber("Rotation Output Offset", kDefaultOutputOffset);
+            double rex = frc::SmartDashboard::GetNumber("Rotation Exponent", kDefaultExponent);
 
             m_driverSpeedConditioning.SetDeadband(ldb);
             m_driverSpeedConditioning.SetRange(loo, 1.0);
@@ -235,6 +236,8 @@ void Robot::TravelingInit()
     m_shooter.SetAngle(false);
 
     // needs shooter to idle speed
+
+    frc::SmartDashboard::PutString("Robot State", "Traveling");
 }
 
 void Robot::TravelingPeriodic() 
@@ -248,6 +251,8 @@ void Robot::FiringInit()
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+
+    frc::SmartDashboard::PutString("Robot State", "Firing");
 }
 
 void Robot::FiringPeriodic() 
@@ -274,6 +279,8 @@ void Robot::FiringPeriodic()
 void Robot::ClimbingInit() 
 {
     TravelingInit();
+
+    frc::SmartDashboard::PutString("Robot State", "Climbing");
 }
 
 void Robot::ClimbingPeriodic()
@@ -297,6 +304,8 @@ void Robot::ColorWheelInit()
 {
     TravelingInit();
     // m_colorWheel.EngageColorWheel(true);
+
+    frc::SmartDashboard::PutString("Robot State", "Color Wheel");
 }
 
 void Robot::ColorWheelPeriodic()
@@ -325,6 +334,8 @@ void Robot::LoadingInit()
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
     m_powercellsCounted = 0;
+
+    frc::SmartDashboard::PutString("Robot State", "Loading");
 }
 
 void Robot::LoadingPeriodic()

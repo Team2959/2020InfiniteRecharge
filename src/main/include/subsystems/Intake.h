@@ -17,10 +17,10 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_VictorSPX m_conveyor {kConveyorVictorSpxCanId};
     
     // Smart Dashboard
-    const std::string kDebug = "Intake/Conveyor: Debug";
-    const std::string kIntakeName = "Intake: ";
-    const std::string kConveyorName = "Conveyor: ";
-    const std::string kKickerName = "Kicker: ";
+    const std::string kIntakeName = "Intake/";
+    const std::string kConveyorName = "Conveyor/";
+    const std::string kKickerName = "Kicker/";
+    const std::string kDebug = kIntakeName + "Debug";
     const std::string kConveyorSpeed = kConveyorName + "Speed";
     const std::string kKickerSpeed = kKickerName + "Speed";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
