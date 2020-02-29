@@ -18,6 +18,12 @@
 #include <subsystems/ColorWheel.h>
 #include <networktables/NetworkTableEntry.h>
 
+static constexpr double PI{ 3.14159265359 };
+static constexpr double DegreesToRadiansFactor{ PI / 180.0 };
+
+static constexpr double DegreesToRadians(double degrees) { return degrees * DegreesToRadiansFactor; }
+static constexpr double RadiansToDegrees(double radians) { return radians / DegreesToRadiansFactor; }
+
 class Robot : public frc::TimedRobot
 {
 private:
@@ -76,8 +82,12 @@ private:
   void LoadingInit();
   void LoadingPeriodic();
 
-  static double GetDistanceAngle(double distance);
+  static double GetTargetDistanceFromAngle(double angle);
+  static double GetTargetAngleFromDistance(double distance);
   std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
+  double GetTargetYAngle() const { return DegreesToRadians(m_tyEntry.GetDouble(0.0)); }
+  double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
+  double GetTargetXAngle() const { return DegreesToRadians(m_txEntry.GetDouble(0.0)); }
 
 public:
   void RobotInit() override;
