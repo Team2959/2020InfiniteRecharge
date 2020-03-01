@@ -44,13 +44,13 @@ private:
   const double kDefaultDeadband = 0.07;
   const double kDefaultOutputOffset = 0.0;
   const double kDefaultExponent = 3.0;
-  const double kDefaultAutoTurnMultiplier = 0.005;
+  const double kDefaultAutoTurnMultiplier = 0.05;
   const double kDefaultAutoTurnDegrees = 30.0;
 
   bool m_passed2ndStage = false;
   double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
   double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
-  
+
   // Drivetrain controller
   Drivetrain m_drivetrain {};
   Intake m_intake {};
