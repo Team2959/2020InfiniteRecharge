@@ -343,11 +343,6 @@ void Robot::FiringPeriodic()
     {
         m_powercellsCounted--;
         UpdateActivePowerCells();
-
-        if (m_powercellsCounted == 0)
-        {
-            m_shooter.SetAngle(false);
-        }
     }
 }
 
