@@ -28,6 +28,8 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kVelocity, 0);
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
     frc::SmartDashboard::PutNumber(kGoToPosition, 0);
+ 
+    StopAndZero();
 }
 
 void Climb::OnRobotPeriodic()
@@ -90,4 +92,10 @@ void Climb::MoveToPosition(double target)
 {
     m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
     frc::SmartDashboard::PutNumber(kTargetPosition, target);
+}
+
+void Climb::StopAndZero()
+{
+    m_left.StopMotor();
+    m_left.SetSelectedSensorPosition(0,0,0);
 }

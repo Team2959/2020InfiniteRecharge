@@ -39,6 +39,7 @@ private:
     double m_lastGoToPosition = 0.0;
 
     void MoveToPosition(double target);
+    void StopAndZero();
 
 public:
     void OnRobotInit();
