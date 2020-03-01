@@ -26,8 +26,6 @@ void Robot::RobotInit()
     auto table = inst.GetTable("limelight");
     m_txEntry = table->GetEntry("tx");
     m_tyEntry = table->GetEntry("ty");
-    frc::SmartDashboard::PutNumber("Auto Turn Multiplier", m_autoTurnMultiplier);
-    frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", m_autoTurnDegrees);
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -120,9 +118,6 @@ void Robot::RobotPeriodic()
             frc::SmartDashboard::PutString("Vision TY Angle", "");
             frc::SmartDashboard::PutString("Vision Distance", "");
         }
-
-        m_autoTurnMultiplier = frc::SmartDashboard::GetNumber("Auto Turn Multiplier", kDefaultAutoTurnMultiplier);
-        m_autoTurnDegrees = frc::SmartDashboard::GetNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
     }
 }
 
@@ -167,24 +162,6 @@ std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
     return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
 }
 
-void Robot::TurnToTarget()
-{
-    static const double LimitAngle{ DegreesToRadians(3.0) };            // If our angles are within this difference of zero, then we are on target
-    auto tx = GetTargetXAngle();
-    if (std::fabs(tx) > LimitAngle)
-    {
-        auto txDegrees = RadiansToDegrees(tx);
-        auto turnSpeed = m_autoTurnMultiplier * txDegrees / m_autoTurnDegrees;
-        m_drivetrain.CurvatureDrive(0.0, turnSpeed, true);
-        frc::SmartDashboard::PutNumber("Turn To Target Angle", txDegrees);
-        frc::SmartDashboard::PutNumber("Turn To Target Speed", turnSpeed);
-    }
-    else
-    {
-        m_drivetrain.CurvatureDrive(0, 0, false);
-    }
-}
-
 double Robot::GetTargetXAngle() const
 {
     if(!IsTargetValid())
@@ -221,11 +198,20 @@ void Robot::AutonomousPeriodic()
         m_drivetrain.SetSpeeds(-Drivetrain::kMaxVelocity * 0.5, 
                                -Drivetrain::kMaxVelocity * 0.5);
     }
-    else if(m_currentState == States::Traveling && m_skips > 5)
+    else if(m_currentState == States::Traveling && m_skips == 5)
     {
         m_drivetrain.SetSpeeds(0,0);
+        m_autoTurnTargetAngle = m_drivetrain.GetAngle() + 90;
+    }
+    else if(m_currentState == States::Traveling && m_skips > 5 && m_autoTurnTargetAngle != 0)
+    {
+        if(m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
+        {
+            m_autoTurnTargetAngle = 0;
+        }
     }
     DoCurrentState();
+    m_skips++;
 }
 
 void Robot::TeleopInit()
@@ -241,7 +227,15 @@ void Robot::TeleopPeriodic()
 {
     if (m_coPilot.GetRawButton(kTurnToTarget))
     {
-        TurnToTarget();
+        if (m_autoTurnTargetAngle == 0)
+        {
+            // read from camera
+            m_autoTurnTargetAngle = RadiansToDegrees(GetTargetXAngle()) + m_drivetrain.GetAngle();
+        }
+        if (m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
+        {
+            m_autoTurnTargetAngle = 0;
+        }
     }
     else
     {

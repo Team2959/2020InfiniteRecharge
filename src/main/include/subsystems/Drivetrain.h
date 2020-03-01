@@ -68,7 +68,7 @@ private:
   const double kOpenLoopRampRate = 0.25;
   const double kCurrentLimit = 50;
   const double kDefaultAutoKp = 0.05;
-  const double kDefaultLimitAngle = 3.0;
+  const double kDefaultLimitAngle = 2.0;
   const double kDefaultMinSpeed = 0.1;
 
   bool m_debugEnable;
@@ -89,15 +89,10 @@ public:
   void SetSpeeds(double left, double right);
   void CurvatureDrive(double speed, double rotation, bool quickTurn);
   void Drive(units::meter_t meters);
+  double GetAngle();
 
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();
 
-  void TurnToTx(double tx);
-  void TurnToTargetAngle(double angle);
-
-  // save pose for later focusing on drive
-  void UpdatePose();
-  void ResetPose(const frc::Pose2d& pose);
-  frc::Pose2d GetPose();
+  bool TryTurnToTargetAngle(double targetAngle);
 };

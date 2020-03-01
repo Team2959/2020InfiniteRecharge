@@ -42,8 +42,7 @@ private:
   const double kDefaultAutoTurnDegrees = 30.0;
 
   bool m_passed2ndStage = false;
-  double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
-  double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
+  double m_autoTurnTargetAngle = 0.0;
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};
@@ -91,8 +90,6 @@ private:
   std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
   double GetTargetXAngle() const;
   double GetTargetYAngle() const;
-
-  void TurnToTarget();
 
   void UpdateActivePowerCells();
 

@@ -65,7 +65,10 @@ void Drivetrain::InitalShowToSmartDashboard()
     frc::SmartDashboard::PutNumber(kIGain, m_leftPID.GetI());
     frc::SmartDashboard::PutNumber(kFF, m_leftPID.GetFF());
     frc::SmartDashboard::PutNumber(kIZone, m_leftPID.GetIZone());
+    // Turn to Angle parameters
     frc::SmartDashboard::PutNumber(kAutoKp, kDefaultAutoKp);
+    frc::SmartDashboard::PutNumber(kAutoLimitAngle, kDefaultLimitAngle);
+    frc::SmartDashboard::PutNumber(kAutoMinSpeed, kDefaultMinSpeed);
 }
 
 void Drivetrain::UpdateFromSmartDashboard()
@@ -109,10 +112,34 @@ void Drivetrain::UpdateFromSmartDashboard()
     m_autoMinSpeed = frc::SmartDashboard::GetNumber(kAutoMinSpeed, kDefaultMinSpeed);
 }
 
-void Drivetrain::TurnToTx(double tx)
+bool Drivetrain::TryTurnToTargetAngle(double targetAngle)
 {
+    auto currentAngle = m_navX.GetAngle();
+    if (std::fabs(currentAngle - targetAngle) < m_autoLimitAngle)
+    {
+        CurvatureDrive(0.0, 0.0, false);
+        return false;
+    }
+
+    auto rotationMagnitude = targetAngle - currentAngle;
+    auto rotationSpeed = 0.0;
+    if (rotationMagnitude < 0)
+    {
+        // turn left
+        rotationSpeed = std::fmin(-m_autoMinSpeed, rotationMagnitude * m_autoKp);
+    }
+    else
+    {
+        // turn right
+        rotationSpeed = std::fmax(m_autoMinSpeed, rotationMagnitude * m_autoKp);
+    }
+    
+    CurvatureDrive(0.0, rotationSpeed, true);
+
+    return true;
 }
 
-void Drivetrain::TurnToTargetAngle(double angle)
+double Drivetrain::GetAngle()
 {
+    return m_navX.GetAngle();
 }
