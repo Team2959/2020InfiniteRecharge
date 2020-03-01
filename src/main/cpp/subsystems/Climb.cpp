@@ -5,6 +5,7 @@ void Climb::OnRobotInit()
 {
     m_left.GetSlotConfigs(m_pidConfig);
     m_right.GetSlotConfigs(m_pidConfigRight);
+
     m_pidConfig.kP = kDefaultKp;
     m_pidConfig.kI = kDefaultKi;
     m_pidConfig.kF = kDefaultFf;
@@ -13,6 +14,7 @@ void Climb::OnRobotInit()
     m_pidConfigRight.kI = kDefaultKi;
     m_pidConfigRight.kF = kDefaultFf;
     m_pidConfigRight.integralZone = kDefaultIzone;
+    
     m_left.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
     m_left.ConfigMotionAcceleration(kDefaultAcceleration, 10);
     m_right.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
@@ -29,6 +31,7 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kCruiseVelocity, kDefaultCruiseVelocity);
     frc::SmartDashboard::PutNumber(kAcceleration, kDefaultAcceleration);
     frc::SmartDashboard::PutNumber(kPosition, 0);
+    frc::SmartDashboard::PutNumber(kRightPosition, 0);
     frc::SmartDashboard::PutNumber(kVelocity, 0);
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
     frc::SmartDashboard::PutNumber(kGoToPosition, 0);
@@ -42,6 +45,7 @@ void Climb::OnRobotPeriodic()
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
 
     frc::SmartDashboard::PutNumber(kPosition, m_left.GetSelectedSensorPosition());
+    frc::SmartDashboard::PutNumber(kRightPosition, m_right.GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber(kVelocity, m_left.GetSelectedSensorVelocity());
 
     if (m_debugEnable == false) return;
@@ -49,6 +53,7 @@ void Climb::OnRobotPeriodic()
     if (frc::SmartDashboard::GetBoolean(kResetEncoders, false))
     {
         StopAndZero();
+        frc::SmartDashboard::PutBoolean(kResetEncoders, true);
     }
 
     // Get the values only once to optimize for speed

@@ -29,6 +29,7 @@ private:
     const std::string kCruiseVelocity = kName + "Cruise Velocity";
     const std::string kAcceleration = kName + "Acceleralation";
     const std::string kPosition = kName + "Position";
+    const std::string kRightPosition = kName + "Right Position";
     const std::string kVelocity = kName + "Velocity";
     const std::string kTargetPosition = kName + "Target Position";
     const std::string kGoToPosition = kName + "Go To Position";
