@@ -10,6 +10,7 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_right {kClimbRightTalonSrxCanId};
 
     ctre::phoenix::motorcontrol::can::SlotConfiguration m_pidConfig;
+    ctre::phoenix::motorcontrol::can::SlotConfiguration m_pidConfigRight;
 
     const double kDefaultKp = 0.001;
     const double kDefaultKi = 0;
@@ -31,6 +32,7 @@ private:
     const std::string kVelocity = kName + "Velocity";
     const std::string kTargetPosition = kName + "Target Position";
     const std::string kGoToPosition = kName + "Go To Position";
+    const std::string kResetEncoders = kName + "Reset Encoders";
 
     bool m_debugEnable = false;
     double m_cruiseVelocity = kDefaultCruiseVelocity;

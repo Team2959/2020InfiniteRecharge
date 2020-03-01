@@ -4,15 +4,19 @@
 void Climb::OnRobotInit()
 {
     m_left.GetSlotConfigs(m_pidConfig);
+    m_right.GetSlotConfigs(m_pidConfigRight);
     m_pidConfig.kP = kDefaultKp;
     m_pidConfig.kI = kDefaultKi;
     m_pidConfig.kF = kDefaultFf;
     m_pidConfig.integralZone = kDefaultIzone;
+    m_pidConfigRight.kP = kDefaultKp;
+    m_pidConfigRight.kI = kDefaultKi;
+    m_pidConfigRight.kF = kDefaultFf;
+    m_pidConfigRight.integralZone = kDefaultIzone;
     m_left.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
     m_left.ConfigMotionAcceleration(kDefaultAcceleration, 10);
-
-    m_right.Follow(m_left);
-    m_right.SetInverted( ctre::phoenix::motorcontrol::InvertType::OpposeMaster);
+    m_right.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
+    m_right.ConfigMotionAcceleration(kDefaultAcceleration, 10);
 
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
@@ -28,6 +32,7 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kVelocity, 0);
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
     frc::SmartDashboard::PutNumber(kGoToPosition, 0);
+    frc::SmartDashboard::PutBoolean(kResetEncoders, false);
  
     StopAndZero();
 }
@@ -40,6 +45,11 @@ void Climb::OnRobotPeriodic()
     frc::SmartDashboard::PutNumber(kVelocity, m_left.GetSelectedSensorVelocity());
 
     if (m_debugEnable == false) return;
+
+    if (frc::SmartDashboard::GetBoolean(kResetEncoders, false))
+    {
+        StopAndZero();
+    }
 
     // Get the values only once to optimize for speed
     auto currentP = m_pidConfig.kP;
@@ -56,28 +66,34 @@ void Climb::OnRobotPeriodic()
     if(fabs(myP - currentP) > kCloseToSameValue)
     {
         m_pidConfig.kP = myP;
+        m_pidConfigRight.kP = myP;
     }
     if(fabs(myI - currentI) > kCloseToSameValue)
     {
         m_pidConfig.kI = myI;
+        m_pidConfigRight.kI = myI;
     }
     if(fabs(myFF - currentFF) > kCloseToSameValue)
     {
         m_pidConfig.kF = myFF;
+        m_pidConfigRight.kF = myFF;
     }
     if(fabs(myIZone - currentIZone) > kCloseToSameValue)
     {
         m_pidConfig.integralZone = myIZone;
+        m_pidConfigRight.integralZone = myIZone;
     }
     if(fabs(myCruiseV - m_cruiseVelocity) > kCloseToSameValue)
     {
         m_cruiseVelocity = myCruiseV;
         m_left.ConfigMotionCruiseVelocity(m_cruiseVelocity, 10);
+        m_right.ConfigMotionCruiseVelocity(m_cruiseVelocity, 10);
     }
     if(fabs(myAccel - currentIZone) > kCloseToSameValue)
     {
         m_acceleration = myAccel;
         m_left.ConfigMotionAcceleration(m_acceleration,10);
+        m_right.ConfigMotionAcceleration(m_acceleration,10);
     }
 
     double position = frc::SmartDashboard::GetNumber(kGoToPosition, 0.0);
@@ -91,11 +107,14 @@ void Climb::OnRobotPeriodic()
 void Climb::MoveToPosition(double target)
 {
     m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
+    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, -target);
     frc::SmartDashboard::PutNumber(kTargetPosition, target);
 }
 
 void Climb::StopAndZero()
 {
     m_left.StopMotor();
+    m_right.StopMotor();
     m_left.SetSelectedSensorPosition(0,0,0);
+    m_right.SetSelectedSensorPosition(0,0,0);
 }
