@@ -90,6 +90,8 @@ public:
   void CurvatureDrive(double speed, double rotation, bool quickTurn);
   void Drive(units::meter_t meters);
   double GetAngle();
+  double GetPostion();
+  bool IsAtPosition(double position);
 
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();

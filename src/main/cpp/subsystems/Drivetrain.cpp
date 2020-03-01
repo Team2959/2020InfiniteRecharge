@@ -143,3 +143,13 @@ double Drivetrain::GetAngle()
 {
     return m_navX.GetAngle();
 }
+
+double Drivetrain::GetPostion()
+{
+    return m_rightEncoder.GetPosition();
+}
+
+bool Drivetrain::IsAtPosition(double position)
+{
+    return std::fabs(position - GetPostion()) < 100;
+}
