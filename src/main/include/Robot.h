@@ -46,10 +46,12 @@ private:
   const double kDefaultExponent = 3.0;
   const double kDefaultAutoTurnMultiplier = 0.05;
   const double kDefaultAutoTurnDegrees = 30.0;
+  const double kDefaultAutoTurnOffset = 0.01;
 
   bool m_passed2ndStage = false;
   double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
   double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
+  double m_autoTurnOffset = kDefaultAutoTurnOffset;
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};

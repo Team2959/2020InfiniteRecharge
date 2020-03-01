@@ -28,6 +28,7 @@ void Robot::RobotInit()
     m_tyEntry = table->GetEntry("ty");
     frc::SmartDashboard::PutNumber("Auto Turn Multiplier", m_autoTurnMultiplier);
     frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", m_autoTurnDegrees);
+    frc::SmartDashboard::PutNumber("Auto Turn Angle Offset", m_autoTurnOffset);
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -123,6 +124,7 @@ void Robot::RobotPeriodic()
 
         m_autoTurnMultiplier = frc::SmartDashboard::GetNumber("Auto Turn Multiplier", kDefaultAutoTurnMultiplier);
         m_autoTurnDegrees = frc::SmartDashboard::GetNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
+        m_autoTurnOffset = frc::SmartDashboard::PutNumber("Auto Turn Angle Offset", kDefaultAutoTurnOffset);
     }
 }
 
@@ -175,6 +177,14 @@ void Robot::TurnToTarget()
     {
         auto txDegrees = RadiansToDegrees(tx);
         auto turnSpeed = m_autoTurnMultiplier * txDegrees / m_autoTurnDegrees;
+        if (tx < 0)
+        {
+            turnSpeed -= m_autoTurnOffset;
+        }
+        else
+        {
+            turnSpeed += m_autoTurnOffset;
+        }
         m_drivetrain.CurvatureDrive(0.0, turnSpeed, true);
         frc::SmartDashboard::PutNumber("Turn To Target Angle", txDegrees);
         frc::SmartDashboard::PutNumber("Turn To Target Speed", turnSpeed);
