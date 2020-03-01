@@ -116,6 +116,10 @@ void Shooter::SetSpeedFromThrottle(double throttlePosition)
         // do linear interpolation between minimum and maximum throttle speeds
         targetSpeed = (m_slopeOfThrottleRange * throttlePosition) + m_offsetOfThrottleRange; 
     }
+    else if (throttlePosition >= 0.25)
+    {
+        targetSpeed = 2500;
+    }
     SetSpeed(targetSpeed);
 }
 
