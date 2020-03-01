@@ -23,11 +23,19 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kIZone, kDefaultIzone);
     frc::SmartDashboard::PutNumber(kCruiseVelocity, kDefaultCruiseVelocity);
     frc::SmartDashboard::PutNumber(kAcceleration, kDefaultAcceleration);
+    // Magic motion
+    frc::SmartDashboard::PutNumber(kPosition, 0);
+    frc::SmartDashboard::PutNumber(kVelocity, 0);
+    frc::SmartDashboard::PutNumber(kTargetPosition, 0);
+    frc::SmartDashboard::PutNumber(kGoToPosition, 0);
 }
 
 void Climb::OnRobotPeriodic()
 {
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+
+    frc::SmartDashboard::PutNumber(kPosition, m_left.GetSelectedSensorPosition());
+    frc::SmartDashboard::PutNumber(kVelocity, m_left.GetSelectedSensorVelocity());
 
     if (m_debugEnable == false) return;
 
@@ -69,4 +77,10 @@ void Climb::OnRobotPeriodic()
         m_acceleration = myAccel;
         m_left.ConfigMotionAcceleration(m_acceleration,10);
     }
+}
+
+void Climb::MoveToPosition(double target)
+{
+    m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
+    frc::SmartDashboard::PutNumber(kTargetPosition, target);
 }

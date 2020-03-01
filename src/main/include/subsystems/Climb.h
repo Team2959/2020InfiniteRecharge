@@ -27,10 +27,16 @@ private:
     const std::string kIZone = kName + "I Zone";
     const std::string kCruiseVelocity = kName + "Cruise Velocity";
     const std::string kAcceleration = kName + "Acceleralation";
+    const std::string kPosition = kName + "Position";
+    const std::string kVelocity = kName + "Velocity";
+    const std::string kTargetPosition = kName + "Target Position";
+    const std::string kGoToPosition = kName + "Go To Position";
 
     bool m_debugEnable = false;
     double m_cruiseVelocity = kDefaultCruiseVelocity;
     double m_acceleration = kDefaultAcceleration;
+
+    void MoveToPosition(double target);
 
 public:
     void OnRobotInit();
