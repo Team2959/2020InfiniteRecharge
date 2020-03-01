@@ -118,7 +118,7 @@ void Shooter::SetSpeedFromThrottle(double throttlePosition)
     }
     else if (throttlePosition >= 0.25)
     {
-        targetSpeed = 2500;
+        targetSpeed = 2600;
     }
     SetSpeed(targetSpeed);
 }
