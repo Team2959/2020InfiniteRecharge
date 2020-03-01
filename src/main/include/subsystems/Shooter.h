@@ -56,7 +56,6 @@ private:
     std::string GetHoodSwitchStateText();
 
     double GetSpeed();
-    void SetSpeed(double speed);
 public:
     Shooter();
 
@@ -65,6 +64,7 @@ public:
 
     bool CloseToSpeed();
     void SetSpeedFromThrottle(double throttlePositon);
+    void SetSpeed(double speed);
 
     void SetAngle(bool closeShot);
     bool GetAngle();

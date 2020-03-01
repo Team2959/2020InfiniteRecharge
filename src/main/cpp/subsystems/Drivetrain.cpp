@@ -65,6 +65,7 @@ void Drivetrain::InitalShowToSmartDashboard()
     frc::SmartDashboard::PutNumber(kIGain, m_leftPID.GetI());
     frc::SmartDashboard::PutNumber(kFF, m_leftPID.GetFF());
     frc::SmartDashboard::PutNumber(kIZone, m_leftPID.GetIZone());
+    frc::SmartDashboard::PutNumber(kAutoKp, kDefaultAutoKp);
 }
 
 void Drivetrain::UpdateFromSmartDashboard()
@@ -102,4 +103,16 @@ void Drivetrain::UpdateFromSmartDashboard()
         m_rightPID.SetIZone(myIZone);
         m_leftPID.SetIZone(myIZone);
     }
+
+    m_autoKp = frc::SmartDashboard::GetNumber(kAutoKp, kDefaultAutoKp);
+    m_autoLimitAngle = frc::SmartDashboard::GetNumber(kAutoLimitAngle, kDefaultLimitAngle);
+    m_autoMinSpeed = frc::SmartDashboard::GetNumber(kAutoMinSpeed, kDefaultMinSpeed);
+}
+
+void Drivetrain::TurnToTx(double tx)
+{
+}
+
+void Drivetrain::TurnToTargetAngle(double angle)
+{
 }

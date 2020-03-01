@@ -2,8 +2,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 Shooter::Shooter()
-{
-    // Have the follower follow the primary except invert 
+{    // Have the follower follow the primary except invert 
     // because they are opposite of one another
     m_follower.Follow(m_primary, true);
 

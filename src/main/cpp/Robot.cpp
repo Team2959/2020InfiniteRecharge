@@ -202,10 +202,29 @@ double Robot::GetTargetYAngle() const
 void Robot::AutonomousInit()
 {
     ClearPressedAndReleasedOperatorButtons();
+    m_powercellsCounted = 3;
+    m_shooter.SetSpeed(2500);
 }
 
 void Robot::AutonomousPeriodic()
 {
+    if(m_shooter.CloseToSpeed() && m_currentState != States::Firing && 
+       m_currentState != States::Traveling)
+    {
+        SwitchState(States::Firing);
+    }
+    else if(m_currentState == States::Firing && m_powercellsCounted == 0)
+    {
+        SwitchState(States::Traveling);
+        m_shooter.SetSpeed(1000);
+        m_skips = 0;
+        m_drivetrain.SetSpeeds(-Drivetrain::kMaxVelocity * 0.5, 
+                               -Drivetrain::kMaxVelocity * 0.5);
+    }
+    else if(m_currentState == States::Traveling && m_skips > 5)
+    {
+        m_drivetrain.SetSpeeds(0,0);
+    }
     DoCurrentState();
 }
 
