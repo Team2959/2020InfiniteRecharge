@@ -36,6 +36,8 @@ private:
     double m_cruiseVelocity = kDefaultCruiseVelocity;
     double m_acceleration = kDefaultAcceleration;
 
+    double m_lastGoToPosition = 0.0;
+
     void MoveToPosition(double target);
 
 public:

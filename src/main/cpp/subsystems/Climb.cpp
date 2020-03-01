@@ -8,8 +8,8 @@ void Climb::OnRobotInit()
     m_pidConfig.kI = kDefaultKi;
     m_pidConfig.kF = kDefaultFf;
     m_pidConfig.integralZone = kDefaultIzone;
-    m_left.ConfigMotionCruiseVelocity(5000, 10);
-    m_left.ConfigMotionAcceleration(4500,10);
+    m_left.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
+    m_left.ConfigMotionAcceleration(kDefaultAcceleration, 10);
 
     m_right.Follow(m_left);
     m_right.SetInverted( ctre::phoenix::motorcontrol::InvertType::OpposeMaster);
@@ -21,9 +21,9 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kIGain, kDefaultKi);
     frc::SmartDashboard::PutNumber(kFF, kDefaultFf);
     frc::SmartDashboard::PutNumber(kIZone, kDefaultIzone);
+    // Magic motion
     frc::SmartDashboard::PutNumber(kCruiseVelocity, kDefaultCruiseVelocity);
     frc::SmartDashboard::PutNumber(kAcceleration, kDefaultAcceleration);
-    // Magic motion
     frc::SmartDashboard::PutNumber(kPosition, 0);
     frc::SmartDashboard::PutNumber(kVelocity, 0);
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
@@ -76,6 +76,13 @@ void Climb::OnRobotPeriodic()
     {
         m_acceleration = myAccel;
         m_left.ConfigMotionAcceleration(m_acceleration,10);
+    }
+
+    double position = frc::SmartDashboard::GetNumber(kGoToPosition, 0.0);
+    if(std::fabs(position - m_lastGoToPosition) > kCloseToSameValue)
+    {
+        MoveToPosition(position);
+        m_lastGoToPosition = position;
     }
 }
 
