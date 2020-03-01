@@ -17,6 +17,7 @@
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
+#include <subsystems/Climb.h>
 #include <networktables/NetworkTableEntry.h>
 
 static constexpr double PI{ 3.14159265359 };
@@ -56,6 +57,7 @@ private:
   Intake m_intake {};
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
+  Climb m_climb {};
 
   nt::NetworkTableEntry m_tvEntry;
   nt::NetworkTableEntry m_txEntry;

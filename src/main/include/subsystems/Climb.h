@@ -1,0 +1,38 @@
+#pragma once
+
+#include <ctre/phoenix/motorcontrol/can/WPI_TalonSRX.h>
+#include <RobotMap.h>
+
+class Climb
+{
+private:
+    ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_left {kClimbLeftTalonSrxCanId};
+    ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_right {kClimbRightTalonSrxCanId};
+
+    ctre::phoenix::motorcontrol::can::SlotConfiguration m_pidConfig;
+
+    const double kDefaultKp = 0.001;
+    const double kDefaultKi = 0;
+    const double kDefaultFf = 0;
+    const double kDefaultIzone = 0;
+    const double kDefaultCruiseVelocity = 5000;
+    const double kDefaultAcceleration = 4500;
+    
+    // Smart Dashboard
+    const std::string kName = "Climb/";
+    const std::string kDebug = kName + "Debug";
+    const std::string kPGain = kName + "P Gain";
+    const std::string kIGain = kName + "I Gain";
+    const std::string kFF = kName + "Feed Forward";
+    const std::string kIZone = kName + "I Zone";
+    const std::string kCruiseVelocity = kName + "Cruise Velocity";
+    const std::string kAcceleration = kName + "Acceleralation";
+
+    bool m_debugEnable = false;
+    double m_cruiseVelocity = kDefaultCruiseVelocity;
+    double m_acceleration = kDefaultAcceleration;
+
+public:
+    void OnRobotInit();
+    void OnRobotPeriodic();
+};

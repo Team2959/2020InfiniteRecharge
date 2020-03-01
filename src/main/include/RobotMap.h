@@ -21,6 +21,9 @@ const int kIntakeVictorSpxCanId = 10;
 const int kKickerVictorSpxCanId = 11;
 const int kColorWheelVictorSpxCanId = 12;
 const int kConveyorVictorSpxCanId = 13;
+// Talon SRX CAN IDs
+const int kClimbLeftTalonSrxCanId = 14;
+const int kClimbRightTalonSrxCanId = 15;
 
 // Pnuematics Control Module
 const int kShooterAngleAdjusterPcmId = 0;
