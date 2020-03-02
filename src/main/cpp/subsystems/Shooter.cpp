@@ -105,6 +105,11 @@ void Shooter::ComputeSlopeAndOffset()
     m_offsetOfThrottleRange = m_minThrottleRange - (m_slopeOfThrottleRange * 0.5);
 }
 
+void Shooter::SetSpeedFromTargetDistance(double distanceInInches)
+{
+    
+}
+
 void Shooter::SetSpeedFromThrottle(double throttlePosition)
 {
     throttlePosition += 1;  // shift from -1..1 to 0..2 for range

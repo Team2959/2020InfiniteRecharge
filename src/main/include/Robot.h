@@ -18,6 +18,8 @@
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
 #include <subsystems/Vision.h>
+#include <utility/DriveDistanceTracker.h>
+
 
 class Robot : public frc::TimedRobot
 {
@@ -43,6 +45,7 @@ private:
 
   bool m_passed2ndStage = false;
   double m_autoTurnTargetAngle = 0.0;
+  
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};
@@ -50,6 +53,8 @@ private:
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
   Vision m_vision {};
+
+  std::unique_ptr<DriveDistanceTracker> m_autoDriveDistanceTracker;
 
   enum class States
   {

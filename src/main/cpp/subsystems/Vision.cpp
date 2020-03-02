@@ -25,7 +25,7 @@ void Vision::OnRobotPeriodic()
     {
         frc::SmartDashboard::PutNumber("Vision TX Angle", GetTargetXAngleDegrees());
         frc::SmartDashboard::PutNumber("Vision TY Angle", GetTargetYAngleDegrees());
-        frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
+        frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistanceInInches());
     }
     // else
     // {

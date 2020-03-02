@@ -9,6 +9,7 @@
 #include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <AngleConversion.h>
+#include <utility/DriveDistanceTracker.h>
 
 void Robot::RobotInit() 
 {
@@ -100,14 +101,15 @@ void Robot::RobotPeriodic()
 void Robot::AutonomousInit()
 {
     ClearPressedAndReleasedOperatorButtons();
+    SwitchState(States::Traveling);
     m_powercellsCounted = 3;
     m_shooter.SetSpeed(2500);
+    // m_shooter.SetSpeedFromTargetDistance(m_vision.GetTargetDistanceInInches());
 }
 
 void Robot::AutonomousPeriodic()
 {
-    if(m_shooter.CloseToSpeed() && m_currentState != States::Firing && 
-       m_currentState != States::Traveling)
+    if(m_shooter.CloseToSpeed() && m_currentState != States::Firing)
     {
         SwitchState(States::Firing);
     }
@@ -115,16 +117,17 @@ void Robot::AutonomousPeriodic()
     {
         SwitchState(States::Traveling);
         m_shooter.SetSpeed(1000);
-        m_skips = 0;
+        m_autoDriveDistanceTracker = std::make_unique<DriveDistanceTracker>(m_drivetrain);
         m_drivetrain.SetSpeeds(-Drivetrain::kMaxVelocity * 0.5, 
                                -Drivetrain::kMaxVelocity * 0.5);
     }
-    else if(m_currentState == States::Traveling && m_skips == 5)
+    else if(m_currentState == States::Traveling && m_autoDriveDistanceTracker->GetDistanceInInches() > (5.0 * 12.0))
     {
+        m_autoDriveDistanceTracker.release();
         m_drivetrain.SetSpeeds(0,0);
         m_autoTurnTargetAngle = m_drivetrain.GetAngle() + 90;
     }
-    else if(m_currentState == States::Traveling && m_skips > 5 && m_autoTurnTargetAngle != 0)
+    else if(m_currentState == States::Traveling && m_autoTurnTargetAngle != 0)
     {
         if(m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
         {
@@ -132,7 +135,6 @@ void Robot::AutonomousPeriodic()
         }
     }
     DoCurrentState();
-    m_skips++;
 }
 
 void Robot::TeleopInit()

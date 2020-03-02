@@ -64,6 +64,7 @@ public:
 
     bool CloseToSpeed();
     void SetSpeedFromThrottle(double throttlePositon);
+    void SetSpeedFromTargetDistance(double distanceInInches);
     void SetSpeed(double speed);
 
     void SetAngle(bool closeShot);

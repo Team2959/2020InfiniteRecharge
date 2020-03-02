@@ -13,7 +13,6 @@ private:
     static double GetTargetAngleFromDistance(double distance);
     // bool IsTargetValid() const { return m_tvEntry.GetDouble(0.0) != 0.0; }
     // bool IsTargetValid() const { return true; }
-    double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngleDegrees()); }
     std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
 
     double GetTargetXAngleRadians() const;
@@ -24,5 +23,6 @@ public:
     void OnRopotInit();
     void OnRobotPeriodic();
 
+    double GetTargetDistanceInInches() const { return GetTargetDistanceFromAngle(GetTargetYAngleDegrees()); }
     double GetTargetXAngleDegrees() const;
 };
