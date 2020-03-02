@@ -3,20 +3,14 @@
 
 void Climb::OnRobotInit()
 {
-    m_right.SetInverted(false);
-    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0);
-
-    m_left.GetSlotConfigs(m_pidConfig);
-    m_right.GetSlotConfigs(m_pidConfigRight);
-
-    m_pidConfig.kP = kDefaultKp;
-    m_pidConfig.kI = kDefaultKi;
-    m_pidConfig.kF = kDefaultFf;
-    m_pidConfig.integralZone = kDefaultIzone;
-    m_pidConfigRight.kP = kDefaultKp;
-    m_pidConfigRight.kI = kDefaultKi;
-    m_pidConfigRight.kF = kDefaultFf;
-    m_pidConfigRight.integralZone = kDefaultIzone;
+    m_left.Config_kP(0, m_kP);
+    m_left.Config_kI(0, m_kI);
+    m_left.Config_kF(0, m_kFF);
+    m_left.Config_IntegralZone(0, m_kIZone);
+    m_right.Config_kP(0, m_kP);
+    m_right.Config_kI(0, m_kI);
+    m_right.Config_kF(0, m_kFF);
+    m_right.Config_IntegralZone(0, m_kIZone);
     
     m_left.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
     m_left.ConfigMotionAcceleration(kDefaultAcceleration, 10);
@@ -59,37 +53,35 @@ void Climb::OnRobotPeriodic()
         frc::SmartDashboard::PutBoolean(kResetEncoders, true);
     }
 
-    // Get the values only once to optimize for speed
-    auto currentP = m_pidConfig.kP;
-    auto currentI = m_pidConfig.kI;
-    auto currentFF = m_pidConfig.kF;
-    auto currentIZone = m_pidConfig.integralZone;
-
-    auto myP = frc::SmartDashboard::GetNumber(kPGain, currentP);
-    auto myI = frc::SmartDashboard::GetNumber(kIGain, currentI);
-    auto myFF = frc::SmartDashboard::GetNumber(kFF, currentFF);
-    auto myIZone = frc::SmartDashboard::GetNumber(kIZone, currentIZone);
+    auto myP = frc::SmartDashboard::GetNumber(kPGain, m_kP);
+    auto myI = frc::SmartDashboard::GetNumber(kIGain, m_kI);
+    auto myFF = frc::SmartDashboard::GetNumber(kFF, m_kFF);
+    auto myIZone = frc::SmartDashboard::GetNumber(kIZone, m_kIZone);
     auto myCruiseV = frc::SmartDashboard::GetNumber(kCruiseVelocity, kDefaultCruiseVelocity);
     auto myAccel = frc::SmartDashboard::GetNumber(kAcceleration, kDefaultAcceleration);
-    if(fabs(myP - currentP) > kCloseToSameValue)
+    if(fabs(myP - m_kP) > kCloseToSameValue)
     {
-        m_pidConfig.kP = myP;
-        m_pidConfigRight.kP = myP;
+        m_kP = myP;
+        m_left.Config_kP(0, m_kP);
+        m_right.Config_kP(0, m_kP);
     }
-    if(fabs(myI - currentI) > kCloseToSameValue)
+    if(fabs(myI - m_kI) > kCloseToSameValue)
     {
-        m_pidConfig.kI = myI;
-        m_pidConfigRight.kI = myI;
+        m_kI = myI;
+        m_left.Config_kI(0, m_kI);
+        m_right.Config_kI(0, m_kI);
     }
-    if(fabs(myFF - currentFF) > kCloseToSameValue)
+    if(fabs(myFF - m_kFF) > kCloseToSameValue)
     {
-        m_pidConfig.kF = myFF;
-        m_pidConfigRight.kF = myFF;
+        m_kFF = myFF;
+        m_left.Config_kF(0, m_kFF);
+        m_right.Config_kF(0, m_kFF);
     }
-    if(fabs(myIZone - currentIZone) > kCloseToSameValue)
+    if(fabs(myIZone - m_kIZone) > kCloseToSameValue)
     {
-        m_pidConfig.integralZone = myIZone;
-        m_pidConfigRight.integralZone = myIZone;
+        m_kIZone = myIZone;
+        m_left.Config_IntegralZone(0, m_kIZone);
+        m_right.Config_IntegralZone(0, m_kIZone);
     }
     if(fabs(myCruiseV - m_cruiseVelocity) > kCloseToSameValue)
     {
@@ -97,7 +89,7 @@ void Climb::OnRobotPeriodic()
         m_left.ConfigMotionCruiseVelocity(m_cruiseVelocity, 10);
         m_right.ConfigMotionCruiseVelocity(m_cruiseVelocity, 10);
     }
-    if(fabs(myAccel - currentIZone) > kCloseToSameValue)
+    if(fabs(myAccel - m_acceleration) > kCloseToSameValue)
     {
         m_acceleration = myAccel;
         m_left.ConfigMotionAcceleration(m_acceleration,10);
