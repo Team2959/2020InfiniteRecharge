@@ -1,4 +1,4 @@
-#include <Vision.h>
+#include <subsystems/Vision.h>
 #include <AngleConversion.h>
 #include <networktables/NetworkTableInstance.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -76,28 +76,28 @@ std::tuple<double, double> Vision::GetMotorOutputForAimAndDrive(double targetY)
     return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
 }
 
-double Robot::GetTargetXAngleRadians() const
+double Vision::GetTargetXAngleRadians() const
 {
     // if(!IsTargetValid())
     //     return std::nan("");
     return DegreesToRadians(GetTargetXAngleDegrees());
 }
 
-double Robot::GetTargetYAngleRadians() const 
+double Vision::GetTargetYAngleRadians() const 
 {
     // if(!IsTargetValid())
     //     return std::nan("");
     return DegreesToRadians(m_tyEntry.GetDouble(0.0));
 }
 
-double Robot::GetTargetXAngleDegrees() const
+double Vision::GetTargetXAngleDegrees() const
 {
     // if(!IsTargetValid())
     //     return std::nan("");
     return DegreesToRadians(GetTargetYAngleDegrees());
 }
 
-double Robot::GetTargetYAngleDegrees() const 
+double Vision::GetTargetYAngleDegrees() const 
 {
     // if(!IsTargetValid())
     //     return std::nan("");

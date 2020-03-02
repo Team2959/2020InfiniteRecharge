@@ -151,7 +151,7 @@ void Robot::TeleopPeriodic()
         if (m_autoTurnTargetAngle == 0)
         {
             // read from camera
-            m_autoTurnTargetAngle = GetTargetXAngleDegrees() + m_drivetrain.GetAngle();
+            m_autoTurnTargetAngle = m_vision.GetTargetXAngleDegrees() + m_drivetrain.GetAngle();
         }
         if (m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
         {
