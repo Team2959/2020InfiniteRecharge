@@ -242,7 +242,7 @@ void Robot::TeleopPeriodic()
         m_quickTurn.Get());
     }
     
-    m_shooter.SetSpeedFromThrottle(m_throttle.GetThrottle());
+    m_shooter.SetSpeedFromThrottle(m_coPilot.GetThrottle());
 
     if (m_coPilot.GetRawButtonPressed(kSetAngle))
     {
@@ -250,16 +250,16 @@ void Robot::TeleopPeriodic()
     }
 
     // When Firing Done
-    if (m_driverJoystick.GetTriggerReleased())
+    if (m_coPilot.GetTriggerReleased())
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_shooter.CloseToSpeed() && m_driverJoystick.GetTriggerPressed())
+    else if (m_shooter.CloseToSpeed() && m_coPilot.GetTriggerPressed())
     {
         SwitchState(Robot::States::Firing);
     }
 
-    if (m_driverJoystick.GetRawButtonPressed(kIntakeToggle))
+    if (m_coPilot.GetRawButtonPressed(kIntakeToggle))
     {
         if (m_intake.IsIntakeRunning())
         {
@@ -499,9 +499,9 @@ void Robot::ProcessUnjammingButtonPresses()
 
 void Robot::ClearPressedAndReleasedOperatorButtons()
 {
-    m_driverJoystick.GetTriggerReleased();
-    m_driverJoystick.GetTriggerPressed();
-    m_driverJoystick.GetRawButtonPressed(kIntakeToggle);
+    m_coPilot.GetTriggerReleased();
+    m_coPilot.GetTriggerPressed();
+    m_coPilot.GetRawButtonPressed(kIntakeToggle);
     m_coPilot.GetRawButtonPressed(kGoToColor);
     m_coPilot.GetRawButtonPressed(kEngageColorWheel);
     m_coPilot.GetRawButtonPressed(kSpinColorWheel);

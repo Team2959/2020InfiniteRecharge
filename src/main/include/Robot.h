@@ -35,7 +35,6 @@ private:
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
   frc::Joystick m_coPilot {1};
-  frc::Joystick m_throttle {2};
   frc::JoystickButton m_quickTurn {&m_driverJoystick, kQuickTurn};
 
   cwtech::UniformConditioning m_driverSpeedConditioning {}; // Speed
