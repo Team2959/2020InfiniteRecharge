@@ -7,6 +7,7 @@
 
 #include <subsystems/Drivetrain.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <AngleConversion.h>
 
 Drivetrain::Drivetrain() 
 {

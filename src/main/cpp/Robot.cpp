@@ -8,12 +8,7 @@
 #include "Robot.h"
 #include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <networktables/NetworkTableInstance.h>
-
-// TO DO:  Specify correct values for CameraAngle, CameraHeight, and TargetHeight
-constexpr double CameraAngle{ DegreesToRadians(30.0) }; // Angle in radians of the vertical elevation of the camera
-constexpr double CameraHeight{ 19.5 };                  // Height in inches of the camera above the floor.
-constexpr double TargetHeight{ 98.25 };                 // Height in inches of the target above the floor.
+#include <AngleConversion.h>
 
 void Robot::RobotInit() 
 {
@@ -21,11 +16,7 @@ void Robot::RobotInit()
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
-
-    auto inst = nt::NetworkTableInstance::GetDefault();
-    auto table = inst.GetTable("limelight");
-    m_txEntry = table->GetEntry("tx");
-    m_tyEntry = table->GetEntry("ty");
+    m_vision.OnRopotInit();
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -97,83 +88,13 @@ void Robot::RobotPeriodic()
 
     // m_colorWheel.UpdateColorSensorValues(m_skips);
 
-    // Increment the m_skips variable for counting
-    m_skips++;
-
-
     if (m_skips % 33)
     {
-        // TO DO:  Remove this code once vision testing is complete
-        auto    isTargetValid{ IsTargetValid() };
-        frc::SmartDashboard::PutString("Vision TV Present", isTargetValid ? "Yes" : "No");
-        if(isTargetValid)
-        {
-            frc::SmartDashboard::PutNumber("Vision TX Angle", RadiansToDegrees(GetTargetXAngle()));
-            frc::SmartDashboard::PutNumber("Vision TY Angle", RadiansToDegrees(GetTargetYAngle()));
-            frc::SmartDashboard::PutNumber("Vision Distance", GetTargetDistance());
-        }
-        else
-        {
-            frc::SmartDashboard::PutString("Vision TX Angle", "");
-            frc::SmartDashboard::PutString("Vision TY Angle", "");
-            frc::SmartDashboard::PutString("Vision Distance", "");
-        }
+        m_vision.OnRobotPeriodic();
     }
-}
 
-// TO DO:  Implement code that calls GetDistanceAngle, GetAngleDistance & GetMotorOutputForAimAndDrive and uses their results
-// Adapted from http://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-double Robot::GetTargetAngleFromDistance(double distance)
-{
-    if(distance == 0.0) // Protect against zero distance and division by zero
-        return 0.0;
-    return RadiansToDegrees(std::atan((TargetHeight - CameraHeight) / distance)) - CameraAngle;  // Do some trigonometry to compute the angle that corresponds to the input distance
-}
-
-// Adapted from http://docs.limelightvision.io/en/latest/cs_estimating_distance.html
-double Robot::GetTargetDistanceFromAngle(double angle)
-{
-    auto    tangent{ std::tan(DegreesToRadians(angle + CameraAngle)) };
-    if(tangent == 0.0)  // Avoid any possible division by zero
-        return 0.0;
-    return (TargetHeight - CameraHeight) / tangent;  // Do some trigonometry to compute the distance that corresponds to the input angle
-}
-
-// TO DO:  Specify correct KpAim, KpDistance, & MinAimCommand values
-// Adapted from https://docs.limelightvision.io/en/latest/cs_aimandrange.html
-std::tuple<double, double> Robot::GetMotorOutputForAimAndDrive(double targetY)
-{
-    static const double KpAim{ -DegreesToRadians(0.1) };                // These are the coefficients for tuning the response to our target error
-    static const double KpDistance{ -DegreesToRadians(0.1) };
-    static const double MinAimCommand{ 0.05 };                          // The minimum amount of response if we are turning
-    static const double LimitAngle{ DegreesToRadians(1.0) };            // If our angles are within this difference of zero, then we are on target
-    auto                targetXAngle{ GetTargetXAngle() };
-    auto                heading_error{ 0.0 - targetXAngle };            // Aim for tx == 0.0f
-    auto                distance_error{ 0.0};//targetY - GetTargetYAngle() };  // Aim for ty == targetY
-    auto                distance_adjust{ KpDistance * distance_error }; // Compute our distance adjustment, and
-    double              steering_adjust;                                // Will hold our steering adjustment
-
-    if (targetXAngle > LimitAngle)                                      // If the target is to the right, we need to turn to the left
-        steering_adjust = KpAim * heading_error - MinAimCommand;
-    else if (targetXAngle < LimitAngle)                                 // If the target is to the left, we need to turn to the right
-        steering_adjust = KpAim * heading_error + MinAimCommand;
-    else                                                                // Don't turn if +/- 1.0 degrees from crosshairs
-        steering_adjust = 0.0f;
-    return std::make_tuple(steering_adjust + distance_adjust,  steering_adjust + distance_adjust);  // Apply the distance adjustment to each component
-}
-
-double Robot::GetTargetXAngle() const
-{
-    if(!IsTargetValid())
-        return std::nan("");
-    return DegreesToRadians(m_txEntry.GetDouble(0.0)); 
-}
-
-double Robot::GetTargetYAngle() const 
-{
-    if(!IsTargetValid())
-        return std::nan("");
-    return DegreesToRadians(m_tyEntry.GetDouble(0.0)); 
+    // Increment the m_skips variable for counting
+    m_skips++;
 }
 
 void Robot::AutonomousInit()
@@ -230,7 +151,7 @@ void Robot::TeleopPeriodic()
         if (m_autoTurnTargetAngle == 0)
         {
             // read from camera
-            m_autoTurnTargetAngle = RadiansToDegrees(GetTargetXAngle()) + m_drivetrain.GetAngle();
+            m_autoTurnTargetAngle = GetTargetXAngleDegrees() + m_drivetrain.GetAngle();
         }
         if (m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
         {

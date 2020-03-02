@@ -17,7 +17,7 @@
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
-#include <networktables/NetworkTableEntry.h>
+#include <subsystems/Vision.h>
 
 class Robot : public frc::TimedRobot
 {
@@ -49,10 +49,7 @@ private:
   Intake m_intake {};
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
-
-  nt::NetworkTableEntry m_tvEntry;
-  nt::NetworkTableEntry m_txEntry;
-  nt::NetworkTableEntry m_tyEntry;
+  Vision m_vision {};
 
   enum class States
   {
@@ -81,15 +78,6 @@ private:
   void ColorWheelPeriodic();
   void LoadingInit();
   void LoadingPeriodic();
-
-  static double GetTargetDistanceFromAngle(double angle);
-  static double GetTargetAngleFromDistance(double distance);
-  // bool IsTargetValid() const { return m_tvEntry.GetDouble(0.0) != 0.0; }
-  bool IsTargetValid() const { return true; }
-  double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
-  std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
-  double GetTargetXAngle() const;
-  double GetTargetYAngle() const;
 
   void UpdateActivePowerCells();
 
