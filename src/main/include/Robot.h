@@ -36,7 +36,6 @@ private:
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
   frc::Joystick m_coPilot {1};
-  frc::Joystick m_throttle {2};
   frc::JoystickButton m_quickTurn {&m_driverJoystick, kQuickTurn};
 
   cwtech::UniformConditioning m_driverSpeedConditioning {}; // Speed
@@ -47,10 +46,12 @@ private:
   const double kDefaultExponent = 3.0;
   const double kDefaultAutoTurnMultiplier = 0.05;
   const double kDefaultAutoTurnDegrees = 30.0;
+  const double kDefaultAutoTurnOffset = 0.01;
 
   bool m_passed2ndStage = false;
   double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
   double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
+  double m_autoTurnOffset = kDefaultAutoTurnOffset;
 
   // Drivetrain controller
   Drivetrain m_drivetrain {};

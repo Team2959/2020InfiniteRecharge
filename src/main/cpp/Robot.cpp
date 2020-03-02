@@ -29,6 +29,7 @@ void Robot::RobotInit()
     m_tyEntry = table->GetEntry("ty");
     frc::SmartDashboard::PutNumber("Auto Turn Multiplier", m_autoTurnMultiplier);
     frc::SmartDashboard::PutNumber("Auto Turn Angle Adjust", m_autoTurnDegrees);
+    frc::SmartDashboard::PutNumber("Auto Turn Angle Offset", m_autoTurnOffset);
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -125,6 +126,7 @@ void Robot::RobotPeriodic()
 
         m_autoTurnMultiplier = frc::SmartDashboard::GetNumber("Auto Turn Multiplier", kDefaultAutoTurnMultiplier);
         m_autoTurnDegrees = frc::SmartDashboard::GetNumber("Auto Turn Angle Adjust", kDefaultAutoTurnDegrees);
+        m_autoTurnOffset = frc::SmartDashboard::PutNumber("Auto Turn Angle Offset", kDefaultAutoTurnOffset);
     }
 }
 
@@ -177,6 +179,14 @@ void Robot::TurnToTarget()
     {
         auto txDegrees = RadiansToDegrees(tx);
         auto turnSpeed = m_autoTurnMultiplier * txDegrees / m_autoTurnDegrees;
+        if (tx < 0)
+        {
+            turnSpeed -= m_autoTurnOffset;
+        }
+        else
+        {
+            turnSpeed += m_autoTurnOffset;
+        }
         m_drivetrain.CurvatureDrive(0.0, turnSpeed, true);
         frc::SmartDashboard::PutNumber("Turn To Target Angle", txDegrees);
         frc::SmartDashboard::PutNumber("Turn To Target Speed", turnSpeed);
@@ -234,7 +244,7 @@ void Robot::TeleopPeriodic()
         m_quickTurn.Get());
     }
     
-    m_shooter.SetSpeedFromThrottle(m_throttle.GetThrottle());
+    m_shooter.SetSpeedFromThrottle(m_coPilot.GetThrottle());
 
     if (m_coPilot.GetRawButtonPressed(kSetAngle))
     {
@@ -242,16 +252,16 @@ void Robot::TeleopPeriodic()
     }
 
     // When Firing Done
-    if (m_driverJoystick.GetTriggerReleased())
+    if (m_coPilot.GetTriggerReleased())
     {
         SwitchState(Robot::States::Traveling);
     }
-    else if (m_shooter.CloseToSpeed() && m_driverJoystick.GetTriggerPressed())
+    else if (m_shooter.CloseToSpeed() && m_coPilot.GetTriggerPressed())
     {
         SwitchState(Robot::States::Firing);
     }
 
-    if (m_driverJoystick.GetRawButtonPressed(kIntakeToggle))
+    if (m_coPilot.GetRawButtonPressed(kIntakeToggle))
     {
         if (m_intake.IsIntakeRunning())
         {
@@ -491,9 +501,9 @@ void Robot::ProcessUnjammingButtonPresses()
 
 void Robot::ClearPressedAndReleasedOperatorButtons()
 {
-    m_driverJoystick.GetTriggerReleased();
-    m_driverJoystick.GetTriggerPressed();
-    m_driverJoystick.GetRawButtonPressed(kIntakeToggle);
+    m_coPilot.GetTriggerReleased();
+    m_coPilot.GetTriggerPressed();
+    m_coPilot.GetRawButtonPressed(kIntakeToggle);
     m_coPilot.GetRawButtonPressed(kGoToColor);
     m_coPilot.GetRawButtonPressed(kEngageColorWheel);
     m_coPilot.GetRawButtonPressed(kSpinColorWheel);

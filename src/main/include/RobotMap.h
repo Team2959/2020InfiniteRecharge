@@ -36,17 +36,17 @@ const int kKickerSensor = 2;
 
 // Joystick Buttons
 // driver
-const int kFire = 1;
 const int kQuickTurn = 2;
-const int kIntakeToggle = 9;
 // co-pilot
-const int kGoToColor = 6;
-const int kEngageColorWheel = 5;
-const int kSpinColorWheel = 4;
-const int kClimbExtend = 2;
-const int kSetAngle = 12;
-const int kClimbRetract = 1;
-const int kReverseConveyor = 11;
-const int kReverseIntake = 3;
-const int kReverseKicker = 9;
-const int kTurnToTarget = 7;
+const int kFire = 1;
+const int kIntakeToggle = 2;
+const int kSetAngle = 3;
+const int kEngageColorWheel = 12;
+const int kSpinColorWheel = 9;
+const int kGoToColor = 8;
+const int kClimbExtend = 11;
+const int kClimbRetract = 5;
+const int kReverseIntake = 10;
+const int kReverseConveyor = 7;
+const int kReverseKicker = 6;
+const int kTurnToTarget = 4;
