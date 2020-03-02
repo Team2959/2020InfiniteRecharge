@@ -3,7 +3,8 @@
 
 void Climb::OnRobotInit()
 {
-    m_right.SetInverted(true);
+    m_right.SetInverted(false);
+    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, 0);
 
     m_left.GetSlotConfigs(m_pidConfig);
     m_right.GetSlotConfigs(m_pidConfigRight);
@@ -114,7 +115,7 @@ void Climb::OnRobotPeriodic()
 void Climb::MoveToPosition(double target)
 {
     m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
-    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
+    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, -target);
     frc::SmartDashboard::PutNumber(kTargetPosition, target);
 }
 
