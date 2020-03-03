@@ -15,7 +15,7 @@ void Robot::RobotInit()
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
     m_vision.OnRopotInit();
-
+    m_autonomous.OnRobotInit();
     m_stateManager.OnRobotInit();
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
