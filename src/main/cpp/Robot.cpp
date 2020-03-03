@@ -362,24 +362,19 @@ void Robot::ClimbingInit()
 {
     TravelingInit();
 
+    m_coPilot.GetRawButtonPressed(kClimbRetract);
+    m_coPilot.GetRawButtonReleased(kClimbRetract);
+
+    m_climb.StartClimb();
+
     frc::SmartDashboard::PutString("Robot State", "Climbing");
 }
 
 void Robot::ClimbingPeriodic()
 {
-    if (m_coPilot.GetRawButton(kClimbExtend))
-    {
-        // extend climb mechanism
-    }
-    else if (m_coPilot.GetRawButton(kClimbRetract))
-    {
-        // raise bot from floor
-    }
-    else
-    {
-        // motor off
-    }
-    
+    m_climb.ProcessClimb(
+        m_coPilot.GetRawButtonPressed(kClimbRetract),
+        m_coPilot.GetRawButtonReleased(kClimbRetract));
 }
 
 void Robot::ColorWheelInit()

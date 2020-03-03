@@ -1,6 +1,13 @@
 #include <subsystems/Climb.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+const int kReleaseWratchetPawPosition = 300;
+const int kExtendPosition = -26000;
+const int kRetractPosition = kExtendPosition - 18000;
+const int kMaxRetractPosition = kRetractPosition - 10000;
+const int kStopDelta = -500;
+const int kForwardLimit = 500;
+
 void Climb::OnRobotInit()
 {
     m_left.Config_kP(0, m_kP);
@@ -16,6 +23,16 @@ void Climb::OnRobotInit()
     m_left.ConfigMotionAcceleration(kDefaultAcceleration, 10);
     m_right.ConfigMotionCruiseVelocity(kDefaultCruiseVelocity, 10);
     m_right.ConfigMotionAcceleration(kDefaultAcceleration, 10);
+
+    m_left.ConfigForwardSoftLimitThreshold(kForwardLimit);
+    m_left.ConfigForwardSoftLimitEnable(true);
+    m_left.ConfigReverseSoftLimitThreshold(kMaxRetractPosition);
+    m_left.ConfigReverseSoftLimitEnable(true);
+
+    m_right.ConfigForwardSoftLimitThreshold(-kMaxRetractPosition);
+    m_right.ConfigForwardSoftLimitEnable(true);
+    m_right.ConfigReverseSoftLimitThreshold(-kForwardLimit);
+    m_right.ConfigReverseSoftLimitEnable(true);
 
     // Debug Enable
     frc::SmartDashboard::PutBoolean(kDebug, m_debugEnable);
@@ -33,7 +50,7 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
     frc::SmartDashboard::PutNumber(kGoToPosition, 0);
     frc::SmartDashboard::PutBoolean(kResetEncoders, false);
- 
+
     StopAndZero();
 }
 
@@ -50,7 +67,7 @@ void Climb::OnRobotPeriodic()
     if (frc::SmartDashboard::GetBoolean(kResetEncoders, false))
     {
         StopAndZero();
-        frc::SmartDashboard::PutBoolean(kResetEncoders, true);
+        frc::SmartDashboard::PutBoolean(kResetEncoders, false);
     }
 
     auto myP = frc::SmartDashboard::GetNumber(kPGain, m_kP);
@@ -104,17 +121,93 @@ void Climb::OnRobotPeriodic()
     }
 }
 
-void Climb::MoveToPosition(double target)
-{
-    m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, target);
-    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, -target);
-    frc::SmartDashboard::PutNumber(kTargetPosition, target);
-}
-
 void Climb::StopAndZero()
 {
     m_left.StopMotor();
     m_right.StopMotor();
     m_left.SetSelectedSensorPosition(0,0,0);
     m_right.SetSelectedSensorPosition(0,0,0);
+}
+
+void Climb::MoveToPosition(int target)
+{
+    m_targetPosition = std::min(target, kMaxRetractPosition);
+    m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, m_targetPosition);
+    m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, -m_targetPosition);
+    frc::SmartDashboard::PutNumber(kTargetPosition, m_targetPosition);
+}
+
+void Climb::StopCloseToCurrentPosition()
+{
+    MoveToPosition(m_left.GetSelectedSensorPosition() + kStopDelta);
+}
+
+bool Climb::IsAtTargetPosition()
+{
+    auto currentPosition = m_left.GetSelectedSensorPosition();
+    if (m_targetPosition <= 0)
+    {
+        return std::abs(currentPosition - m_targetPosition) < 75;
+    }
+
+    return std::abs(currentPosition - m_targetPosition) < 500;
+}
+
+void Climb::StartClimb()
+{
+    m_currentState = ReleasePaw;
+    MoveToPosition(kReleaseWratchetPawPosition);
+}
+
+void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
+{
+    switch (m_currentState)
+    {
+    case ReleasePaw:
+        if (IsAtTargetPosition())
+        {
+            m_currentState = Extend;
+            MoveToPosition(kExtendPosition);
+        }
+        break;
+    case Extend:
+        if (IsAtTargetPosition())
+        {
+            m_currentState = Retract;
+        }
+        break;
+    case Retract:
+        if (retractPressed)
+        {
+            m_currentState = Retracting;
+            MoveToPosition(kRetractPosition);
+        }
+        break;
+    case Retracting:
+        if (retractReleased || IsAtTargetPosition())
+        {
+            m_currentState = RetractAgain;
+            StopCloseToCurrentPosition();
+        }
+        break;
+    case RetractAgain:
+        if (retractPressed)
+        {
+            m_currentState = MoreRetracting;
+        }
+        break;
+    case MoreRetracting:
+        if (retractReleased)
+        {
+            m_currentState = RetractAgain;
+            StopCloseToCurrentPosition();
+        }
+        else
+        {
+            MoveToPosition(m_left.GetSelectedSensorPosition() + 2*kStopDelta);
+        }
+        break;
+    default:
+        break;
+    }
 }

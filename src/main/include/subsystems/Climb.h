@@ -15,7 +15,7 @@ private:
     const double kDefaultIzone = 0;
     const double kDefaultCruiseVelocity = 5000;
     const double kDefaultAcceleration = 4500;
-    
+
     // Smart Dashboard
     const std::string kName = "Climb/";
     const std::string kDebug = kName + "Debug";
@@ -40,12 +40,31 @@ private:
     double m_cruiseVelocity = kDefaultCruiseVelocity;
     double m_acceleration = kDefaultAcceleration;
 
-    double m_lastGoToPosition = 0.0;
+    int m_lastGoToPosition = 0;
+    int m_targetPosition = 0;
 
-    void MoveToPosition(double target);
     void StopAndZero();
+    void MoveToPosition(int target);
+    bool IsAtTargetPosition();
+    void StopCloseToCurrentPosition();
+
+    enum ClimbStates
+    {
+        Start,
+        ReleasePaw,
+        Extend,
+        Retract,
+        Retracting,
+        RetractAgain,
+        MoreRetracting
+    };
+
+    ClimbStates m_currentState = Start;
 
 public:
     void OnRobotInit();
     void OnRobotPeriodic();
+
+    void StartClimb();
+    void ProcessClimb(bool retractPressed, bool retractReleased);
 };

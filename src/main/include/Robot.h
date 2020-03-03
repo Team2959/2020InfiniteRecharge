@@ -64,7 +64,7 @@ private:
   nt::NetworkTableEntry m_txEntry;
   nt::NetworkTableEntry m_tyEntry;
 
-  enum class States
+  enum States
   {
     Traveling,
     Firing,
