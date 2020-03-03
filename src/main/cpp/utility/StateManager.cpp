@@ -2,10 +2,22 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-StateManager::StateManager(Intake& intake, Shooter& shooter, Vision& vision, Drivetrain& drivetrain, frc::Joystick& driverJoystick, frc::Joystick& coPilotJoystick, int powerCellsCount)
-    : m_intake(intake), m_shooter(shooter), m_vision(vision), m_drivetrain(drivetrain), m_currentState(States::Ready), 
-      m_driverJoystick(driverJoystick), m_coPilotJoystick(coPilotJoystick), m_powercellsCounted(powerCellsCount)
+StateManager::StateManager(Intake& intake, Shooter& shooter, Vision& vision, Drivetrain& drivetrain, frc::Joystick& coPilotJoystick)
+    : m_intake(intake), m_shooter(shooter), m_vision(vision), m_drivetrain(drivetrain), 
+      m_coPilotJoystick(coPilotJoystick)
 {
+}
+
+void StateManager::OnRobotInit()
+{
+    UpdateActivePowerCells();
+}
+
+void StateManager::OnAutoInit()
+{
+    Reset();
+    StartState(States::Traveling);
+    m_powercellsCounted = 3;
     UpdateActivePowerCells();
 }
 
@@ -19,7 +31,14 @@ void StateManager::StartState(States state)
     else if(m_currentState == States::Climbing) ClimbingInit();
 }
 
-void StateManager::Periodic()
+void StateManager::OnAutoPeriodic()
+{
+    if(m_currentState == States::Firing) FiringPeriodic();
+    else if(m_currentState == States::Traveling) TravelingPeriodic();
+    else if(m_currentState == States::Loading) LoadingPeriodic();
+}
+
+void StateManager::OnTeleopPeriodic()
 {
     ProcessUnjammingButtonPresses();
     if(m_currentState == States::Firing) FiringPeriodic();
@@ -234,7 +253,6 @@ void StateManager::ClearPressedAndReleasedOperatorButtons()
     m_coPilotJoystick.GetRawButtonPressed(kReverseKicker);
     m_coPilotJoystick.GetRawButtonReleased(kReverseKicker);
 }
-
 
 void StateManager::UpdateActivePowerCells()
 {

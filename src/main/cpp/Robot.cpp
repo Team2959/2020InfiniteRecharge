@@ -6,10 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-#include <iostream>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <AngleConversion.h>
-#include <utility/DriveDistanceTracker.h>
 
 void Robot::RobotInit() 
 {
@@ -18,6 +15,8 @@ void Robot::RobotInit()
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
     m_vision.OnRopotInit();
+
+    m_stateManager.OnRobotInit();
 
     m_driverSpeedConditioning.SetDeadband(kDefaultDeadband);
     m_driverSpeedConditioning.SetRange(kDefaultOutputOffset, 1.0);
@@ -38,8 +37,6 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
     frc::SmartDashboard::PutString("Robot State", "Traveling");
-
-    m_stateManager = std::make_unique<StateManager>(m_intake, m_shooter, m_vision, m_drivetrain, m_driverJoystick, m_coPilot, 3);
 }
 
 void Robot::RobotPeriodic() 
@@ -91,20 +88,20 @@ void Robot::RobotPeriodic()
 
 void Robot::AutonomousInit()
 {
-    if(m_stateManager.get() != nullptr)
-        m_autonomous = std::make_unique<Autonomous>(StartingPosition::Center, *m_stateManager, m_shooter, m_drivetrain);
+    m_stateManager.OnAutoInit();
+    m_autonomous.OnAutoInit();
 }
 
 void Robot::AutonomousPeriodic()
 {
-    if(m_autonomous.get() != nullptr)
-        m_autonomous->Periodic();
+    m_autonomous.Periodic();
+    m_stateManager.OnAutoPeriodic();
 }
 
 void Robot::TeleopInit()
 {
-    m_autonomous.reset();
-    m_stateManager->Reset();
+    m_stateManager.Reset();
+    // remove from competition code
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
@@ -142,22 +139,22 @@ void Robot::TeleopPeriodic()
     // When Firing Done
     if (m_coPilot.GetTriggerReleased())
     {
-        m_stateManager->StartState(States::Traveling);
+        m_stateManager.StartState(States::Traveling);
     }
     else if (m_shooter.CloseToSpeed() && m_coPilot.GetTriggerPressed())
     {
-        m_stateManager->StartState(States::Firing);
+        m_stateManager.StartState(States::Firing);
     }
 
     if (m_coPilot.GetRawButtonPressed(kIntakeToggle))
     {
         if (m_intake.IsIntakeRunning())
         {
-            m_stateManager->StartState(States::Traveling);
+            m_stateManager.StartState(States::Traveling);
         }
         else
         {
-            m_stateManager->StartState(States::Loading);
+            m_stateManager.StartState(States::Loading);
         }
     }
 
@@ -165,20 +162,20 @@ void Robot::TeleopPeriodic()
     // {
     //     if (m_colorWheel.IsColorWheelEngaged())
     //     {
-    //         SwitchState(Robot::States::Traveling);
+    //         m_stateManager.StartState(Robot::States::Traveling);
     //     }
     //     else
     //     {
-    //         SwitchState(Robot::States::ColorWheel);
+    //         m_stateManager.StartState(Robot::States::ColorWheel);
     //     }
     // }
 
     // if (m_coPilot.GetRawButtonPressed(kClimbExtend))
     // {
-    //     SwitchState(Robot::States::Climbing);
+    //     m_stateManager.StartState(Robot::States::Climbing);
     // }
 
-    m_stateManager->Periodic();
+    m_stateManager.OnTeleopPeriodic();
 }
 
 void Robot::TestPeriodic() {}

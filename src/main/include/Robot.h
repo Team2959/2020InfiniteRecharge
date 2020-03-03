@@ -8,7 +8,6 @@
 #pragma once
 
 #include <string>
-#include <thread>
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/buttons/JoystickButton.h>
@@ -19,9 +18,7 @@
 #include <subsystems/ColorWheel.h>
 #include <subsystems/Vision.h>
 #include <subsystems/Autonomous.h>
-#include <utility/DriveDistanceTracker.h>
 #include <utility/StateManager.h>
-
 
 class Robot : public frc::TimedRobot
 {
@@ -34,8 +31,8 @@ private:
   frc::Joystick m_coPilot {1};
   frc::JoystickButton m_quickTurn {&m_driverJoystick, kQuickTurn};
 
-  cwtech::UniformConditioning m_driverSpeedConditioning {}; // Speed
-  cwtech::UniformConditioning m_driverRotationConditioning {}; // Rotation
+  cwtech::UniformConditioning m_driverSpeedConditioning {};
+  cwtech::UniformConditioning m_driverRotationConditioning {};
   
   const double kDefaultDeadband = 0.07;
   const double kDefaultOutputOffset = 0.0;
@@ -53,9 +50,8 @@ private:
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
   Vision m_vision {};
-
-  std::unique_ptr<StateManager> m_stateManager;
-  std::unique_ptr<Autonomous> m_autonomous;
+  StateManager m_stateManager {m_intake, m_shooter, m_vision, m_drivetrain, m_coPilot};
+  Autonomous m_autonomous {m_stateManager, m_shooter, m_drivetrain};
 
 public:
   void RobotInit() override;

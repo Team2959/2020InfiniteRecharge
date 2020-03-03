@@ -4,11 +4,11 @@
 
 class DriveDistanceTracker
 {
-protected:
-    Drivetrain& m_drivetrain;
-    double m_startingEncoderTicks;
-    static constexpr double kInchesPerTick{0.05155}; 
+private:
+    double m_startingEncoderTicks = 0;
+    const double kInchesPerTick = 0.05155;
+
 public:
-    DriveDistanceTracker(Drivetrain& drivetrain);
-    double GetDistanceInInches();
+    void StartingPosition(double position);
+    double GetDistanceInInches(double position);
 };

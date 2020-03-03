@@ -17,19 +17,16 @@ enum States
     Ready,
 };
 
-
 class StateManager
 {
 private:
+    States m_currentState = States::Ready;
+    int m_powercellsCounted = 3;
     Intake& m_intake;
     Shooter& m_shooter;
     Vision& m_vision;
     Drivetrain& m_drivetrain;
-    States m_currentState;
-    frc::Joystick& m_driverJoystick;
     frc::Joystick& m_coPilotJoystick;
-
-    int m_powercellsCounted;
 
     void ProcessUnjammingButtonPresses();
     void ClearPressedAndReleasedOperatorButtons();
@@ -48,12 +45,16 @@ private:
     void UpdateActivePowerCells();
 
 public:
-    StateManager(Intake& intake, Shooter& shooter, Vision& vision, Drivetrain& drivetrain, frc::Joystick& driverJoystick, frc::Joystick& coPilotJoystick, int powerCellsCount);
+    StateManager(Intake& intake, Shooter& shooter, Vision& vision,
+        Drivetrain& drivetrain, frc::Joystick& coPilotJoystick);
+
+    void OnRobotInit();
+    void OnAutoInit();
+    void OnAutoPeriodic();
+    void OnTeleopPeriodic();
 
     States CurrentState() const { return m_currentState; }
     bool ArePowerCellsEmpty() const { return m_powercellsCounted == 0; }
     void StartState(States state);
-    void Periodic();
     void Reset();
 };
-

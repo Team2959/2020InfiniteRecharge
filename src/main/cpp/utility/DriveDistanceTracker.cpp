@@ -1,12 +1,11 @@
-
 #include <utility/DriveDistanceTracker.h>
 
-DriveDistanceTracker::DriveDistanceTracker(Drivetrain& drivetrain)
-    : m_drivetrain(drivetrain), m_startingEncoderTicks(m_drivetrain.GetPostion())
+void DriveDistanceTracker::StartingPosition(double position)
 {
+    m_startingEncoderTicks = position;
 }
 
-double DriveDistanceTracker::GetDistanceInInches()
+double DriveDistanceTracker::GetDistanceInInches(double position)
 {
-    return (m_drivetrain.GetPostion() - m_startingEncoderTicks) * kInchesPerTick;
+    return (position - m_startingEncoderTicks) * kInchesPerTick;
 }

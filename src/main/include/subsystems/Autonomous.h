@@ -15,13 +15,16 @@ enum StartingPosition
 class Autonomous
 {
 private:
-    std::unique_ptr<DriveDistanceTracker> m_autoDriveDistanceTracker;
-    StartingPosition m_startingPosition;
     StateManager& m_stateManager;
     Shooter& m_shooter;
     Drivetrain& m_driveTrain;
+    StartingPosition m_startingPosition = Center;
     double m_autoTurnTargetAngle = 0.0;
+    DriveDistanceTracker m_autoDriveDistanceTracker {};
+
 public:
-    Autonomous(StartingPosition startingPostion, StateManager& stateManager, Shooter& shooter, Drivetrain& driveTrain);
+    Autonomous(StateManager& stateManager, Shooter& shooter, Drivetrain& driveTrain);
+
+    void OnAutoInit();
     void Periodic();
 };
