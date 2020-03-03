@@ -1,8 +1,6 @@
-
 #include <utility/StateManager.h>
 
 #include <frc/smartdashboard/SmartDashboard.h>
-
 
 StateManager::StateManager(Intake& intake, Shooter& shooter, Vision& vision, Drivetrain& drivetrain, frc::Joystick& driverJoystick, frc::Joystick& coPilotJoystick, int powerCellsCount)
     : m_intake(intake), m_shooter(shooter), m_vision(vision), m_drivetrain(drivetrain), m_currentState(States::Ready), 

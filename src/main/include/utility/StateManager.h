@@ -7,7 +7,7 @@
 #include <subsystems/Drivetrain.h>
 #include <frc/Joystick.h>
 
-enum class States
+enum States
 {
     Traveling,
     Firing,

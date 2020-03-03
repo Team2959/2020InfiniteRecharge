@@ -5,7 +5,7 @@
 #include <subsystems/Drivetrain.h>
 #include <utility/DriveDistanceTracker.h>
 
-enum class StartingPosition
+enum StartingPosition
 {
     Left,
     Right,
