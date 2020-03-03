@@ -18,7 +18,9 @@
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
 #include <subsystems/Vision.h>
+#include <subsystems/Autonomous.h>
 #include <utility/DriveDistanceTracker.h>
+#include <utility/StateManager.h>
 
 
 class Robot : public frc::TimedRobot
@@ -26,7 +28,6 @@ class Robot : public frc::TimedRobot
 private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
-  int m_powercellsCounted = 0;
 
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
@@ -46,7 +47,6 @@ private:
   bool m_passed2ndStage = false;
   double m_autoTurnTargetAngle = 0.0;
   
-
   // Drivetrain controller
   Drivetrain m_drivetrain {};
   Intake m_intake {};
@@ -54,37 +54,8 @@ private:
   // ColorWheel m_colorWheel {};
   Vision m_vision {};
 
-  std::unique_ptr<DriveDistanceTracker> m_autoDriveDistanceTracker;
-
-  enum class States
-  {
-    Traveling,
-    Firing,
-    Climbing,
-    ColorWheel,
-    Loading,
-  };
-
-  States m_currentState = States::Traveling;
-
-  void SwitchState(States state);
-  void DoCurrentState();
-
-  void ProcessUnjammingButtonPresses();
-  void ClearPressedAndReleasedOperatorButtons();
-
-  void TravelingInit();
-  void TravelingPeriodic();
-  void FiringInit();
-  void FiringPeriodic();
-  void ClimbingInit();
-  void ClimbingPeriodic();
-  void ColorWheelInit();
-  void ColorWheelPeriodic();
-  void LoadingInit();
-  void LoadingPeriodic();
-
-  void UpdateActivePowerCells();
+  std::unique_ptr<StateManager> m_stateManager;
+  std::unique_ptr<Autonomous> m_autonomous;
 
 public:
   void RobotInit() override;
