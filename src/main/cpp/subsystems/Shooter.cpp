@@ -11,7 +11,7 @@ Shooter::Shooter()
 
 void Shooter::OnRobotInit()
 {
-    m_PID.SetP(0.0002);
+    m_PID.SetP(0.0006);
     m_PID.SetFF(0.000193);
     
     SmartDashboardInit();
