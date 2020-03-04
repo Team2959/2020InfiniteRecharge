@@ -48,7 +48,7 @@ private:
     void StopAndZero();
     void MoveToPosition(int target);
     bool IsAtTargetPosition();
-    void StopCloseToCurrentPosition();
+    void StopMotors();
 
     enum ClimbStates
     {

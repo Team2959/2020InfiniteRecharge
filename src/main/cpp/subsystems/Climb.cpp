@@ -146,15 +146,16 @@ void Climb::StopAndZero()
 
 void Climb::MoveToPosition(int target)
 {
-    m_targetPosition = std::min(target, kMaxRetractPosition);
+    m_targetPosition = target;
     m_left.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, m_targetPosition);
     m_right.Set(ctre::phoenix::motorcontrol::ControlMode::MotionMagic, -m_targetPosition);
     frc::SmartDashboard::PutNumber(kTargetPosition, m_targetPosition);
 }
 
-void Climb::StopCloseToCurrentPosition()
+void Climb::StopMotors()
 {
-    MoveToPosition(m_left.GetSelectedSensorPosition() + kStopDelta);
+    m_left.StopMotor();
+    m_right.StopMotor();
 }
 
 bool Climb::IsAtTargetPosition()
@@ -189,6 +190,7 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
         if (IsAtTargetPosition())
         {
             m_currentState = Retract;
+            StopMotors();
         }
         break;
     case Retract:
@@ -202,7 +204,7 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
         if (retractReleased || IsAtTargetPosition())
         {
             m_currentState = RetractAgain;
-            StopCloseToCurrentPosition();
+            StopMotors();
         }
         break;
     case RetractAgain:
@@ -215,11 +217,12 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
         if (retractReleased)
         {
             m_currentState = RetractAgain;
-            StopCloseToCurrentPosition();
+            StopMotors();
         }
         else
         {
-            MoveToPosition(m_left.GetSelectedSensorPosition() + 2*kStopDelta);
+            auto targetPosition = std::max(m_left.GetSelectedSensorPosition() + 2*kStopDelta, kMaxRetractPosition);
+            MoveToPosition(targetPosition);
         }
         break;
     default:
