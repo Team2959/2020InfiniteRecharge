@@ -7,6 +7,9 @@
 
 #include <thread>
 
+const double kWallShotSpeed = 2600;
+const double kInitiationLineSpeed = 2500;
+
 class Shooter
 {
 private:

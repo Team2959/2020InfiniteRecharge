@@ -122,7 +122,7 @@ void Shooter::SetSpeedFromThrottle(double throttlePosition)
     }
     else if (throttlePosition >= 0.25)
     {
-        targetSpeed = 2600;
+        targetSpeed = kWallShotSpeed;
     }
     SetSpeed(targetSpeed);
 }
