@@ -10,6 +10,9 @@ const int kForwardLimit = 500;
 
 void Climb::OnRobotInit()
 {
+    m_left.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative);
+    m_right.ConfigSelectedFeedbackSensor(ctre::phoenix::motorcontrol::FeedbackDevice::CTRE_MagEncoder_Relative);
+    
     m_left.Config_kP(0, m_kP);
     m_left.Config_kI(0, m_kI);
     m_left.Config_kF(0, m_kFF);
@@ -50,6 +53,7 @@ void Climb::OnRobotInit()
     frc::SmartDashboard::PutNumber(kTargetPosition, 0);
     frc::SmartDashboard::PutNumber(kGoToPosition, 0);
     frc::SmartDashboard::PutBoolean(kResetEncoders, false);
+    frc::SmartDashboard::PutBoolean(kSoftLimitOn, true);
 
     StopAndZero();
 }
@@ -68,6 +72,17 @@ void Climb::OnRobotPeriodic()
     {
         StopAndZero();
         frc::SmartDashboard::PutBoolean(kResetEncoders, false);
+    }
+
+    auto softLimit = frc::SmartDashboard::GetBoolean(kSoftLimitOn, true);
+    if (softLimit != m_softLimitEnable)
+    {
+        m_softLimitEnable = softLimit;
+
+        m_left.ConfigForwardSoftLimitEnable(m_softLimitEnable);
+        m_left.ConfigReverseSoftLimitEnable(m_softLimitEnable);
+        m_right.ConfigForwardSoftLimitEnable(m_softLimitEnable);
+        m_right.ConfigReverseSoftLimitEnable(m_softLimitEnable);
     }
 
     auto myP = frc::SmartDashboard::GetNumber(kPGain, m_kP);

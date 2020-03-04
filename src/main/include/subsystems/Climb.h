@@ -31,6 +31,7 @@ private:
     const std::string kTargetPosition = kName + "Target Position";
     const std::string kGoToPosition = kName + "Go To Position";
     const std::string kResetEncoders = kName + "Reset Encoders";
+    const std::string kSoftLimitOn = kName + "Soft Limit Enable";
 
     bool m_debugEnable = false;
     double m_kP = kDefaultKp;
@@ -39,6 +40,7 @@ private:
     double m_kIZone = kDefaultIzone;
     double m_cruiseVelocity = kDefaultCruiseVelocity;
     double m_acceleration = kDefaultAcceleration;
+    bool m_softLimitEnable = true;
 
     int m_lastGoToPosition = 0;
     int m_targetPosition = 0;
