@@ -4,8 +4,8 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 // TO DO:  Specify correct values for CameraAngle, CameraHeight, and TargetHeight
-constexpr double CameraAngleDegrees{ 30.0 };    // Angle in degrees of the vertical elevation of the camera
-constexpr double CameraHeight{ 19.5 };          // Height in inches of the camera above the floor.
+constexpr double CameraAngleDegrees{ 20.0 };    // Angle in degrees of the vertical elevation of the camera
+constexpr double CameraHeight{ 20.75 };         // Height in inches of the camera above the floor.
 constexpr double TargetHeight{ 98.25 };         // Height in inches of the target above the floor.
 
 void Vision::OnRopotInit()
