@@ -8,13 +8,18 @@ Autonomous::Autonomous(StateManager& stateManager, Shooter& shooter, Drivetrain&
 
 void Autonomous::OnRobotInit()
 {
-    m_chooser.SetDefaultOption(kFireAndForward, kFireAndForward);
-    m_chooser.AddOption(kFireAndBackward, kFireAndBackward);
-    m_chooser.AddOption(kCenterWithTrench, kCenterWithTrench);
+    m_chooser.SetDefaultOption(kFireAndBackward, kFireAndBackward);
+    m_chooser.AddOption(kFireAndForward, kFireAndForward);
+    // m_chooser.AddOption(kCenterWithTrench, kCenterWithTrench);
     // m_chooser.AddOption(kRightWithTrench, kRightWithTrench);
     // m_chooser.AddOption(kLeftWithTrench, kLeftWithTrench);
-    m_chooser.AddOption(kWallAndFire, kWallAndFire);
+    // m_chooser.AddOption(kWallAndFire, kWallAndFire);
+
+    m_sideChooser.SetDefaultOption(kCenter, kCenter);
+    m_sideChooser.AddOption(kLeftRight, kLeftRight);
+
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+    frc::SmartDashboard::PutData("Auto Modes Sides", &m_sideChooser);
 }
 
 void Autonomous::OnAutoInit()
@@ -22,8 +27,15 @@ void Autonomous::OnAutoInit()
     m_step = 0;
     m_cycleDelay = 0;
     m_shooter.SetAngle(false);
-    m_shooter.SetSpeed(kInitiationLineSpeed);
-    // m_shooter.SetSpeedFromTargetDistance(m_vision.GetTargetDistanceInInches());
+    auto side = m_sideChooser.GetSelected();
+    if (side == kLeftRight)
+    {
+        m_shooter.SetSpeed(kInitiationLineLeftRightSpeed);
+    }
+    else
+    {
+        m_shooter.SetSpeed(kInitiationLineSpeed);
+    }
 
     // read auto selection from dashboard
     auto selected = m_chooser.GetSelected();
@@ -68,10 +80,12 @@ void Autonomous::Periodic()
         {
             // all programs currently shoot first, may need to change this!!
             // if (m_shooter.CloseToSpeed())
+            // waiting 2 1/2 seconds for shooter to get up to speed
             if (m_cycleDelay++ > 125)
             {
                 m_stateManager.StartState(States::Firing);
                 m_step++;
+                m_cycleDelay = 0;
             }
             m_driveTrain.CurvatureDrive(0, 0, false);
         }
@@ -112,18 +126,25 @@ void Autonomous::FireAndForwardPeriodic()
     case 1:
         if (m_stateManager.ArePowerCellsEmpty())
         {
+            m_step++;
+            m_cycleDelay = 0;
+        }
+        break;
+    case 2:
+        if (m_cycleDelay++ > 25)
+        {
             m_stateManager.StartState(States::Traveling);
-            m_shooter.SetSpeed(1000);   // idle shooter speed
             m_autoDriveDistanceTracker.StartingPosition(m_driveTrain.GetPostion());
             speed = 0.1;
             m_step++;
             m_cycleDelay = 0;
         }
         break;
-    case 2:
+    case 3:
         if (m_cycleDelay++ > 80)
         // if (m_autoDriveDistanceTracker.GetDistanceInInches(m_driveTrain.GetPostion()) >= (1.0 * 12.0))
         {
+            m_shooter.SetSpeed(1000);   // idle shooter speed
             m_step++;
         }
         else
@@ -143,21 +164,30 @@ void Autonomous::FireAndBackwardPeriodic()
     case 1:
         if (m_stateManager.ArePowerCellsEmpty())
         {
-            m_stateManager.StartState(States::Traveling);
-            m_shooter.SetSpeed(1000);   // idle shooter speed
-            m_autoDriveDistanceTracker.StartingPosition(m_driveTrain.GetPostion());
-            speed = -0.1;
             m_step++;
+            m_cycleDelay = 0;
         }
         break;
     case 2:
-        if (m_autoDriveDistanceTracker.GetDistanceInInches(m_driveTrain.GetPostion()) <= (-4.0 * 12.0))
+        if (m_cycleDelay++ > 25)
         {
+            m_stateManager.StartState(States::Traveling);
+            m_autoDriveDistanceTracker.StartingPosition(m_driveTrain.GetPostion());
+            speed = -0.15;
+            m_step++;
+            m_cycleDelay = 0;
+        }
+        break;
+    case 3:
+        if (m_cycleDelay++ > 150)
+        // if (m_autoDriveDistanceTracker.GetDistanceInInches(m_driveTrain.GetPostion()) <= (-4.0 * 12.0))
+        {
+            m_shooter.SetSpeed(1000);   // idle shooter speed
             m_step++;
         }
         else
         {
-            speed = -0.1;
+            speed = -0.15;
         }
         break;
     }
@@ -222,13 +252,15 @@ void Autonomous::WallAndFirePeriodic()
     case 1:
         // drive forward to wall
         m_autoDriveDistanceTracker.StartingPosition(m_driveTrain.GetPostion());
-        speed = 0.5;
+        speed = 0.1;
         m_step++;
+        m_cycleDelay++;
         break;
     case 2:
-        if (m_autoDriveDistanceTracker.GetDistanceInInches(m_driveTrain.GetPostion()) >= (6.0 * 12.0))
+        if (m_cycleDelay++ > 160)
+        // if (m_autoDriveDistanceTracker.GetDistanceInInches(m_driveTrain.GetPostion()) >= (6.0 * 12.0))
         {
-            speed = 0.5;
+            speed = 0.1;
         }
         else
         {
@@ -239,12 +271,19 @@ void Autonomous::WallAndFirePeriodic()
     case 3:
         if (m_stateManager.ArePowerCellsEmpty())
         {
+            m_step++;
+            m_cycleDelay = 0;
+        }
+        break;
+    case 4:
+        if (m_cycleDelay++ > 25)
+        {
             m_stateManager.StartState(States::Traveling);
             m_shooter.SetSpeed(1000);   // idle shooter speed
             m_step++;
         }
         break;
-    case 4:
+    case 5:
         // done, but keep feeding drive
         break;
     }

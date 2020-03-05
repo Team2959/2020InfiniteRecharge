@@ -31,12 +31,15 @@ private:
 
     // SmartDashboard auton mode selector
     frc::SendableChooser<std::string> m_chooser;
+    frc::SendableChooser<std::string> m_sideChooser;
     const std::string kFireAndForward = "Fire and Forward";
     const std::string kFireAndBackward = "Fire and Backward";
     const std::string kRightWithTrench = "Right with Trench";
     const std::string kCenterWithTrench = "Center with Trench";
     const std::string kLeftWithTrench = "Left with Trench";
     const std::string kWallAndFire = "Wall and Fire";
+    const std::string kCenter = "Center";
+    const std::string kLeftRight = "Left or Right";
 
     void FireAndForwardPeriodic();
     void FireAndBackwardPeriodic();
