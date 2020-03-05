@@ -7,6 +7,7 @@
 
 #include <subsystems/Drivetrain.h>
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <AngleConversion.h>
 
 Drivetrain::Drivetrain() 
 {
@@ -35,19 +36,19 @@ void Drivetrain::SetupSparkMax(rev::CANSparkMax* controller)
     controller->SetOpenLoopRampRate(kOpenLoopRampRate);
 }
 
-void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) 
-{
-    // Don't know what to do here
+// void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) 
+// {
+//     // Don't know what to do here
 
-    // m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
-    // m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
-}
+//     // m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
+//     // m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
+// }
 
-void Drivetrain::SetSpeeds(double left, double right)
-{
-    m_leftPID.SetReference(left, rev::ControlType::kVelocity);
-    m_rightPID.SetReference(right, rev::ControlType::kVelocity);
-}
+// void Drivetrain::SetSpeeds(double left, double right)
+// {
+//     // m_leftPID.SetReference(left, rev::ControlType::kVelocity);
+//     // m_rightPID.SetReference(right, rev::ControlType::kVelocity);
+// }
 
 void Drivetrain::CurvatureDrive(double speed, double rotation, bool quickTurn)
 {
@@ -65,12 +66,20 @@ void Drivetrain::InitalShowToSmartDashboard()
     frc::SmartDashboard::PutNumber(kIGain, m_leftPID.GetI());
     frc::SmartDashboard::PutNumber(kFF, m_leftPID.GetFF());
     frc::SmartDashboard::PutNumber(kIZone, m_leftPID.GetIZone());
+    // Turn to Angle parameters
+    frc::SmartDashboard::PutNumber(kAutoKp, kDefaultAutoKp);
+    frc::SmartDashboard::PutNumber(kAutoLimitAngle, kDefaultLimitAngle);
+    frc::SmartDashboard::PutNumber(kAutoMinSpeed, kDefaultMinSpeed);
+    frc::SmartDashboard::PutNumber(kNavxAngle, 0);
 }
 
 void Drivetrain::UpdateFromSmartDashboard()
 {    
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+
     if (m_debugEnable == false) return;
+
+    frc::SmartDashboard::PutNumber(kNavxAngle, GetAngle());
 
     // Get the values only once to optimize for speed
     auto currentP = m_leftPID.GetP();
@@ -102,4 +111,45 @@ void Drivetrain::UpdateFromSmartDashboard()
         m_rightPID.SetIZone(myIZone);
         m_leftPID.SetIZone(myIZone);
     }
+
+    m_autoKp = frc::SmartDashboard::GetNumber(kAutoKp, kDefaultAutoKp);
+    m_autoLimitAngle = frc::SmartDashboard::GetNumber(kAutoLimitAngle, kDefaultLimitAngle);
+    m_autoMinSpeed = frc::SmartDashboard::GetNumber(kAutoMinSpeed, kDefaultMinSpeed);
+}
+
+bool Drivetrain::TryTurnToTargetAngle(double tx)
+{
+    // auto currentAngle = m_navX.GetAngle();
+    if (std::fabs(tx) < m_autoLimitAngle)
+    {
+        CurvatureDrive(0.0, 0.0, false);
+        return false;
+    }
+
+    auto rotationMagnitude = tx;//targetAngle - currentAngle;
+    auto rotationSpeed = 0.0;
+    if (rotationMagnitude < 0)
+    {
+        // turn left
+        rotationSpeed = std::fmin(-m_autoMinSpeed, rotationMagnitude * m_autoKp);
+    }
+    else
+    {
+        // turn right
+        rotationSpeed = std::fmax(m_autoMinSpeed, rotationMagnitude * m_autoKp);
+    }
+    
+    CurvatureDrive(0.0, rotationSpeed, true);
+
+    return true;
+}
+
+double Drivetrain::GetAngle()
+{
+    return m_navX.GetAngle();
+}
+
+double Drivetrain::GetPostion()
+{
+    return m_rightEncoder.GetPosition();
 }
