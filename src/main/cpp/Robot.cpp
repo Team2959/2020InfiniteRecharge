@@ -102,11 +102,11 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopInit()
 {
     m_stateManager.Reset();
+    m_shooter.SetTeleopKp();
     // remove from competition code
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
-    m_shooter.SetTeleopKp();
 }
 
 void Robot::TeleopPeriodic() 
