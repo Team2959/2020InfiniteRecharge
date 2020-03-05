@@ -79,7 +79,7 @@ void Robot::RobotPeriodic()
 
     // m_colorWheel.UpdateColorSensorValues(m_skips);
 
-    // if (m_skips % 33)
+    if (m_skips % 33)
     {
         m_vision.OnRobotPeriodic();
     }

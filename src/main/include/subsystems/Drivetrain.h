@@ -58,8 +58,6 @@ private:
   const std::string kAutoLimitAngle = kName + "Auto Turn Limit Angle";
   const std::string kAutoMinSpeed = kName + "Auto Turn Min Speed";
   const std::string kNavxAngle = kName + "Navx Angle";
-  const std::string kNavxAngleYaw = kName + "Navx Angle Yaw";
-  const std::string kNavxAngleRoll = kName + "Navx Angle Roll";
 
   const double kOpenLoopRampRate = 0.25;
   const double kCurrentLimit = 50;
