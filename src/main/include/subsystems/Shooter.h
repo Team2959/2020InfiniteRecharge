@@ -40,7 +40,9 @@ private:
     const double kMaxVelocity = 4500;
     const double kMaxThrottleSpeedDefault = 4000;
     const double kMinThrottleSpeedDefault = 1500;
-    const double kCloseSpeedDefault = 200;
+    const double kCloseSpeedDefault = 100;
+    const double kDefaultAutoKp = 0.0004;
+    const double kDefaultTeleopKp = 0.0006;
 
     const double kForwardFullSpeed = -1.0;
     const double kSpeedThreshold = 25;
@@ -73,4 +75,7 @@ public:
 
     void SetAngle(bool closeShot);
     bool GetAngle();
+
+    void SetAutoKp();
+    void SetTeleopKp();
 };

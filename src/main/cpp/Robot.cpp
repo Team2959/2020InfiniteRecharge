@@ -88,6 +88,7 @@ void Robot::RobotPeriodic()
 
 void Robot::AutonomousInit()
 {
+    m_shooter.SetAutoKp();
     m_stateManager.OnAutoInit();
     m_autonomous.OnAutoInit();
 }
@@ -105,6 +106,7 @@ void Robot::TeleopInit()
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
     m_intake.SetKickerSpeed(0);
+    m_shooter.SetTeleopKp();
 }
 
 void Robot::TeleopPeriodic() 

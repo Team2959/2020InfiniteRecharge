@@ -11,7 +11,7 @@ Shooter::Shooter()
 
 void Shooter::OnRobotInit()
 {
-    m_PID.SetP(0.0006);
+    m_PID.SetP(kDefaultTeleopKp);
     m_PID.SetFF(0.000193);
     
     SmartDashboardInit();
@@ -39,7 +39,7 @@ void Shooter::SmartDashboardInit()
 
 void Shooter::OnRobotPeriodic()
 {
-    frc::SmartDashboard::PutNumber(kSpeed, -GetSpeed());
+    frc::SmartDashboard::PutNumber(kSpeed, GetSpeed());
     frc::SmartDashboard::PutString(kAngle, GetHoodSwitchStateText());
     frc::SmartDashboard::PutNumber(kAppliedOutput, m_primary.GetAppliedOutput());
 
@@ -91,12 +91,12 @@ std::string Shooter::GetHoodSwitchStateText()
 
 double Shooter::GetSpeed()
 {
-    return m_encoder.GetVelocity();
+    return -m_encoder.GetVelocity();
 }
 
 bool Shooter::CloseToSpeed()
 {
-    return std::fabs(GetSpeed() - m_targetSpeed) <= m_closeSpeed;
+    return GetSpeed() >= m_targetSpeed - m_closeSpeed;
 }
 
 void Shooter::ComputeSlopeAndOffset()
@@ -132,8 +132,8 @@ void Shooter::SetSpeed(double speed)
     speed = std::fmax(speed, 0);
     frc::SmartDashboard::PutNumber("Throttle Target Speed", speed);
     // invert speed for primary motor direction
-    m_targetSpeed = -1.0 * std::fmin(speed, kMaxVelocity);
-    m_PID.SetReference(m_targetSpeed, rev::ControlType::kVelocity);
+    m_targetSpeed = std::fmin(speed, kMaxVelocity);
+    m_PID.SetReference(-m_targetSpeed, rev::ControlType::kVelocity);
 }
 
 void Shooter::SetAngle(bool closeShot)
@@ -144,4 +144,14 @@ void Shooter::SetAngle(bool closeShot)
 bool Shooter::GetAngle()
 {
     return m_angleAdjuster.Get();
+}
+
+void Shooter::SetAutoKp()
+{
+    m_PID.SetP(kDefaultAutoKp);
+}
+
+void Shooter::SetTeleopKp()
+{
+    m_PID.SetP(kDefaultTeleopKp);
 }

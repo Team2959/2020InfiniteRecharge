@@ -27,6 +27,7 @@ private:
     int m_step = 0;
     double m_autoTurnTargetAngle = 0.0;
     DriveDistanceTracker m_autoDriveDistanceTracker {};
+    int m_cycleDelay = 0;
 
     // SmartDashboard auton mode selector
     frc::SendableChooser<std::string> m_chooser;
