@@ -22,6 +22,9 @@ private:
     StateManager& m_stateManager;
     Shooter& m_shooter;
     Drivetrain& m_driveTrain;
+
+    AutoProgram m_selectedProgram = FireAndForward;
+    int m_step = 0;
     double m_autoTurnTargetAngle = 0.0;
     DriveDistanceTracker m_autoDriveDistanceTracker {};
 
@@ -33,9 +36,6 @@ private:
     const std::string kCenterWithTrench = "Center with Trench";
     const std::string kLeftWithTrench = "Left with Trench";
     const std::string kWallAndFire = "Wall and Fire";
-
-    AutoProgram m_selectedProgram = FireAndForward;
-    int m_step = 0;
 
     void FireAndForwardPeriodic();
     void FireAndBackwardPeriodic();

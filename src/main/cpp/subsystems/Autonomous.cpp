@@ -19,6 +19,7 @@ void Autonomous::OnRobotInit()
 
 void Autonomous::OnAutoInit()
 {
+    m_step = 0;
     m_shooter.SetAngle(false);
     m_shooter.SetSpeed(kInitiationLineSpeed);
     // m_shooter.SetSpeedFromTargetDistance(m_vision.GetTargetDistanceInInches());
