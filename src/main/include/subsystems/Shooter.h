@@ -7,6 +7,10 @@
 
 #include <thread>
 
+const double kWallShotSpeed = 2600;
+const double kInitiationLineSpeed = 2050;
+const double kInitiationLineLeftRightSpeed = 2075;
+
 class Shooter
 {
 private:
@@ -36,7 +40,9 @@ private:
     const double kMaxVelocity = 4500;
     const double kMaxThrottleSpeedDefault = 4000;
     const double kMinThrottleSpeedDefault = 1500;
-    const double kCloseSpeedDefault = 200;
+    const double kCloseSpeedDefault = 100;
+    const double kDefaultAutoKp = 0.0004;
+    const double kDefaultTeleopKp = 0.0006;
 
     const double kForwardFullSpeed = -1.0;
     const double kSpeedThreshold = 25;
@@ -56,7 +62,6 @@ private:
     std::string GetHoodSwitchStateText();
 
     double GetSpeed();
-    void SetSpeed(double speed);
 public:
     Shooter();
 
@@ -65,7 +70,12 @@ public:
 
     bool CloseToSpeed();
     void SetSpeedFromThrottle(double throttlePositon);
+    void SetSpeedFromTargetDistance(double distanceInInches);
+    void SetSpeed(double speed);
 
     void SetAngle(bool closeShot);
     bool GetAngle();
+
+    void SetAutoKp();
+    void SetTeleopKp();
 };

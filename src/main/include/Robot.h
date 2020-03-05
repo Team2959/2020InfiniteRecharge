@@ -8,7 +8,6 @@
 #pragma once
 
 #include <string>
-#include <thread>
 #include <frc/TimedRobot.h>
 #include <frc/Joystick.h>
 #include <frc/buttons/JoystickButton.h>
@@ -18,28 +17,23 @@
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
 #include <subsystems/Climb.h>
-#include <networktables/NetworkTableEntry.h>
-
-static constexpr double PI{ 3.14159265359 };
-static constexpr double DegreesToRadiansFactor{ PI / 180.0 };
-
-static constexpr double DegreesToRadians(double degrees) { return degrees * DegreesToRadiansFactor; }
-static constexpr double RadiansToDegrees(double radians) { return radians / DegreesToRadiansFactor; }
+#include <subsystems/Vision.h>
+#include <subsystems/Autonomous.h>
+#include <utility/StateManager.h>
 
 class Robot : public frc::TimedRobot
 {
 private:
   // this variables is used to keep track of the times RobotPeriodic is called
   int m_skips = 0;
-  int m_powercellsCounted = 0;
 
   // Joysticks 
   frc::Joystick m_driverJoystick {0};
   frc::Joystick m_coPilot {1};
   frc::JoystickButton m_quickTurn {&m_driverJoystick, kQuickTurn};
 
-  cwtech::UniformConditioning m_driverSpeedConditioning {}; // Speed
-  cwtech::UniformConditioning m_driverRotationConditioning {}; // Rotation
+  cwtech::UniformConditioning m_driverSpeedConditioning {};
+  cwtech::UniformConditioning m_driverRotationConditioning {};
   
   const double kDefaultDeadband = 0.07;
   const double kDefaultOutputOffset = 0.0;
@@ -49,61 +43,17 @@ private:
   const double kDefaultAutoTurnOffset = 0.01;
 
   bool m_passed2ndStage = false;
-  double m_autoTurnMultiplier = kDefaultAutoTurnMultiplier;
-  double m_autoTurnDegrees = kDefaultAutoTurnDegrees;
-  double m_autoTurnOffset = kDefaultAutoTurnOffset;
-
+  double m_origTx = 0.0;
+  
   // Drivetrain controller
   Drivetrain m_drivetrain {};
   Intake m_intake {};
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
   Climb m_climb {};
-
-  nt::NetworkTableEntry m_tvEntry;
-  nt::NetworkTableEntry m_txEntry;
-  nt::NetworkTableEntry m_tyEntry;
-
-  enum States
-  {
-    Traveling,
-    Firing,
-    Climbing,
-    ColorWheel,
-    Loading,
-  };
-
-  States m_currentState = States::Traveling;
-
-  void SwitchState(States state);
-  void DoCurrentState();
-
-  void ProcessUnjammingButtonPresses();
-  void ClearPressedAndReleasedOperatorButtons();
-
-  void TravelingInit();
-  void TravelingPeriodic();
-  void FiringInit();
-  void FiringPeriodic();
-  void ClimbingInit();
-  void ClimbingPeriodic();
-  void ColorWheelInit();
-  void ColorWheelPeriodic();
-  void LoadingInit();
-  void LoadingPeriodic();
-
-  static double GetTargetDistanceFromAngle(double angle);
-  static double GetTargetAngleFromDistance(double distance);
-  // bool IsTargetValid() const { return m_tvEntry.GetDouble(0.0) != 0.0; }
-  bool IsTargetValid() const { return true; }
-  double GetTargetDistance() const { return GetTargetDistanceFromAngle(GetTargetYAngle()); }
-  std::tuple<double, double> GetMotorOutputForAimAndDrive(double targetY);
-  double GetTargetXAngle() const;
-  double GetTargetYAngle() const;
-
-  void TurnToTarget();
-
-  void UpdateActivePowerCells();
+  Vision m_vision {};
+  StateManager m_stateManager {m_intake, m_shooter, m_climb, m_vision, m_drivetrain, m_coPilot};
+  Autonomous m_autonomous {m_stateManager, m_shooter, m_drivetrain};
 
 public:
   void RobotInit() override;

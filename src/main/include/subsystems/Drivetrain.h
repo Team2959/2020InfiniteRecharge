@@ -12,6 +12,7 @@
 #include <frc/SpeedControllerGroup.h>
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/DifferentialDriveWheelSpeeds.h>
+#include <frc/kinematics/DifferentialDriveKinematics.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/SPI.h>
 #include <frc/ADXRS450_Gyro.h>
@@ -53,11 +54,22 @@ private:
   const std::string kIGain = kName + "I Gain";
   const std::string kFF = kName + "Feed Forward";
   const std::string kIZone = kName + "I Zone";
+  const std::string kAutoKp = kName + "Auto Turn kP";
+  const std::string kAutoLimitAngle = kName + "Auto Turn Limit Angle";
+  const std::string kAutoMinSpeed = kName + "Auto Turn Min Speed";
+  const std::string kNavxAngle = kName + "Navx Angle";
 
   const double kOpenLoopRampRate = 0.25;
   const double kCurrentLimit = 50;
+  const double kDefaultAutoKp = 0.001;
+  const double kDefaultLimitAngle = 0.5;
+  const double kDefaultMinSpeed = 0.045;
 
   bool m_debugEnable;
+
+  double m_autoKp = kDefaultAutoKp;
+  double m_autoLimitAngle = kDefaultLimitAngle;
+  double m_autoMinSpeed = kDefaultMinSpeed;
 
   void SetupSparkMax(rev::CANSparkMax* controller);
 
@@ -67,15 +79,15 @@ public:
   Drivetrain();
 
   // Driving
-  void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
-  void SetSpeeds(double left, double right);
+  // void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+  // void SetSpeeds(double left, double right);
   void CurvatureDrive(double speed, double rotation, bool quickTurn);
+  // void Drive(units::meter_t meters);
+  double GetAngle();
+  double GetPostion();
 
   void InitalShowToSmartDashboard();
   void UpdateFromSmartDashboard();
 
-  // save pose for later focusing on drive
-  void UpdatePose();
-  void ResetPose(const frc::Pose2d& pose);
-  frc::Pose2d GetPose();
+  bool TryTurnToTargetAngle(double targetAngle);
 };
