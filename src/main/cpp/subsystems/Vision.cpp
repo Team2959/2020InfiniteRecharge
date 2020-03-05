@@ -87,19 +87,19 @@ double Vision::GetTargetYAngleRadians() const
 {
     // if(!IsTargetValid())
     //     return std::nan("");
-    return DegreesToRadians(m_tyEntry.GetDouble(0.0));
+    return DegreesToRadians(GetTargetYAngleDegrees());
 }
 
 double Vision::GetTargetXAngleDegrees() const
 {
     // if(!IsTargetValid())
     //     return std::nan("");
-    return DegreesToRadians(GetTargetYAngleDegrees());
+    return m_txEntry.GetDouble(0.0);
 }
 
 double Vision::GetTargetYAngleDegrees() const 
 {
     // if(!IsTargetValid())
     //     return std::nan("");
-    return DegreesToRadians(m_tyEntry.GetDouble(0.0));
+    return m_tyEntry.GetDouble(0.0);
 }

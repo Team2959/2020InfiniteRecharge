@@ -57,12 +57,15 @@ private:
   const std::string kAutoKp = kName + "Auto Turn kP";
   const std::string kAutoLimitAngle = kName + "Auto Turn Limit Angle";
   const std::string kAutoMinSpeed = kName + "Auto Turn Min Speed";
+  const std::string kNavxAngle = kName + "Navx Angle";
+  const std::string kNavxAngleYaw = kName + "Navx Angle Yaw";
+  const std::string kNavxAngleRoll = kName + "Navx Angle Roll";
 
   const double kOpenLoopRampRate = 0.25;
   const double kCurrentLimit = 50;
-  const double kDefaultAutoKp = 0.05;
-  const double kDefaultLimitAngle = 2.0;
-  const double kDefaultMinSpeed = 0.1;
+  const double kDefaultAutoKp = 0.001;
+  const double kDefaultLimitAngle = 0.5;
+  const double kDefaultMinSpeed = 0.045;
 
   bool m_debugEnable;
 
@@ -78,10 +81,10 @@ public:
   Drivetrain();
 
   // Driving
-  void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
-  void SetSpeeds(double left, double right);
+  // void SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds);
+  // void SetSpeeds(double left, double right);
   void CurvatureDrive(double speed, double rotation, bool quickTurn);
-  void Drive(units::meter_t meters);
+  // void Drive(units::meter_t meters);
   double GetAngle();
   double GetPostion();
 

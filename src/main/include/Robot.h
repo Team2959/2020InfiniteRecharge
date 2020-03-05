@@ -43,6 +43,7 @@ private:
 
   bool m_passed2ndStage = false;
   double m_autoTurnTargetAngle = 0.0;
+  double m_origTx = 0;
   
   // Drivetrain controller
   Drivetrain m_drivetrain {};

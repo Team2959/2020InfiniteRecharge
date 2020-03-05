@@ -36,19 +36,19 @@ void Drivetrain::SetupSparkMax(rev::CANSparkMax* controller)
     controller->SetOpenLoopRampRate(kOpenLoopRampRate);
 }
 
-void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) 
-{
-    // Don't know what to do here
+// void Drivetrain::SetSpeeds(const frc::DifferentialDriveWheelSpeeds& speeds) 
+// {
+//     // Don't know what to do here
 
-    // m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
-    // m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
-}
+//     // m_leftPID.SetReference(static_cast<double>(speeds.left), rev::ControlType::kVelocity);
+//     // m_rightPID.SetReference(static_cast<double>(speeds.right), rev::ControlType::kVelocity);
+// }
 
-void Drivetrain::SetSpeeds(double left, double right)
-{
-    m_leftPID.SetReference(left, rev::ControlType::kVelocity);
-    m_rightPID.SetReference(right, rev::ControlType::kVelocity);
-}
+// void Drivetrain::SetSpeeds(double left, double right)
+// {
+//     // m_leftPID.SetReference(left, rev::ControlType::kVelocity);
+//     // m_rightPID.SetReference(right, rev::ControlType::kVelocity);
+// }
 
 void Drivetrain::CurvatureDrive(double speed, double rotation, bool quickTurn)
 {
@@ -70,12 +70,16 @@ void Drivetrain::InitalShowToSmartDashboard()
     frc::SmartDashboard::PutNumber(kAutoKp, kDefaultAutoKp);
     frc::SmartDashboard::PutNumber(kAutoLimitAngle, kDefaultLimitAngle);
     frc::SmartDashboard::PutNumber(kAutoMinSpeed, kDefaultMinSpeed);
+    frc::SmartDashboard::PutNumber(kNavxAngle, 0);
 }
 
 void Drivetrain::UpdateFromSmartDashboard()
 {    
     m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+
     if (m_debugEnable == false) return;
+
+    frc::SmartDashboard::PutNumber(kNavxAngle, GetAngle());
 
     // Get the values only once to optimize for speed
     auto currentP = m_leftPID.GetP();
@@ -113,16 +117,16 @@ void Drivetrain::UpdateFromSmartDashboard()
     m_autoMinSpeed = frc::SmartDashboard::GetNumber(kAutoMinSpeed, kDefaultMinSpeed);
 }
 
-bool Drivetrain::TryTurnToTargetAngle(double targetAngle)
+bool Drivetrain::TryTurnToTargetAngle(double tx)
 {
-    auto currentAngle = m_navX.GetAngle();
-    if (std::fabs(currentAngle - targetAngle) < m_autoLimitAngle)
+    // auto currentAngle = m_navX.GetAngle();
+    if (std::fabs(tx) < m_autoLimitAngle)
     {
         CurvatureDrive(0.0, 0.0, false);
         return false;
     }
 
-    auto rotationMagnitude = targetAngle - currentAngle;
+    auto rotationMagnitude = tx;//targetAngle - currentAngle;
     auto rotationSpeed = 0.0;
     if (rotationMagnitude < 0)
     {

@@ -37,6 +37,8 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
     frc::SmartDashboard::PutString("Robot State", "Traveling");
+
+    frc::SmartDashboard::PutNumber("Auto Turn Angle", 0);
 }
 
 void Robot::RobotPeriodic() 
@@ -111,14 +113,20 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
-    if (m_coPilot.GetRawButton(kTurnToTarget))
+    if (m_coPilot.GetRawButtonPressed(kTurnToTarget))
     {
-        if (m_autoTurnTargetAngle == 0)
-        {
-            // read from camera
-            m_autoTurnTargetAngle = m_vision.GetTargetXAngleDegrees() + m_drivetrain.GetAngle();
-        }
-        if (m_drivetrain.TryTurnToTargetAngle(m_autoTurnTargetAngle) == false)
+        // read from camera
+        m_origTx = m_vision.GetTargetXAngleDegrees();
+        m_autoTurnTargetAngle = m_drivetrain.GetAngle() - m_origTx;
+        frc::SmartDashboard::PutNumber("Auto Turn Angle", m_autoTurnTargetAngle);
+    }
+    else if (m_coPilot.GetRawButtonReleased(kTurnToTarget))
+    {
+        m_autoTurnTargetAngle = 0;
+    }
+    else if (m_autoTurnTargetAngle != 0)
+    {
+        if (m_drivetrain.TryTurnToTargetAngle(m_vision.GetTargetXAngleDegrees()) == false)
         {
             m_autoTurnTargetAngle = 0;
         }
