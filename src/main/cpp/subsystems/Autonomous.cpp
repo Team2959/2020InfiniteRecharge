@@ -40,10 +40,12 @@ void Autonomous::OnAutoInit()
     else if (selected == kRightWithTrench)
     {
         m_selectedProgram = RightWithTrench;
+        m_shooter.SetSpeed(kInitiationLineLeftRightSpeed);
     }
     else if (selected == kLeftWithTrench)
     {
         m_selectedProgram = LeftWithTrench;
+        m_shooter.SetSpeed(kInitiationLineLeftRightSpeed);
     }
     else if (selected == kWallAndFire)
     {
