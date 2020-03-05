@@ -42,8 +42,7 @@ private:
   const double kDefaultAutoTurnOffset = 0.01;
 
   bool m_passed2ndStage = false;
-  double m_autoTurnTargetAngle = 0.0;
-  double m_origTx = 0;
+  double m_origTx = 0.0;
   
   // Drivetrain controller
   Drivetrain m_drivetrain {};
