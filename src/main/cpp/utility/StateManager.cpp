@@ -247,6 +247,8 @@ void StateManager::ClearPressedAndReleasedOperatorButtons()
     m_coPilotJoystick.GetRawButtonReleased(kReverseIntake);
     m_coPilotJoystick.GetRawButtonPressed(kReverseKicker);
     m_coPilotJoystick.GetRawButtonReleased(kReverseKicker);
+    m_coPilotJoystick.GetRawButtonPressed(kTurnToTarget);
+    m_coPilotJoystick.GetRawButtonReleased(kTurnToTarget);
 }
 
 void StateManager::UpdateActivePowerCells()
