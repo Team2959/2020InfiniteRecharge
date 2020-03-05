@@ -14,6 +14,7 @@ void Robot::RobotInit()
     m_intake.OnRobotInit();
     m_shooter.OnRobotInit();
     // m_colorWheel.OnRobotInit();
+    m_climb.OnRobotInit();
     m_vision.OnRopotInit();
     m_autonomous.OnRobotInit();
     m_stateManager.OnRobotInit();
@@ -43,7 +44,6 @@ void Robot::RobotPeriodic()
 {
     if (m_skips % 47)
     {
-        // update PID values from the SmartDashboard
         m_drivetrain.UpdateFromSmartDashboard();
         if (frc::SmartDashboard::GetBoolean("Update Conditioning", false))
         {
@@ -66,13 +66,15 @@ void Robot::RobotPeriodic()
     }
     if (true /*m_skips % 51*/)
     {
-        // update PID values from the SmartDashboard
         m_shooter.OnRobotPeriodic();
     }
     if (m_skips % 53)
     {
-        // update PID values from the SmartDashboard
         m_intake.OnRobotPeriodic();
+    }
+    if (m_skips % 57)
+    {
+        m_climb.OnRobotPeriodic();
     }
 
     // m_colorWheel.UpdateColorSensorValues(m_skips);

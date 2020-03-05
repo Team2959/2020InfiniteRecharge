@@ -24,6 +24,7 @@ private:
     int m_powercellsCounted = 3;
     Intake& m_intake;
     Shooter& m_shooter;
+    Climb& m_climb;
     Vision& m_vision;
     Drivetrain& m_drivetrain;
     frc::Joystick& m_coPilotJoystick;
@@ -45,7 +46,7 @@ private:
     void UpdateActivePowerCells();
 
 public:
-    StateManager(Intake& intake, Shooter& shooter, Vision& vision,
+    StateManager(Intake& intake, Shooter& shooter, Climb& climb, Vision& vision,
         Drivetrain& drivetrain, frc::Joystick& coPilotJoystick);
 
     void OnRobotInit();

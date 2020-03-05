@@ -2,8 +2,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
-StateManager::StateManager(Intake& intake, Shooter& shooter, Vision& vision, Drivetrain& drivetrain, frc::Joystick& coPilotJoystick)
-    : m_intake(intake), m_shooter(shooter), m_vision(vision), m_drivetrain(drivetrain), 
+StateManager::StateManager(Intake& intake, Shooter& shooter, Climb& climb, Vision& vision, Drivetrain& drivetrain, frc::Joystick& coPilotJoystick)
+    : m_intake(intake), m_shooter(shooter), m_climb(climb), m_vision(vision), m_drivetrain(drivetrain), 
       m_coPilotJoystick(coPilotJoystick)
 {
 }
@@ -99,24 +99,19 @@ void StateManager::ClimbingInit()
 {
     TravelingInit();
 
+    m_coPilot.GetRawButtonPressed(kClimbRetract);
+    m_coPilot.GetRawButtonReleased(kClimbRetract);
+
+    m_climb.StartClimb();
+
     frc::SmartDashboard::PutString("Robot State", "Climbing");
 }
 
 void StateManager::ClimbingPeriodic()
 {
-    if (m_coPilotJoystick.GetRawButton(kClimbExtend))
-    {
-        // extend climb mechanism
-    }
-    else if (m_coPilotJoystick.GetRawButton(kClimbRetract))
-    {
-        // raise bot from floor
-    }
-    else
-    {
-        // motor off
-    }
-    
+    m_climb.ProcessClimb(
+        m_coPilot.GetRawButtonPressed(kClimbRetract),
+        m_coPilot.GetRawButtonReleased(kClimbRetract));
 }
 
 void StateManager::ColorWheelInit()

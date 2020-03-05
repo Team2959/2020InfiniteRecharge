@@ -16,6 +16,7 @@
 #include <subsystems/Intake.h>
 #include <subsystems/Shooter.h>
 #include <subsystems/ColorWheel.h>
+#include <subsystems/Climb.h>
 #include <subsystems/Vision.h>
 #include <subsystems/Autonomous.h>
 #include <utility/StateManager.h>
@@ -49,8 +50,9 @@ private:
   Intake m_intake {};
   Shooter m_shooter {};
   // ColorWheel m_colorWheel {};
+  Climb m_climb {};
   Vision m_vision {};
-  StateManager m_stateManager {m_intake, m_shooter, m_vision, m_drivetrain, m_coPilot};
+  StateManager m_stateManager {m_intake, m_shooter, m_climb, m_vision, m_drivetrain, m_coPilot};
   Autonomous m_autonomous {m_stateManager, m_shooter, m_drivetrain};
 
 public:
