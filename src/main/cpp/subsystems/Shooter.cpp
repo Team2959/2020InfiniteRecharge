@@ -115,7 +115,7 @@ void Shooter::SetSpeedFromThrottle(double throttlePosition)
     throttlePosition += 1;  // shift from -1..1 to 0..2 for range
     // 0..0.5, set shooter speed to 0 
     auto targetSpeed = 0.0;
-    if (throttlePosition >= 0.5)
+    if (throttlePosition >= 0.75)
     {
         // do linear interpolation between minimum and maximum throttle speeds
         targetSpeed = (m_slopeOfThrottleRange * throttlePosition) + m_offsetOfThrottleRange; 

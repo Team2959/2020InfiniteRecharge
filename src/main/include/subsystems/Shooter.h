@@ -7,7 +7,7 @@
 
 #include <thread>
 
-const double kWallShotSpeed = 2600;
+const double kWallShotSpeed = 3000;
 const double kInitiationLineSpeed = 2050;
 const double kInitiationLineLeftRightSpeed = 2075;
 
