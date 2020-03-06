@@ -1,6 +1,11 @@
 #include <subsystems/Shooter.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
+const double kDefaultAutoKp = 0.0004;
+const double kDefaultTeleopKp = 0.0006;
+const double kDefaultff = 0.000193;
+const double kDefaultKd = 0;
+
 Shooter::Shooter()
 {    // Have the follower follow the primary except invert 
     // because they are opposite of one another
@@ -11,8 +16,9 @@ Shooter::Shooter()
 
 void Shooter::OnRobotInit()
 {
-    m_PID.SetP(kDefaultTeleopKp);
-    m_PID.SetFF(0.000193);
+    m_PID.SetP(kDefaultAutoKp);
+    m_PID.SetFF(kDefaultff);
+    m_PID.SetD(kDefaultKd);
     
     SmartDashboardInit();
 }
@@ -26,6 +32,7 @@ void Shooter::SmartDashboardInit()
     frc::SmartDashboard::PutNumber(kIGain, m_PID.GetI());
     frc::SmartDashboard::PutNumber(kFF, m_PID.GetFF());
     frc::SmartDashboard::PutNumber(kIZone, m_PID.GetIZone());
+    frc::SmartDashboard::PutNumber(kDGain, m_PID.GetD());
     // Shooter
     frc::SmartDashboard::PutNumber(kTargetSpeed, 0);
     // Close Speed
@@ -58,11 +65,13 @@ void Shooter::OnRobotPeriodic()
     auto currentI = m_PID.GetI();
     auto currentFF = m_PID.GetFF();
     auto currentIZone = m_PID.GetIZone();
+    auto currentD = m_PID.GetD();
 
     auto myP = frc::SmartDashboard::GetNumber(kPGain, currentP);
     auto myI = frc::SmartDashboard::GetNumber(kIGain, currentI);
     auto myFF = frc::SmartDashboard::GetNumber(kFF, currentFF);
     auto myIZone = frc::SmartDashboard::GetNumber(kIZone, currentIZone);
+    auto myD = frc::SmartDashboard::GetNumber(kDGain, currentD);
     if(fabs(myP - currentP) > kCloseToSameValue)
     {
         m_PID.SetP(myP);
@@ -78,6 +87,10 @@ void Shooter::OnRobotPeriodic()
     if(fabs(myIZone - currentIZone) > kCloseToSameValue)
     {
         m_PID.SetIZone(myIZone);
+    }
+    if(fabs(myD - currentD) > kCloseToSameValue)
+    {
+        m_PID.SetD(myD);
     }
 }
 
