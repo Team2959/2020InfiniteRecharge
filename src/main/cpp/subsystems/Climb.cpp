@@ -1,12 +1,12 @@
 #include <subsystems/Climb.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 
-const int kReleaseWratchetPawPosition = 300;
+const int kReleaseWratchetPawPosition = 600;
 const int kExtendPosition = -20000;
-const int kRetractPosition = kExtendPosition - 6000;
-const int kMaxRetractPosition = kRetractPosition - 4000;
+const int kRetractPosition = kExtendPosition - 5000;
+const int kMaxRetractPosition = kRetractPosition - 6000;
 const int kStopDelta = -500;
-const int kForwardLimit = 500;
+const int kForwardLimit = 800;
 
 void Climb::OnRobotInit()
 {
@@ -167,16 +167,17 @@ void Climb::StopMotors()
 bool Climb::IsAtTargetPosition()
 {
     auto currentPosition = m_left.GetSelectedSensorPosition();
-    if (m_targetPosition <= 0)
+    if (m_targetPosition >= 0)
     {
-        return std::abs(currentPosition - m_targetPosition) < 75;
+        return std::abs(currentPosition - m_targetPosition) < 300;
     }
 
-    return std::abs(currentPosition - m_targetPosition) < 500;
+    return std::abs(currentPosition - m_targetPosition) < 1000;
 }
 
 void Climb::StartClimb()
 {
+    m_delay = 0;
     m_currentState = ReleasePaw;
     MoveToPosition(kReleaseWratchetPawPosition);
 }
@@ -186,7 +187,13 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
     switch (m_currentState)
     {
     case ReleasePaw:
-        if (IsAtTargetPosition())
+        // if (IsAtTargetPosition())
+        {
+            m_currentState = ReleaseDelay;
+        }
+        break;
+    case ReleaseDelay:
+        if (m_delay++ > 25)
         {
             m_currentState = Extend;
             MoveToPosition(kExtendPosition);
@@ -203,6 +210,8 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
         if (retractPressed)
         {
             m_currentState = Retracting;
+            // m_left.Config_kP(0, 3);
+            // m_right.Config_kP(0, 3);
             MoveToPosition(kRetractPosition);
         }
         break;
