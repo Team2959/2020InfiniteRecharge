@@ -2,9 +2,9 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 const int kReleaseWratchetPawPosition = 300;
-const int kExtendPosition = -26000;
-const int kRetractPosition = kExtendPosition - 8000;
-const int kMaxRetractPosition = kRetractPosition - 8000;
+const int kExtendPosition = -20000;
+const int kRetractPosition = kExtendPosition - 6000;
+const int kMaxRetractPosition = kRetractPosition - 4000;
 const int kStopDelta = -500;
 const int kForwardLimit = 500;
 
