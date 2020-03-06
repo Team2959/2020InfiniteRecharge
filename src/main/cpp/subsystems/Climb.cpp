@@ -60,7 +60,13 @@ void Climb::OnRobotInit()
 
 void Climb::OnRobotPeriodic()
 {
-    m_debugEnable = frc::SmartDashboard::GetBoolean(kDebug, false);
+    auto enableFlag = frc::SmartDashboard::GetBoolean(kDebug, false);
+    if (enableFlag == false && enableFlag != m_debugEnable)
+    {
+        StopMotors();
+    }
+
+    m_debugEnable = enableFlag;
 
     frc::SmartDashboard::PutNumber(kPosition, m_left.GetSelectedSensorPosition());
     frc::SmartDashboard::PutNumber(kRightPosition, m_right.GetSelectedSensorPosition());
