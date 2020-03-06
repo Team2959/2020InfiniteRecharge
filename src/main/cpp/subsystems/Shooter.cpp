@@ -109,7 +109,8 @@ double Shooter::GetSpeed()
 
 bool Shooter::CloseToSpeed()
 {
-    return GetSpeed() >= m_targetSpeed - m_closeSpeed;
+    // return GetSpeed() >= m_targetSpeed - m_closeSpeed;
+    return true;
 }
 
 void Shooter::ComputeSlopeAndOffset()
