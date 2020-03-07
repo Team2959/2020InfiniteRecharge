@@ -178,8 +178,8 @@ bool Climb::IsAtTargetPosition()
 void Climb::StartClimb()
 {
     m_delay = 0;
+    StopAndZero();
     m_currentState = ReleasePaw;
-    MoveToPosition(kReleaseWratchetPawPosition);
 }
 
 void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
@@ -187,6 +187,7 @@ void Climb::ProcessClimb(bool retractPressed, bool retractReleased)
     switch (m_currentState)
     {
     case ReleasePaw:
+        MoveToPosition(kReleaseWratchetPawPosition);
         // if (IsAtTargetPosition())
         {
             m_currentState = ReleaseDelay;
