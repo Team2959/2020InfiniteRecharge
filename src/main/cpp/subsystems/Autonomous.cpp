@@ -20,12 +20,14 @@ void Autonomous::OnRobotInit()
 
     frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
     frc::SmartDashboard::PutData("Auto Modes Sides", &m_sideChooser);
+    frc::SmartDashboard::PutNumber(kShootDelayCycles, 125);
 }
 
 void Autonomous::OnAutoInit()
 {
     m_step = 0;
     m_cycleDelay = 0;
+    m_firingCycleDelay = frc::SmartDashboard::GetNumber(kShootDelayCycles, 50);
     m_shooter.SetAngle(false);
     auto side = m_sideChooser.GetSelected();
     if (side == kLeftRight)
@@ -81,7 +83,8 @@ void Autonomous::Periodic()
             // all programs currently shoot first, may need to change this!!
             // if (m_shooter.CloseToSpeed())
             // waiting 2 1/2 seconds for shooter to get up to speed
-            if (m_cycleDelay++ > 125)
+            // default to 2 1/2, but configurable in dashboard
+            if (m_cycleDelay++ > m_firingCycleDelay)
             {
                 m_stateManager.StartState(States::Firing);
                 m_step++;

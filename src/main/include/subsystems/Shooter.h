@@ -8,7 +8,7 @@
 #include <thread>
 
 const double kWallShotSpeed = 2600;
-const double kInitiationLineSpeed = 2000;
+const double kInitiationLineSpeed = 1975;
 const double kInitiationLineLeftRightSpeed = 2025;
 
 class Shooter
@@ -39,7 +39,7 @@ private:
     const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
     const double kMaxVelocity = 4500;
-    const double kMaxThrottleSpeedDefault = 4000;
+    const double kMaxThrottleSpeedDefault = 4500;
     const double kMinThrottleSpeedDefault = 1500;
     const double kCloseSpeedDefault = 100;
 

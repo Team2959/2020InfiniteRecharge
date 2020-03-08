@@ -28,6 +28,7 @@ private:
     double m_autoTurnTargetAngle = 0.0;
     DriveDistanceTracker m_autoDriveDistanceTracker {};
     int m_cycleDelay = 0;
+    double m_firingCycleDelay = 125;
 
     // SmartDashboard auton mode selector
     frc::SendableChooser<std::string> m_chooser;
@@ -40,6 +41,7 @@ private:
     const std::string kWallAndFire = "Wall and Fire";
     const std::string kCenter = "Center";
     const std::string kLeftRight = "Left or Right";
+    const std::string kShootDelayCycles = "Shoot Delay Cycles";
 
     void FireAndForwardPeriodic();
     void FireAndBackwardPeriodic();

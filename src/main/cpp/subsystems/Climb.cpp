@@ -4,7 +4,7 @@
 const int kReleaseWratchetPawPosition = 600;
 const int kExtendPosition = -20000;
 const int kRetractPosition = kExtendPosition - 5000;
-const int kMaxRetractPosition = kRetractPosition - 6000;
+const int kMaxRetractPosition = kRetractPosition - 4000;
 const int kStopDelta = -500;
 const int kForwardLimit = 800;
 
