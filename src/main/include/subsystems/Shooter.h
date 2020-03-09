@@ -8,8 +8,8 @@
 #include <thread>
 
 const double kWallShotSpeed = 2600;
-const double kInitiationLineSpeed = 2050;
-const double kInitiationLineLeftRightSpeed = 2075;
+const double kInitiationLineSpeed = 1975;
+const double kInitiationLineLeftRightSpeed = 2025;
 
 class Shooter
 {
@@ -27,6 +27,7 @@ private:
     const std::string kDebug = kName + "Debug";
     const std::string kPGain = kName + "P Gain";
     const std::string kIGain = kName + "I Gain";
+    const std::string kDGain = kName + "D Term";
     const std::string kFF = kName + "Feed Forward";
     const std::string kIZone = kName + "I Zone";
     const std::string kSpeed = kName + "Speed";
@@ -38,11 +39,9 @@ private:
     const std::string kMinThrottleSpeed = kName + "Min Throttle Speed";
 
     const double kMaxVelocity = 4500;
-    const double kMaxThrottleSpeedDefault = 4000;
+    const double kMaxThrottleSpeedDefault = 4500;
     const double kMinThrottleSpeedDefault = 1500;
     const double kCloseSpeedDefault = 100;
-    const double kDefaultAutoKp = 0.0004;
-    const double kDefaultTeleopKp = 0.0006;
 
     const double kForwardFullSpeed = -1.0;
     const double kSpeedThreshold = 25;

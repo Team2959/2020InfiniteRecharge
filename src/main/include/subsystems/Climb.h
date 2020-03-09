@@ -9,7 +9,7 @@ private:
     ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_left {kClimbLeftTalonSrxCanId};
     ctre::phoenix::motorcontrol::can::WPI_TalonSRX m_right {kClimbRightTalonSrxCanId};
 
-    const double kDefaultKp = 0.4;
+    const double kDefaultKp = 3.0;
     const double kDefaultKi = 0;
     const double kDefaultFf = 0;
     const double kDefaultIzone = 0;
@@ -44,6 +44,7 @@ private:
 
     int m_lastGoToPosition = 0;
     int m_targetPosition = 0;
+    int m_delay = 0;
 
     void StopAndZero();
     void MoveToPosition(int target);
@@ -54,6 +55,7 @@ private:
     {
         Start,
         ReleasePaw,
+        ReleaseDelay,
         Extend,
         Retract,
         Retracting,

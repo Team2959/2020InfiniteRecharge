@@ -99,8 +99,8 @@ void StateManager::ClimbingInit()
 {
     TravelingInit();
 
-    m_coPilot.GetRawButtonPressed(kClimbRetract);
-    m_coPilot.GetRawButtonReleased(kClimbRetract);
+    m_coPilotJoystick.GetRawButtonPressed(kClimbRetract);
+    m_coPilotJoystick.GetRawButtonReleased(kClimbRetract);
 
     m_climb.StartClimb();
 
@@ -110,8 +110,8 @@ void StateManager::ClimbingInit()
 void StateManager::ClimbingPeriodic()
 {
     m_climb.ProcessClimb(
-        m_coPilot.GetRawButtonPressed(kClimbRetract),
-        m_coPilot.GetRawButtonReleased(kClimbRetract));
+        m_coPilotJoystick.GetRawButtonPressed(kClimbRetract),
+        m_coPilotJoystick.GetRawButtonReleased(kClimbRetract));
 }
 
 void StateManager::ColorWheelInit()
