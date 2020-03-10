@@ -122,6 +122,7 @@ void Robot::TeleopPeriodic()
     auto    cameraMode{ frc::SmartDashboard::GetBoolean(DriverCameraMode, false) };
 
     m_vision.SetCameraMode(cameraMode ? CameraMode::Driver : CameraMode::VisionProcessing);
+
     if (m_coPilot.GetRawButtonPressed(kTurnToTarget))
     {
         // read from camera
