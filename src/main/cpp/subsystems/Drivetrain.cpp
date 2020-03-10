@@ -126,17 +126,18 @@ bool Drivetrain::TryTurnToTargetAngle(double tx)
         return false;
     }
 
-    auto rotationMagnitude = tx;//targetAngle - currentAngle;
+    // auto rotationMagnitude = tx;//targetAngle - currentAngle;
     auto rotationSpeed = 0.0;
-    if (rotationMagnitude < 0)
+    // is tx negative, which means turn left
+    if (tx < 0)
     {
-        // turn left
-        rotationSpeed = std::fmin(-m_autoMinSpeed, rotationMagnitude * m_autoKp);
+        // turn left -> counter clockwise
+        rotationSpeed = std::fmin(-m_autoMinSpeed, tx * m_autoKp);
     }
     else
     {
-        // turn right
-        rotationSpeed = std::fmax(m_autoMinSpeed, rotationMagnitude * m_autoKp);
+        // turn right -> clockwise
+        rotationSpeed = std::fmax(m_autoMinSpeed, tx * m_autoKp);
     }
     
     CurvatureDrive(0.0, rotationSpeed, true);
