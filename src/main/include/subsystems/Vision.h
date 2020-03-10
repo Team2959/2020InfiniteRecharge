@@ -2,9 +2,12 @@
 
 #include <networktables/NetworkTableEntry.h>
 
+enum class CameraMode { VisionProcessing = 0, Driver = 1 };
+
 class Vision
 {
 private:
+    nt::NetworkTableEntry m_camModeEntry;
     nt::NetworkTableEntry m_tvEntry;
     nt::NetworkTableEntry m_txEntry;
     nt::NetworkTableEntry m_tyEntry;
@@ -25,4 +28,6 @@ public:
 
     double GetTargetDistanceInInches() const { return GetTargetDistanceFromAngle(GetTargetYAngleDegrees()); }
     double GetTargetXAngleDegrees() const;
+    CameraMode GetCameraMode() const;
+    void SetCameraMode(CameraMode mode);
 };
