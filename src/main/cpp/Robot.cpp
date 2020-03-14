@@ -8,6 +8,8 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
+const char* DriverCameraMode = "Driver Camera Mode";
+
 void Robot::RobotInit() 
 {
     m_drivetrain.InitalShowToSmartDashboard();
@@ -36,6 +38,8 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutNumber("Rotation Exponent", kDefaultExponent);
 
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
+
+    frc::SmartDashboard::PutBoolean(DriverCameraMode, false);
 
     frc::SmartDashboard::PutString("Robot State", "Traveling");
 }
@@ -93,6 +97,7 @@ void Robot::AutonomousInit()
     m_shooter.SetAutoKp();
     m_stateManager.OnAutoInit();
     m_autonomous.OnAutoInit();
+    m_vision.SetCameraMode(CameraMode::VisionProcessing);
 }
 
 void Robot::AutonomousPeriodic()
@@ -105,6 +110,7 @@ void Robot::TeleopInit()
 {
     m_stateManager.Reset();
     m_shooter.SetTeleopKp();
+    m_vision.SetCameraMode(CameraMode::VisionProcessing);
     // remove from competition code
     m_intake.SetIntakeSpeed(0);
     m_intake.SetConveyorSpeed(0);
@@ -113,6 +119,10 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
+    auto    cameraMode{ frc::SmartDashboard::GetBoolean(DriverCameraMode, false) };
+
+    m_vision.SetCameraMode(cameraMode ? CameraMode::Driver : CameraMode::VisionProcessing);
+
     if (m_coPilot.GetRawButtonPressed(kTurnToTarget))
     {
         // read from camera

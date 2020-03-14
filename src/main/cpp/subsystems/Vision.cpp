@@ -12,6 +12,8 @@ void Vision::OnRopotInit()
 {
     auto inst = nt::NetworkTableInstance::GetDefault();
     auto table = inst.GetTable("limelight");
+    m_camModeEntry = table->GetEntry("camMode");
+    m_tvEntry = table->GetEntry("tv");
     m_txEntry = table->GetEntry("tx");
     m_tyEntry = table->GetEntry("ty");
 }
@@ -102,4 +104,14 @@ double Vision::GetTargetYAngleDegrees() const
     // if(!IsTargetValid())
     //     return std::nan("");
     return m_tyEntry.GetDouble(0.0);
+}
+
+CameraMode Vision::GetCameraMode() const
+{
+    return static_cast<CameraMode>(m_camModeEntry.GetDouble(static_cast<double>(CameraMode::VisionProcessing)));
+}
+
+void  Vision::SetCameraMode(CameraMode mode)
+{
+    m_camModeEntry.SetDouble(static_cast<double>(mode));
 }
