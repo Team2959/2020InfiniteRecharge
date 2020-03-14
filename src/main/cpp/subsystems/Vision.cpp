@@ -8,6 +8,8 @@ constexpr double CameraAngleDegrees{ 20.0 };    // Angle in degrees of the verti
 constexpr double CameraHeight{ 20.75 };         // Height in inches of the camera above the floor.
 constexpr double TargetHeight{ 98.25 };         // Height in inches of the target above the floor.
 
+const std::string kDriverCameraMode = "Driver Camera Mode";
+
 void Vision::OnRopotInit()
 {
     auto inst = nt::NetworkTableInstance::GetDefault();
@@ -16,6 +18,8 @@ void Vision::OnRopotInit()
     m_tvEntry = table->GetEntry("tv");
     m_txEntry = table->GetEntry("tx");
     m_tyEntry = table->GetEntry("ty");
+
+    frc::SmartDashboard::PutBoolean(kDriverCameraMode, false);
 }
 
 void Vision::OnRobotPeriodic()
@@ -35,6 +39,12 @@ void Vision::OnRobotPeriodic()
     //     frc::SmartDashboard::PutString("Vision TY Angle", "");
     //     frc::SmartDashboard::PutString("Vision Distance", "");
     // }
+}
+
+void Vision::OnTeleopPeriodic()
+{
+    auto  cameraMode = frc::SmartDashboard::GetBoolean(kDriverCameraMode, false);
+    SetCameraMode(cameraMode ? CameraMode::Driver : CameraMode::VisionProcessing);
 }
 
 // TO DO:  Implement code that calls GetDistanceAngle, GetAngleDistance & GetMotorOutputForAimAndDrive and uses their results

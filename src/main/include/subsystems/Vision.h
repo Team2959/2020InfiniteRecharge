@@ -25,6 +25,7 @@ private:
 public:
     void OnRopotInit();
     void OnRobotPeriodic();
+    void OnTeleopPeriodic();
 
     double GetTargetDistanceInInches() const { return GetTargetDistanceFromAngle(GetTargetYAngleDegrees()); }
     double GetTargetXAngleDegrees() const;

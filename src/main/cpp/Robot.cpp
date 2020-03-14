@@ -8,7 +8,15 @@
 #include "Robot.h"
 #include <frc/smartdashboard/SmartDashboard.h>
 
-const char* DriverCameraMode = "Driver Camera Mode";
+const std::string kSpeedName = "Speed ";
+const std::string kSpeedDeadband = kSpeedName + "Deadband";
+const std::string kSpeedOutputOffset = kSpeedName + "Output Offset";
+const std::string kSpeedExponent = kSpeedName + "Exponent";
+const std::string kRotationName = "Rotation ";
+const std::string kRotationDeadband = kRotationName + "Deadband";
+const std::string kRotationOutputOffset = kRotationName + "Output Offset";
+const std::string kRotationExponent = kRotationName + "Exponent";
+const std::string kUpdateConditioning = "Update Conditioning";
 
 void Robot::RobotInit() 
 {
@@ -29,17 +37,15 @@ void Robot::RobotInit()
     m_driverRotationConditioning.SetRange(kDefaultOutputOffset, 1.0);
     m_driverRotationConditioning.SetExponent(kDefaultExponent);
 
-    frc::SmartDashboard::PutNumber("Speed Deadband", kDefaultDeadband);
-    frc::SmartDashboard::PutNumber("Speed Output Offset", kDefaultOutputOffset);
-    frc::SmartDashboard::PutNumber("Speed Exponent", kDefaultExponent);
+    frc::SmartDashboard::PutNumber(kSpeedDeadband, kDefaultDeadband);
+    frc::SmartDashboard::PutNumber(kSpeedOutputOffset, kDefaultOutputOffset);
+    frc::SmartDashboard::PutNumber(kSpeedExponent, kDefaultExponent);
 
-    frc::SmartDashboard::PutNumber("Rotation Deadband", kDefaultDeadband);
-    frc::SmartDashboard::PutNumber("Rotation Output Offset", kDefaultOutputOffset);
-    frc::SmartDashboard::PutNumber("Rotation Exponent", kDefaultExponent);
+    frc::SmartDashboard::PutNumber(kRotationDeadband, kDefaultDeadband);
+    frc::SmartDashboard::PutNumber(kRotationOutputOffset, kDefaultOutputOffset);
+    frc::SmartDashboard::PutNumber(kRotationExponent, kDefaultExponent);
 
-    frc::SmartDashboard::PutBoolean("Update Conditioning", false);
-
-    frc::SmartDashboard::PutBoolean(DriverCameraMode, false);
+    frc::SmartDashboard::PutBoolean(kUpdateConditioning, false);
 }
 
 void Robot::RobotPeriodic() 
@@ -47,15 +53,15 @@ void Robot::RobotPeriodic()
     if (m_skips % 47)
     {
         m_drivetrain.UpdateFromSmartDashboard();
-        if (frc::SmartDashboard::GetBoolean("Update Conditioning", false))
+        if (frc::SmartDashboard::GetBoolean(kUpdateConditioning, false))
         {
-            double ldb = frc::SmartDashboard::GetNumber("Speed Deadband", kDefaultDeadband);
-            double loo = frc::SmartDashboard::GetNumber("Speed Output Offset", kDefaultOutputOffset);
-            double lex = frc::SmartDashboard::GetNumber("Speed Exponent", kDefaultExponent);
+            double ldb = frc::SmartDashboard::GetNumber(kSpeedDeadband, kDefaultDeadband);
+            double loo = frc::SmartDashboard::GetNumber(kSpeedOutputOffset, kDefaultOutputOffset);
+            double lex = frc::SmartDashboard::GetNumber(kSpeedExponent, kDefaultExponent);
 
-            double rdb = frc::SmartDashboard::GetNumber("Rotation Deadband", kDefaultDeadband);
-            double roo = frc::SmartDashboard::GetNumber("Rotation Output Offset", kDefaultOutputOffset);
-            double rex = frc::SmartDashboard::GetNumber("Rotation Exponent", kDefaultExponent);
+            double rdb = frc::SmartDashboard::GetNumber(kRotationDeadband, kDefaultDeadband);
+            double roo = frc::SmartDashboard::GetNumber(kRotationOutputOffset, kDefaultOutputOffset);
+            double rex = frc::SmartDashboard::GetNumber(kRotationExponent, kDefaultExponent);
 
             m_driverSpeedConditioning.SetDeadband(ldb);
             m_driverSpeedConditioning.SetRange(loo, 1.0);
@@ -117,9 +123,8 @@ void Robot::TeleopInit()
 
 void Robot::TeleopPeriodic() 
 {
-    auto    cameraMode{ frc::SmartDashboard::GetBoolean(DriverCameraMode, false) };
-
-    m_vision.SetCameraMode(cameraMode ? CameraMode::Driver : CameraMode::VisionProcessing);
+    // enable if wish driver to switch to camera viewing mode
+    // m_vision.OnTeleopPeriodic();
 
     if (m_coPilot.GetRawButtonPressed(kTurnToTarget))
     {
