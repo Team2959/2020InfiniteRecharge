@@ -148,7 +148,7 @@ void StateManager::LoadingInit()
     m_intake.GetSensorPressed(Intake::SensorLocation::SecuredPowercell);
     m_shooter.SetAngle(false);
     m_intake.SetConveyorSpeed(0);
-    m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
+    m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeedWhenLoading());
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
     m_powercellsCounted = 0;
 
@@ -171,7 +171,7 @@ void StateManager::LoadingPeriodic()
         else
         {
             m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed() * 0.5);
-            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeedWhenLoading());
+            m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
         }
     }
 
@@ -205,8 +205,8 @@ void StateManager::ProcessUnjammingButtonPresses()
     {
         StartState(States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());
-        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeed());
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeed());
+        m_intake.SetKickerSpeed(-m_intake.GetKickerFullSpeedWhenLoading());
     }
 
     if (m_coPilotJoystick.GetRawButtonReleased(kReverseConveyor))
@@ -217,7 +217,7 @@ void StateManager::ProcessUnjammingButtonPresses()
     {
         StartState(States::Traveling);
         m_intake.SetIntakeSpeed(-m_intake.GetIntakeFullSpeed());
-        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeedWhenLoading());;
+        m_intake.SetConveyorSpeed(-m_intake.GetConveyorFullSpeed());;
     }
 
     if (m_coPilotJoystick.GetRawButtonReleased(kReverseIntake))

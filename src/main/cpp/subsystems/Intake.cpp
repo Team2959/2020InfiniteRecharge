@@ -9,9 +9,9 @@ void Intake::OnRobotInit()
     frc::SmartDashboard::PutNumber(kIntakeSpeed, kFullIntakeSpeed);
     // Conveyor
     frc::SmartDashboard::PutNumber(kConveyorSpeed, kFullConveyorSpeed);
-    frc::SmartDashboard::PutNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     // Kicker
     frc::SmartDashboard::PutNumber(kKickerSpeed, kFullKickerSpeed);
+    frc::SmartDashboard::PutNumber(kKickerSpeedWhenLoading, kFullKickerWhenLoadingSpeed);
 }
 
 void Intake::OnRobotPeriodic()
@@ -25,8 +25,8 @@ void Intake::OnRobotPeriodic()
     if (m_debugEnable == false) return;
     m_intakeSpeed = frc::SmartDashboard::GetNumber(kIntakeSpeed, kFullIntakeSpeed);
     m_conveyorSpeed = frc::SmartDashboard::GetNumber(kConveyorSpeed, kFullConveyorSpeed);
-    m_conveyorSpeedWhenLoading = frc::SmartDashboard::GetNumber(kConveyorSpeedWhenLoading, kFullConveyorSpeedWhenLoading);
     m_kickerSpeed = frc::SmartDashboard::GetNumber(kKickerSpeed, kFullKickerSpeed);
+    m_kickerSpeedWhenLoading = frc::SmartDashboard::GetNumber(kKickerSpeedWhenLoading, kFullKickerWhenLoadingSpeed);
 }
 
 std::string Intake::GetIntakeStateText()
@@ -106,11 +106,6 @@ double Intake::GetConveyorFullSpeed() const
     return m_conveyorSpeed;
 }
 
-double Intake::GetConveyorFullSpeedWhenLoading() const
-{
-    return m_conveyorSpeedWhenLoading;
-}
-
 void Intake::SetConveyorSpeed(double speed)
 {
     m_conveyor.Set(speed);
@@ -119,6 +114,11 @@ void Intake::SetConveyorSpeed(double speed)
 double Intake::GetKickerFullSpeed() const
 {
     return m_kickerSpeed;
+}
+
+double Intake::GetKickerFullSpeedWhenLoading() const
+{
+    return m_kickerSpeedWhenLoading;
 }
 
 void Intake::SetKickerSpeed(double speed)

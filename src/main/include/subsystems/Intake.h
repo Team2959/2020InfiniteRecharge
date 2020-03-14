@@ -25,18 +25,18 @@ private:
     const std::string kKickerSpeed = kKickerName + "Speed";
     const std::string kIntakeSpeed = kIntakeName + "Speed";
     const std::string kIntakeState = kIntakeName + "State";
-    const std::string kConveyorSpeedWhenLoading = kConveyorName + "Speed When Loading";
+    const std::string kKickerSpeedWhenLoading = kKickerName + "Speed When Loading";
 
     bool m_debugEnable = false;
 
     const double kFullIntakeSpeed = 0.75;
-    const double kFullConveyorSpeed = 0.6;
-    const double kFullKickerSpeed = 0.3;
-    const double kFullConveyorSpeedWhenLoading = 1.0;
+    const double kFullConveyorSpeed = 1.0;
+    const double kFullKickerSpeed = 1.0;
+    const double kFullKickerWhenLoadingSpeed = 0.3;
     double m_intakeSpeed = kFullIntakeSpeed;
     double m_conveyorSpeed = kFullConveyorSpeed;
-    double m_conveyorSpeedWhenLoading = kFullConveyorSpeedWhenLoading;
     double m_kickerSpeed = kFullKickerSpeed;
+    double m_kickerSpeedWhenLoading = kFullKickerWhenLoadingSpeed;
 
     std::string GetIntakeStateText();
 
@@ -54,8 +54,8 @@ public:
 
     double GetIntakeFullSpeed() const;
     double GetConveyorFullSpeed() const;
-    double GetConveyorFullSpeedWhenLoading() const;
     double GetKickerFullSpeed() const;
+    double GetKickerFullSpeedWhenLoading() const;
     bool IsIntakeRunning() const;
 
     void SetIntakeSpeed(double speed);
