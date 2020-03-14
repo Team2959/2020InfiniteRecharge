@@ -183,11 +183,11 @@ void Robot::TeleopPeriodic()
     // {
     //     if (m_colorWheel.IsColorWheelEngaged())
     //     {
-    //         m_stateManager.StartState(Robot::States::Traveling);
+    //         m_stateManager.StartState(States::Traveling);
     //     }
     //     else
     //     {
-    //         m_stateManager.StartState(Robot::States::ColorWheel);
+    //         m_stateManager.StartState(States::ColorWheel);
     //     }
     // }
 
