@@ -2,6 +2,8 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+const char* kRobotState = "Robot State";
+
 StateManager::StateManager(Intake& intake, Shooter& shooter, Climb& climb, Vision& vision, Drivetrain& drivetrain, frc::Joystick& coPilotJoystick)
     : m_intake(intake), m_shooter(shooter), m_climb(climb), m_vision(vision), m_drivetrain(drivetrain), 
       m_coPilotJoystick(coPilotJoystick)
@@ -11,6 +13,7 @@ StateManager::StateManager(Intake& intake, Shooter& shooter, Climb& climb, Visio
 void StateManager::OnRobotInit()
 {
     UpdateActivePowerCells();
+    frc::SmartDashboard::PutString(kRobotState, "Ready");
 }
 
 void StateManager::OnAutoInit()
@@ -66,7 +69,7 @@ void StateManager::TravelingInit()
 
     // needs shooter to idle speed
 
-    frc::SmartDashboard::PutString("Robot State", "Traveling");
+    frc::SmartDashboard::PutString(kRobotState, "Traveling");
 }
 
 void StateManager::TravelingPeriodic() 
@@ -82,7 +85,7 @@ void StateManager::FiringInit()
     m_intake.SetConveyorSpeed(m_intake.GetConveyorFullSpeed());
     m_intake.SetKickerSpeed(m_intake.GetKickerFullSpeed());
 
-    frc::SmartDashboard::PutString("Robot State", "Firing");
+    frc::SmartDashboard::PutString(kRobotState, "Firing");
 }
 
 void StateManager::FiringPeriodic() 
@@ -104,7 +107,7 @@ void StateManager::ClimbingInit()
 
     m_climb.StartClimb();
 
-    frc::SmartDashboard::PutString("Robot State", "Climbing");
+    frc::SmartDashboard::PutString(kRobotState, "Climbing");
 }
 
 void StateManager::ClimbingPeriodic()
@@ -119,7 +122,7 @@ void StateManager::ColorWheelInit()
     TravelingInit();
     // m_coldorWheel.EngageColorWheel(true);
 
-    frc::SmartDashboard::PutString("Robot State", "Color Wheel");
+    frc::SmartDashboard::PutString(kRobotState, "Color Wheel");
 }
 
 void StateManager::ColorWheelPeriodic()
@@ -152,7 +155,7 @@ void StateManager::LoadingInit()
     m_intake.SetIntakeSpeed(m_intake.GetIntakeFullSpeed());
     m_powercellsCounted = 0;
 
-    frc::SmartDashboard::PutString("Robot State", "Loading");
+    frc::SmartDashboard::PutString(kRobotState, "Loading");
 }
 
 void StateManager::LoadingPeriodic()

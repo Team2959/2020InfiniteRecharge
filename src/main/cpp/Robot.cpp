@@ -40,8 +40,6 @@ void Robot::RobotInit()
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
     frc::SmartDashboard::PutBoolean(DriverCameraMode, false);
-
-    frc::SmartDashboard::PutString("Robot State", "Traveling");
 }
 
 void Robot::RobotPeriodic() 
