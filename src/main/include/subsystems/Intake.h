@@ -31,7 +31,7 @@ private:
 
     const double kFullIntakeSpeed = 0.75;
     const double kFullConveyorSpeed = 1.0;
-    const double kFullKickerSpeed = 1.0;
+    const double kFullKickerSpeed = 0.85;
     const double kFullKickerWhenLoadingSpeed = 0.3;
     double m_intakeSpeed = kFullIntakeSpeed;
     double m_conveyorSpeed = kFullConveyorSpeed;
