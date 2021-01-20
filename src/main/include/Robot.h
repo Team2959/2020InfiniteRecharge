@@ -42,6 +42,11 @@ private:
   const double kDefaultAutoTurnDegrees = 30.0;
   const double kDefaultAutoTurnOffset = 0.01;
 
+  const std::string kBlingTestValue = "Bling/Test Value";
+  const std::string kBlingSendTestValue = "Bling/Send Test Value";
+
+  frc::SerialPort m_bling{115200, frc::SerialPort::Port::kOnboard};
+
   bool m_passed2ndStage = false;
   double m_origTx = 0.0;
   

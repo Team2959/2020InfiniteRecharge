@@ -37,7 +37,12 @@ void Robot::RobotInit()
 
     frc::SmartDashboard::PutBoolean("Update Conditioning", false);
 
+    frc::SmartDashboard::PutString(kBlingTestValue, "AUTO");
+    frc::SmartDashboard::PutBoolean(kBlingSendTestValue, false);
+
     frc::SmartDashboard::PutString("Robot State", "Traveling");
+
+    // m_bling.DisableTermination();
 }
 
 void Robot::RobotPeriodic() 
@@ -82,6 +87,17 @@ void Robot::RobotPeriodic()
     if (m_skips % 33)
     {
         m_vision.OnRobotPeriodic();
+    }
+
+    if(m_skips % 23) 
+    {
+        if(frc::SmartDashboard::GetBoolean(kBlingSendTestValue, false))
+        {
+            frc::SmartDashboard::PutBoolean(kBlingSendTestValue, false);
+            std::string testValue = frc::SmartDashboard::GetString(kBlingTestValue, "AUTO");
+            m_bling.Write(testValue);
+            m_bling.Flush();
+        }
     }
 
     // Increment the m_skips variable for counting

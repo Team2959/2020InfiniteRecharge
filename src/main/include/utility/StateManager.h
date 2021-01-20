@@ -5,6 +5,7 @@
 #include <subsystems/ColorWheel.h>
 #include <subsystems/Vision.h>
 #include <subsystems/Drivetrain.h>
+#include <subsystems/Climb.h>
 #include <frc/Joystick.h>
 
 enum States
